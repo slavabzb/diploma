@@ -8,11 +8,13 @@ template< typename T >
 class Matrix
 {
 public:
+  typedef std::size_t Index;
+  
   // Constructs an empty Matrix
   Matrix();
   
   // Constructs a rows-by-columns Matrix with each element initialized to the initializer value
-  Matrix( std::size_t rows, std::size_t columns, const T& initializer = T( 0 ) );
+  Matrix( Index rows, Index columns, const T& initializer = T( 0 ) );
   
   // Constructs a Matrix from the matrix by copying elements
   Matrix( const Matrix< T >& matrix );
@@ -21,8 +23,8 @@ public:
   Matrix( const Matrix< T >&& matrix );
   
   // Retrieves a reference
-  T& operator[] ( std::size_t row, std::size_t column );
-  const T& operator[] ( std::size_t row, std::size_t column ) const;
+  T& operator() ( Index row, Index column );
+  const T& operator() ( Index row, Index column ) const;
   
   // Copy-based assignment
   Matrix< T >& operator= ( const Matrix< T >& rhs );
@@ -35,37 +37,23 @@ public:
   Matrix< T >& operator- ( const Matrix< T >& rhs );
   Matrix< T >& operator* ( const Matrix< T >& rhs );
   
-  Matrix< T > transpose() const;
+  bool operator== ( const Matrix< T >& rhs ) const;
   
-  Matrix< T > submatrix( std::size_t row_to_remove, std::size_t column_to_remove ) const;
-  
-  // Row operations
-  void row_swap( std::size_t row1, std::size_t row2 );
-  void row_multiply( std::size_t row, const T& multiplier );
-  void row_add( std::size_t target_row, std::size_t sourse_row, const T& source_row_multiplier = T( 1 ) );
-  
-  // Column operations
-  void column_swap( std::size_t column1, std::size_t column2 );
-  void column_multiply( std::size_t column, const T& multiplier );
-  void column_add( std::size_t target_column, std::size_t sourse_column, const T& source_column_multiplier = T( 1 ) );
+  Matrix< T >& transpose();
   
   // Retrieves dimensions
-  std::size_t get_rows() const;
-  std::size_t get_columns() const;
-  
-  // Retrieves type of the Matrix
-  bool is_empty() const;
-  bool is_square() const;
+  Index get_rows() const;
+  Index get_columns() const;
 
 private:
   // Setters and getters for access handling
-  T& get( std::size_t row, std::size_t column );
-  const T& get( std::size_t row, std::size_t column ) const;
-  void set( std::size_t row, std::size_t column, const T& value );
+  T& get( Index row, Index column );
+  const T& get( Index row, Index column ) const;
+  void set( Index row, Index column, const T& value );
 
   std::valarray< T > elements;
-  std::size_t rows;
-  std::size_t columns;
+  Index rows;
+  Index columns;
 };
 
 
@@ -81,7 +69,7 @@ Matrix< T >& operator* ( const T& value , Matrix< T >& matrix )
 
 
 
-// Implementations
+// Member functions
 
 template< typename T >
 Matrix< T >::Matrix()
@@ -92,7 +80,7 @@ Matrix< T >::Matrix()
 
 
 template< typename T >
-Matrix< T >::Matrix( std::size_t rows, std::size_t columns, const T& initializer )
+Matrix< T >::Matrix( typename Matrix< T >::Index rows, typename Matrix< T >::Index columns, const T& initializer )
 {
   // TODO: initialize all class members
 }
@@ -116,7 +104,7 @@ Matrix< T >::Matrix( const Matrix< T >&& matrix )
 
 
 template< typename T >
-T& Matrix< T >::operator[] ( std::size_t row, std::size_t column )
+T& Matrix< T >::operator() ( typename Matrix< T >::Index row, typename Matrix< T >::Index column )
 {
   // TODO: get reference
 }
@@ -124,7 +112,7 @@ T& Matrix< T >::operator[] ( std::size_t row, std::size_t column )
 
 
 template< typename T >
-const T& Matrix< T >::operator[] ( std::size_t row, std::size_t column ) const
+const T& Matrix< T >::operator() ( typename Matrix< T >::Index row, typename Matrix< T >::Index column ) const
 {
   // TODO: get const reference
 }
@@ -148,7 +136,7 @@ Matrix< T >& Matrix< T >::operator= ( const Matrix< T >&& rhs )
 
 
 template< typename T >
-std::size_t Matrix< T >::get_rows() const
+typename Matrix< T >::Index Matrix< T >::get_rows() const
 {
   // TODO: return rows
 }
@@ -156,7 +144,7 @@ std::size_t Matrix< T >::get_rows() const
 
 
 template< typename T >
-std::size_t Matrix< T >::get_columns() const
+typename Matrix< T >::Index Matrix< T >::get_columns() const
 {
   // TODO: return columns
 }
@@ -164,23 +152,7 @@ std::size_t Matrix< T >::get_columns() const
 
 
 template< typename T >
-bool Matrix< T >::is_empty() const
-{
-  // TODO: check if the Matrix is empty
-}
-
-
-
-template< typename T >
-bool Matrix< T >::is_square() const
-{
-  // TODO: check if the Matrix is square
-}
-
-
-
-template< typename T >
-T& Matrix< T >::get( std::size_t row, std::size_t column )
+T& Matrix< T >::get( typename Matrix< T >::Index row, typename Matrix< T >::Index column )
 {
   // TODO: getter
 }
@@ -188,7 +160,7 @@ T& Matrix< T >::get( std::size_t row, std::size_t column )
 
 
 template< typename T >
-const T& Matrix< T >::get( std::size_t row, std::size_t column ) const
+const T& Matrix< T >::get( typename Matrix< T >::Index row, typename Matrix< T >::Index column ) const
 {
   // TODO: const getter
 }
@@ -196,7 +168,7 @@ const T& Matrix< T >::get( std::size_t row, std::size_t column ) const
 
 
 template< typename T >
-void Matrix< T >::set( std::size_t row, std::size_t column, const T& value )
+void Matrix< T >::set( typename Matrix< T >::Index row, typename Matrix< T >::Index column, const T& value )
 {
   // TODO: setter
 }
@@ -228,65 +200,17 @@ Matrix< T >& Matrix< T >::operator* ( const Matrix< T >& rhs )
 
 
 template< typename T >
-Matrix< T > Matrix< T >::transpose() const
+bool Matrix< T >::operator== ( const Matrix< T >& rhs ) const
 {
-  // TODO: transposition of const Matrix
+  // TODO: component-wise comparison
 }
 
 
 
 template< typename T >
-Matrix< T > submatrix( std::size_t row_to_remove, std::size_t column_to_remove ) const
+Matrix< T >& Matrix< T >::transpose()
 {
-  // TODO: return submatrix
-}
-
-
-
-template< typename T >
-void Matrix< T >::row_swap( std::size_t row1, std::size_t row2 )
-{
-  // TODO: swap rows
-}
-
-
-
-template< typename T >
-void Matrix< T >::row_multiply( std::size_t row, const T& multiplier )
-{
-  // TODO: multiply row by value
-}
-
-
-
-template< typename T >
-void Matrix< T >::row_add( std::size_t target_row, std::size_t sourse_row, const T& source_row_multiplier )
-{
-  // TODO: replace row by linear combination
-}
-
-
-
-template< typename T >
-void Matrix< T >::column_swap( std::size_t column1, std::size_t column2 )
-{
-  // TODO: swap columns
-}
-
-
-
-template< typename T >
-void Matrix< T >::column_multiply( std::size_t column, const T& multiplier )
-{
-  // TODO: multiply column by value
-}
-
-
-
-template< typename T >
-void Matrix< T >::column_add( std::size_t target_column, std::size_t sourse_column, const T& source_column_multiplier )
-{
-  // TODO: replace column by linear combination
+  // TODO: transposition
 }
 
 

@@ -1,27 +1,58 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
+#include <mutex>
 #include <valarray>
 
 // Represents matrix
 template< typename T >
 class Matrix
 {
-public:
+private:
   typedef std::size_t Index;
-  
-  // Constructs an empty Matrix
-  Matrix();
-  
+  typedef std::lock_guard< std::mutex > LockGuard;
+
+public:
+
   // Constructs a rows-by-columns Matrix with each element initialized to the initializer value
-  Matrix( Index rows, Index columns, const T& initializer = T( 0 ) );
-  
+  Matrix( Index rows, Index columns, const T& initializer = T( 0 ) )
+  {
+    LockGuard lock( this->mutex );
+    this->elements = std::valarray< T >( rows * columns, initializer );
+    this->rows = rows;
+    this->columns = columns;
+  }
+
+
+
   // Constructs a Matrix from the matrix by copying elements
-  Matrix( const Matrix< T >& matrix );
-  
+  Matrix( const Matrix< T >& matrix )
+  {
+    std::lock( this->mutex, matrix.mutex );
+    LockGuard lock_myself( this->mutex, std::adopt_lock );
+    LockGuard lock_rhs( matrix.mutex, std::adopt_lock );
+    
+    this->elements = matrix.elements;
+    this->rows = matrix.rows;
+    this->columns = matrix.columns;
+  }
+
+
+
   // Constructs a Matrix from the matrix by moving elements
-  Matrix( const Matrix< T >&& matrix );
-  
+  Matrix( const Matrix< T >&& matrix )
+  {
+    std::lock( this->mutex, matrix.mutex );
+    LockGuard lock_myself( this->mutex, std::adopt_lock );
+    LockGuard lock_rhs( matrix.mutex, std::adopt_lock );
+    
+    this->elements = std::move( matrix.elements );
+    this->rows = matrix.rows;
+    this->columns = matrix.columns;
+  }
+
+
+
   // Retrieves a reference
   T& operator() ( Index row, Index column );
   const T& operator() ( Index row, Index column ) const;
@@ -36,8 +67,33 @@ public:
   Matrix< T >& operator+ ( const Matrix< T >& rhs );
   Matrix< T >& operator- ( const Matrix< T >& rhs );
   Matrix< T >& operator* ( const Matrix< T >& rhs );
+
+
+
+  bool operator== ( const Matrix< T >& rhs ) const
+  {
+    if ( &rhs == this ) {
+      return true;
+    }
+    
+    std::lock( this->mutex, rhs.mutex );
+    LockGuard lock_myself( this->mutex, std::adopt_lock );
+    LockGuard lock_rhs( rhs.mutex, std::adopt_lock );
+    
+    std::valarray< bool > comp = ( this->elements == rhs.elements );
+    bool isEqual = ( comp.min() == true );
+    
+    return isEqual;
+  }
+
+
+
+  bool operator!= ( const Matrix< T >& rhs ) const
+  {
+    return !( *this == rhs );
+  }
   
-  bool operator== ( const Matrix< T >& rhs ) const;
+  
   
   Matrix< T >& transpose();
   
@@ -51,6 +107,7 @@ private:
   const T& get( Index row, Index column ) const;
   void set( Index row, Index column, const T& value );
 
+  mutable std::mutex mutex;
   std::valarray< T > elements;
   Index rows;
   Index columns;
@@ -69,150 +126,4 @@ Matrix< T >& operator* ( const T& value , Matrix< T >& matrix )
 
 
 
-// Member functions
-
-template< typename T >
-Matrix< T >::Matrix()
-{
-  // TODO: default constructor
-}
-
-
-
-template< typename T >
-Matrix< T >::Matrix( typename Matrix< T >::Index rows, typename Matrix< T >::Index columns, const T& initializer )
-{
-  // TODO: initialize all class members
-}
-
-
-
-template< typename T >
-Matrix< T >::Matrix( const Matrix< T >& matrix )
-{
-  // TODO: copy constructor
-}
-
-
-
-template< typename T >
-Matrix< T >::Matrix( const Matrix< T >&& matrix )
-{
-  // TODO: move constructor
-}
-
-
-
-template< typename T >
-T& Matrix< T >::operator() ( typename Matrix< T >::Index row, typename Matrix< T >::Index column )
-{
-  // TODO: get reference
-}
-
-
-
-template< typename T >
-const T& Matrix< T >::operator() ( typename Matrix< T >::Index row, typename Matrix< T >::Index column ) const
-{
-  // TODO: get const reference
-}
-
-
-
-template< typename T >
-Matrix< T >& Matrix< T >::operator= ( const Matrix< T >& rhs )
-{
-  // TODO: copy-based assignment
-}
-
-
-
-template< typename T >
-Matrix< T >& Matrix< T >::operator= ( const Matrix< T >&& rhs )
-{
-  // TODO: move-based assignment
-}
-
-
-
-template< typename T >
-typename Matrix< T >::Index Matrix< T >::get_rows() const
-{
-  // TODO: return rows
-}
-
-
-
-template< typename T >
-typename Matrix< T >::Index Matrix< T >::get_columns() const
-{
-  // TODO: return columns
-}
-
-
-
-template< typename T >
-T& Matrix< T >::get( typename Matrix< T >::Index row, typename Matrix< T >::Index column )
-{
-  // TODO: getter
-}
-
-
-
-template< typename T >
-const T& Matrix< T >::get( typename Matrix< T >::Index row, typename Matrix< T >::Index column ) const
-{
-  // TODO: const getter
-}
-
-
-
-template< typename T >
-void Matrix< T >::set( typename Matrix< T >::Index row, typename Matrix< T >::Index column, const T& value )
-{
-  // TODO: setter
-}
-
-
-
-template< typename T >
-Matrix< T >& Matrix< T >::operator+ ( const Matrix< T >& rhs )
-{
-  // TODO: addition
-}
-
-
-
-template< typename T >
-Matrix< T >& Matrix< T >::operator- ( const Matrix< T >& rhs )
-{
-  // TODO: substraction
-}
-
-
-
-template< typename T >
-Matrix< T >& Matrix< T >::operator* ( const Matrix< T >& rhs )
-{
-  // TODO: multiplication
-}
-
-
-
-template< typename T >
-bool Matrix< T >::operator== ( const Matrix< T >& rhs ) const
-{
-  // TODO: component-wise comparison
-}
-
-
-
-template< typename T >
-Matrix< T >& Matrix< T >::transpose()
-{
-  // TODO: transposition
-}
-
-
-  
 #endif // MATRIX_H

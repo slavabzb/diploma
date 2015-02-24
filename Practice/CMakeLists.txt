@@ -1,18 +1,20 @@
 cmake_minimum_required( VERSION 2.8 )
 
+set( PROJECT Diploma )
+
+project( ${PROJECT} )
+
+if (UNIX)
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=gnu++0x" )
+endif()
+
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/Tests )
 
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11" )
-
-set( PROJECT Diploma )
-
 set( SOURCE
   Sample.cpp
-  Tests/ConstructionTest.cpp
+  Tests/MatrixTest.cpp
 )
-
-project( ${PROJECT} )
 
 add_executable( ${PROJECT} ${SOURCE} )
 

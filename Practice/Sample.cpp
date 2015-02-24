@@ -3,8 +3,12 @@
 
 int main( int argc, const char* argv[ ] )
 {
-  Matrix< float > m1( 2, 3 );
-  Matrix< float > m2( m1 );
+  ConstructionTest test( "Construction test" );
+  //test.runTest();
+  
+  Matrix< int > m( 2, 3, 4 );
+  m( 0, 0 ) = 1;
+  m( 1, 2 ) = 2;
   
   return 0;
 }

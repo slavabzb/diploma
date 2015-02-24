@@ -3,6 +3,7 @@
 
 #include <mutex>
 #include <valarray>
+#include <assert.h>
 
 // Represents matrix
 template< typename T >
@@ -10,14 +11,18 @@ class Matrix
 {
 private:
   typedef std::size_t Index;
-  typedef std::lock_guard< std::mutex > LockGuard;
+  typedef std::lock_guard< std::mutex > Lock;
 
 public:
 
   // Constructs a rows-by-columns Matrix with each element initialized to the initializer value
   Matrix( Index rows, Index columns, const T& initializer = T( 0 ) )
   {
-    LockGuard lock( this->mutex );
+    Lock lock( this->mutex );
+    
+    assert( rows > 0 );
+    assert( columns > 0 );
+    
     this->elements = std::valarray< T >( rows * columns, initializer );
     this->rows = rows;
     this->columns = columns;
@@ -29,8 +34,8 @@ public:
   Matrix( const Matrix< T >& matrix )
   {
     std::lock( this->mutex, matrix.mutex );
-    LockGuard lock_myself( this->mutex, std::adopt_lock );
-    LockGuard lock_rhs( matrix.mutex, std::adopt_lock );
+    Lock lock_myself( this->mutex, std::adopt_lock );
+    Lock lock_rhs( matrix.mutex, std::adopt_lock );
     
     this->elements = matrix.elements;
     this->rows = matrix.rows;
@@ -43,8 +48,8 @@ public:
   Matrix( const Matrix< T >&& matrix )
   {
     std::lock( this->mutex, matrix.mutex );
-    LockGuard lock_myself( this->mutex, std::adopt_lock );
-    LockGuard lock_rhs( matrix.mutex, std::adopt_lock );
+    Lock lock_myself( this->mutex, std::adopt_lock );
+    Lock lock_rhs( matrix.mutex, std::adopt_lock );
     
     this->elements = std::move( matrix.elements );
     this->rows = matrix.rows;
@@ -54,8 +59,31 @@ public:
 
 
   // Retrieves a reference
-  T& operator() ( Index row, Index column );
-  const T& operator() ( Index row, Index column ) const;
+  T& operator() ( Index row, Index column )
+  {
+    Lock lock( this->mutex );
+
+    assert( row < this->rows );
+    assert( column < this->columns );
+    
+    Index index = row * this->columns + column;
+    return this->elements[ index ];
+  }
+  
+  
+  
+  const T& operator() ( Index row, Index column ) const
+  {
+    Lock lock( this->mutex );
+
+    assert( row < this->rows );
+    assert( column < this->columns );
+    
+    Index index = row * this->columns + column;
+    return this->elements[ index ];
+  }
+  
+  
   
   // Copy-based assignment
   Matrix< T >& operator= ( const Matrix< T >& rhs );
@@ -72,13 +100,20 @@ public:
 
   bool operator== ( const Matrix< T >& rhs ) const
   {
+    std::lock( this->mutex, rhs.mutex );
+    Lock lock_myself( this->mutex, std::adopt_lock );
+    Lock lock_rhs( rhs.mutex, std::adopt_lock );
+    
     if ( &rhs == this ) {
       return true;
     }
     
-    std::lock( this->mutex, rhs.mutex );
-    LockGuard lock_myself( this->mutex, std::adopt_lock );
-    LockGuard lock_rhs( rhs.mutex, std::adopt_lock );
+    bool rowsMismatch = ( this->rows != rhs.rows );
+    bool columnsMismatch = ( this->columns != rhs.columns );
+    
+    if ( rowsMismatch || columnsMismatch ) {
+      return false;
+    }
     
     std::valarray< bool > comp = ( this->elements == rhs.elements );
     bool isEqual = ( comp.min() == true );
@@ -102,11 +137,6 @@ public:
   Index get_columns() const;
 
 private:
-  // Setters and getters for access handling
-  T& get( Index row, Index column );
-  const T& get( Index row, Index column ) const;
-  void set( Index row, Index column, const T& value );
-
   mutable std::mutex mutex;
   std::valarray< T > elements;
   Index rows;

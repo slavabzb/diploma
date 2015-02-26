@@ -1,2 +1,10 @@
 Practice/Build*
+Theory/Golodov/
+Theory/Standards/
 *~
+*.aux
+*.log
+*.out
+*.toc
+*.bak
+*.synctex.gz

@@ -12,7 +12,7 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/Tests )
 
 set( SOURCE
-  Sample.cpp
+  main.cpp
   Tests/MatrixTest.cpp
 )
 

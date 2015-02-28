@@ -3,6 +3,10 @@
 #include <cppunit/TestCaller.h>
 #include <cppunit/TestSuite.h>
 
+
+
+CPPUNIT_TEST_SUITE_REGISTRATION( MatrixTest );
+
 void MatrixTest::setUp()
 {
 
@@ -35,25 +39,4 @@ void MatrixTest::testAccessing()
   
   CPPUNIT_ASSERT( m0( 0, 0 ) == m1( 1, 2 ) );
   CPPUNIT_ASSERT( m0( 1, 3 ) != m1( 0, 2 ) );
-}
-
-CppUnit::Test* MatrixTest::suite()
-{
-  auto suite = new CppUnit::TestSuite( "MatrixTest" );
-  
-  suite->addTest(
-    new CppUnit::TestCaller< MatrixTest > (
-      "testConstruction",
-      &MatrixTest::testConstruction
-    )
-  );
-  
-  suite->addTest(
-    new CppUnit::TestCaller< MatrixTest > (
-      "testAccessing",
-      &MatrixTest::testAccessing
-    )
-  );
-  
-  return suite;
 }

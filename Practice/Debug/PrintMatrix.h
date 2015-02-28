@@ -1,22 +1,6 @@
-#include "Matrix.h"
-#include "MatrixTest.h"
-
 #include <iostream>
-#include <cppunit/ui/text/TestRunner.h>
 
-template< typename T >
-void print( const Matrix< T >& matrix );
-
-
-
-int main( int argc, const char* argv[ ] )
-{
-  CppUnit::TextUi::TestRunner runner;
-  runner.addTest( MatrixTest::suite() );
-  runner.run();
-  
-  return 0;
-}
+#include "Matrix.h"
 
 
 

@@ -5,6 +5,8 @@
 #include <valarray>
 #include <assert.h>
 
+
+
 // Represents matrix
 template< typename T >
 class Matrix

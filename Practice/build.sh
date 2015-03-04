@@ -6,4 +6,4 @@ echo "BUILDING"
 make
 echo "TESTING"
 ./Diploma
-echo "COMPLETE"
+echo "DONE"

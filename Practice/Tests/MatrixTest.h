@@ -17,6 +17,9 @@ class MatrixTest : public CppUnit::TestFixture
   
   CPPUNIT_TEST( testConstruction );
   CPPUNIT_TEST( testAccessing );
+  CPPUNIT_TEST( testAssignment );
+  CPPUNIT_TEST( testAddition );
+  CPPUNIT_TEST( testMultiplication );
   
   CPPUNIT_TEST_SUITE_END();
   
@@ -26,6 +29,9 @@ public:
   
   void testConstruction();
   void testAccessing();
+  void testAssignment();
+  void testAddition();
+  void testMultiplication();
 };
 
 #endif // MATRIX_TEST

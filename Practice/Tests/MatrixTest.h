@@ -20,6 +20,7 @@ class MatrixTest : public CppUnit::TestFixture
   CPPUNIT_TEST( testAssignment );
   CPPUNIT_TEST( testAddition );
   CPPUNIT_TEST( testMultiplication );
+  CPPUNIT_TEST( testTransposition );
   
   CPPUNIT_TEST_SUITE_END();
   
@@ -32,6 +33,7 @@ public:
   void testAssignment();
   void testAddition();
   void testMultiplication();
+  void testTransposition();
 };
 
 #endif // MATRIX_TEST

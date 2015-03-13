@@ -2,32 +2,43 @@
 #define MATRIX_H
 
 #include <mutex>
+#include <thread>
 #include <valarray>
+#include <vector>
 #include <assert.h>
 
 #include <iostream>
 
 
 
-// Represents a matrix
+template< typename T >
+class Matrix;
+
+
+
+template< typename T >
+void printMatrix( const Matrix< T >& matrix );
+
+
+
 template< typename T >
 class Matrix
 {
 private:
+
   typedef std::size_t Index;
   typedef std::lock_guard< std::mutex > Lock;
 
 public:
 
-  // Constructs a rows-by-columns Matrix with each element initialized to the given value
-  Matrix( Index rows, Index columns, const T& val = T( 0 ) )
+  Matrix( Index rows, Index columns, const T& value = T( 0 ) )
   {
     assert( rows > 0 );
     assert( columns > 0 );
     
     Lock lock( this->mutex );
         
-    this->elements = std::valarray< T >( val, rows * columns );
+    this->elements = std::valarray< T >( value, rows * columns );
     this->rows = rows;
     this->columns = columns;
   }
@@ -60,7 +71,6 @@ public:
 
 
 
-  // Retrieves a reference
   T& operator() ( Index row, Index column )
   {
     assert( row < this->rows );
@@ -68,14 +78,11 @@ public:
     
     Lock lock( this->mutex );
     
-    Index index = row * this->columns + column;
-    
-    return this->elements[ index ];
+    return this->get( row, column );
   }
   
   
   
-  // Retrieves a const reference
   const T& operator() ( Index row, Index column ) const
   {
     assert( row < this->rows );
@@ -83,9 +90,7 @@ public:
     
     Lock lock( this->mutex );
     
-    Index index = row * this->columns + column;
-    
-    return this->elements[ index ];
+    return this->get( row, column );
   }
 
 
@@ -164,6 +169,55 @@ public:
 
 
 
+  Matrix< T > operator* ( const Matrix< T >& rhs )
+  {
+    assert( this->columns == rhs.rows );
+    
+    const uint64_t length = this->rows;
+    const uint64_t minRowsPerThread = 25; 
+    const uint64_t maxThreads = ( length + minRowsPerThread - 1 ) / minRowsPerThread;
+    const uint64_t hardwareThreads = std::thread::hardware_concurrency();
+    const uint64_t nThreads = std::min( (hardwareThreads == 0 ? 2 : hardwareThreads), maxThreads );
+    const uint64_t blockSize = length / nThreads;
+
+    Matrix< T > result( this->rows, rhs.columns );
+    std::vector< std::thread > threads( nThreads - 1 );
+    
+    std::lock( this->mutex, rhs.mutex );
+    Lock lock_myself( this->mutex, std::adopt_lock );
+    Lock lock_rhs( rhs.mutex, std::adopt_lock );
+    
+    auto calculateBlock = [ this, &rhs, &result ]( Index iRowStart, Index iRowEnd ) -> void
+    {
+      for( Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
+        for( Index jColumn = 0; jColumn < rhs.columns; ++jColumn ) {
+          for( Index sIndex = 0; sIndex < this->columns; ++sIndex ) {
+            result( iRow, jColumn ) += this->get( iRow, sIndex ) * rhs.get( sIndex, jColumn );
+          }
+        }
+      }
+      
+      //printMatrix( result );
+    };
+    
+    Index iRowStart = 0;
+    for( uint64_t iThread = 0; iThread < (nThreads - 1); ++iThread ) {
+      Index iRowEnd = iRowStart;
+      iRowEnd += blockSize;
+      threads[ iThread ] = std::thread( calculateBlock, iRowStart, iRowEnd );
+      iRowStart = iRowEnd;
+    }
+    
+    calculateBlock( iRowStart, this->rows );
+    
+    std::for_each( threads.begin(), threads.end(), std::mem_fn( &std::thread::join ) );
+    
+    return result;
+  }
+
+
+
+
   Matrix< T >& operator+= ( const Matrix< T >& rhs )
   {
     *this = *this + rhs;
@@ -179,44 +233,17 @@ public:
     
     return *this;
   }
-
-
-
-  Matrix< T > operator* ( const Matrix< T >& rhs )
+  
+  
+  
+  Matrix< T >& operator*= ( const Matrix< T >& rhs )
   {
-    assert( this->columns == rhs.rows );
+    *this = *this * rhs;
     
-    std::lock( this->mutex, rhs.mutex );
-    Lock lock_myself( this->mutex, std::adopt_lock );
-    Lock lock_rhs( rhs.mutex, std::adopt_lock );
-    
-    Matrix< T > result( this->rows, rhs.columns );
-        
-    for( Index iRow = 0; iRow < this->rows; ++iRow ) {
-      for ( Index iColumn = 0; iColumn < rhs.columns; ++iColumn ) {
-        std::size_t start = iRow;
-        std::size_t length = this->columns;
-        std::size_t stride = 1;
-        std::slice row( start, length, stride );
-    
-        start = iColumn;
-        length = rhs.rows;
-        stride = rhs.columns;
-        std::slice column( start, length, stride );
-    
-        std::valarray< T > multiplication_result = this->elements[ row ] * rhs.elements[ column ];
-        result.elements = multiplication_result.sum();
-        
-        break;
-      }
-      
-      break;
-    }
-    
-    return result;
+    return *this;
   }
-
-
+  
+  
 
   bool operator== ( const Matrix< T >& rhs ) const
   {
@@ -243,36 +270,69 @@ public:
 
 
 
-  // Retrieves negate result of comparison operator
+
   bool operator!= ( const Matrix< T >& rhs ) const
   {
     return !( *this == rhs );
   }
   
   
-  
-  // Transpose the matrix  
-  Matrix< T >& transpose();
+    
+  Matrix< T > transpose() const
+  {
+    Lock lock( this->mutex );
+    
+    Matrix< T > result( this->columns, this->rows );
+    
+    for( Index iRow = 0; iRow < this->rows; ++iRow ) {
+      for( Index jColumn = 0; jColumn < this->columns; ++jColumn ) {
+        result.get( jColumn, iRow ) = this->get( iRow, jColumn );
+      }
+    }
+    
+    return result;
+  }
 
 
 
-  // Retrieves number of rows
   Index get_rows() const
   {
     Lock lock( this->mutex );
+    
     return this->rows;
   }
 
 
 
-  // Retrieves number of columns
   Index get_columns() const
   {
     Lock lock( this->mutex );
+    
     return this->columns;
   }
 
+
+
 private:
+
+  T& get( Index row, Index column )
+  {
+    Index index = row * this->columns + column;
+    
+    return this->elements[ index ];
+  }
+
+
+
+  const T& get( Index row, Index column ) const
+  {
+    Index index = row * this->columns + column;
+    
+    return this->elements[ index ];
+  }
+
+
+
   mutable std::mutex mutex;
   std::valarray< T > elements;
   Index rows;
@@ -281,13 +341,30 @@ private:
 
 
 
-// Non-member functions
-
 // Scalar multiplication
 template< typename T >
 Matrix< T >& operator* ( const T& value , Matrix< T >& rhs )
 {
-  // TODO: scalar multiplication
+  for( std::size_t iRow = 0; iRow < rhs.get_rows(); ++iRow ) {
+    for( std::size_t jColumn = 0; jColumn < rhs.get_columns(); ++jColumn ) {
+      rhs( iRow, jColumn ) *= value;
+    }
+  }
+  
+  return rhs;
+}
+
+
+
+template< typename T >
+void printMatrix( const Matrix< T >& matrix )
+{
+  for ( auto iRow = 0; iRow < matrix.get_rows(); ++iRow ) {
+    for ( auto iColumn = 0; iColumn < matrix.get_columns(); ++iColumn ) {
+      std::cout << matrix( iRow, iColumn ) << ' ';
+    }
+    std::cout << '\n';
+  }
 }
 
 

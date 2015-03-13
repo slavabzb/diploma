@@ -196,8 +196,6 @@ public:
           }
         }
       }
-      
-      //printMatrix( result );
     };
     
     Index iRowStart = 0;
@@ -247,14 +245,14 @@ public:
 
   bool operator== ( const Matrix< T >& rhs ) const
   {
-    std::lock( this->mutex, rhs.mutex );
-    Lock lock_myself( this->mutex, std::adopt_lock );
-    Lock lock_rhs( rhs.mutex, std::adopt_lock );
-    
     if ( &rhs == this ) {
       return true;
     }
     
+    std::lock( this->mutex, rhs.mutex );
+    Lock lock_myself( this->mutex, std::adopt_lock );
+    Lock lock_rhs( rhs.mutex, std::adopt_lock );
+        
     bool rowsMismatch = ( this->rows != rhs.rows );
     bool columnsMismatch = ( this->columns != rhs.columns );
     

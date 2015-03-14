@@ -116,7 +116,7 @@
 }
 
 
-\ExecuteOptions{a4paper,14pt,oneside,onecolumn,russify,stdfoots,nochapters,nohlink,normals,notitlepage,noautocite,nofullto}	%(Изменено:Лесовой) Размер шрифта 14 пт, было 
+\ExecuteOptions{a4paper,14pt,oneside,onecolumn,russify,stdfoots,nochapters,nohlink,normals,notitlepage,noautocite,nofullto}	%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) Р Р°Р·РјРµСЂ С€СЂРёС„С‚Р° 14 РїС‚, Р±С‹Р»Рѕ 
 	%{a4paper,12pt,...}
 \ProcessOptions
 
@@ -145,8 +145,8 @@
     \@headsfalse
     \renewcommand{\@oddhead}{}
     \renewcommand{\@evenhead}{}
-    \renewcommand{\@oddfoot}{\hfill \textbf{\,\thepage\,} \hfill}	%(Изменено:Лесовой) Нумерация страниц без тире, было {\,--\thepage\--,}
-    \renewcommand{\@evenfoot}{\hfill \textbf{\,\thepage\,} \hfill}	%(Изменено:Лесовой) Нумерация страниц без тире, было {\,--\thepage\--,}
+    \renewcommand{\@oddfoot}{\hfill \textbf{\,\thepage\,} \hfill}	%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РќСѓРјРµСЂР°С†РёСЏ СЃС‚СЂР°РЅРёС† Р±РµР· С‚РёСЂРµ, Р±С‹Р»Рѕ {\,--\thepage\--,}
+    \renewcommand{\@evenfoot}{\hfill \textbf{\,\thepage\,} \hfill}	%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РќСѓРјРµСЂР°С†РёСЏ СЃС‚СЂР°РЅРёС† Р±РµР· С‚РёСЂРµ, Р±С‹Р»Рѕ {\,--\thepage\--,}
 }
 
 \newif\if@heads
@@ -250,8 +250,8 @@
 % re-definition of additional pagestyle "myheadings"
 \def\ps@myheadings{%
     \@headsfalse
-    \renewcommand{\@oddfoot}{\hfill \textbf{\,\thepage\,} \hfill}	%(Изменено:Лесовой) Нумерация страниц без тире, было {\,--\thepage\--,}
-    \renewcommand{\@evenfoot}{\hfill \textbf{\,\thepage\,} \hfill}	%(Изменено:Лесовой) Нумерация страниц без тире, было {\,--\thepage\--,}
+    \renewcommand{\@oddfoot}{\hfill \textbf{\,\thepage\,} \hfill}	%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РќСѓРјРµСЂР°С†РёСЏ СЃС‚СЂР°РЅРёС† Р±РµР· С‚РёСЂРµ, Р±С‹Р»Рѕ {\,--\thepage\--,}
+    \renewcommand{\@evenfoot}{\hfill \textbf{\,\thepage\,} \hfill}	%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РќСѓРјРµСЂР°С†РёСЏ СЃС‚СЂР°РЅРёС† Р±РµР· С‚РёСЂРµ, Р±С‹Р»Рѕ {\,--\thepage\--,}
     \def\@evenhead{\hfil\slshape\leftmark}%
     \def\@oddhead{{\slshape\rightmark}\hfil}%
     \let\@mkboth\@gobbletwo
@@ -263,8 +263,8 @@
 \if@twoside
     \def\ps@title{
         \@headsfalse
-        \renewcommand{\@oddfoot}{\hfill \textbf{\,\thepage\,} \hfill}	%(Изменено:Лесовой) Нумерация страниц без тире, было {\,--\thepage\--,}
-        \renewcommand{\@evenfoot}{\hfill \textbf{\,\thepage\,} \hfill}	%(Изменено:Лесовой) Нумерация страниц без тире, было {\,--\thepage\--,}
+        \renewcommand{\@oddfoot}{\hfill \textbf{\,\thepage\,} \hfill}	%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РќСѓРјРµСЂР°С†РёСЏ СЃС‚СЂР°РЅРёС† Р±РµР· С‚РёСЂРµ, Р±С‹Р»Рѕ {\,--\thepage\--,}
+        \renewcommand{\@evenfoot}{\hfill \textbf{\,\thepage\,} \hfill}	%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РќСѓРјРµСЂР°С†РёСЏ СЃС‚СЂР°РЅРёС† Р±РµР· С‚РёСЂРµ, Р±С‹Р»Рѕ {\,--\thepage\--,}
         \def\@oddhead{\raisebox{0pt}[\headheight][0pt]{ \vbox{\hbox to\textwidth{\footnotesize \strut {\slshape\MakeUppercase{\@shorttitle}}\hfil}\hrule}}}%
         \def\@evenhead{\raisebox{0pt}[\headheight][0pt]{\vbox{\hbox to\textwidth{\footnotesize \strut \hfil\slshape\@shortauthor}\hrule}}}%
 
@@ -519,8 +519,8 @@
                       \addcontentsline{toc}{chapter}{#1}%
                     \fi
                     \chaptermark{#1}%
-                    \addtocontents{lof}{\protect\addvspace{20\p@}}% разрывчики между строками
-                    \addtocontents{lot}{\protect\addvspace{20\p@}}% списка рисункив и таблиц
+                    \addtocontents{lof}{\protect\addvspace{20\p@}}% СЂР°Р·СЂС‹РІС‡РёРєРё РјРµР¶РґСѓ СЃС‚СЂРѕРєР°РјРё
+                    \addtocontents{lot}{\protect\addvspace{20\p@}}% СЃРїРёСЃРєР° СЂРёСЃСѓРЅРєРёРІ Рё С‚Р°Р±Р»РёС†
                     \if@twocolumn
                       \@topnewpage[\@makechapterhead{#2}]%
                     \else
@@ -557,18 +557,18 @@
 \else
   \global\let\chapter\relax
 \fi
-\newcommand\section{\@startsection {section}{1}{0.7cm}%				%(Изменено:Лесовой) Отступ перед заголовком 1 уровня, было {0cm}
-                                   {3.5ex \@plus 1ex \@minus .2ex}%	%(Изменено:Лесовой) Отступ перед абзацем после заголовка 1 уровня, было {-3.5ex \@plus -1ex \@minus -.2ex}
+\newcommand\section{\@startsection {section}{1}{0.7cm}%				%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РћС‚СЃС‚СѓРї РїРµСЂРµРґ Р·Р°РіРѕР»РѕРІРєРѕРј 1 СѓСЂРѕРІРЅСЏ, Р±С‹Р»Рѕ {0cm}
+                                   {3.5ex \@plus 1ex \@minus .2ex}%	%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РћС‚СЃС‚СѓРї РїРµСЂРµРґ Р°Р±Р·Р°С†РµРј РїРѕСЃР»Рµ Р·Р°РіРѕР»РѕРІРєР° 1 СѓСЂРѕРІРЅСЏ, Р±С‹Р»Рѕ {-3.5ex \@plus -1ex \@minus -.2ex}
                                    {2.3ex \@plus.2ex}%
-                                   {\normalfont\normalsize\bfseries\raggedright}}	%(Изменено:Лесовой) Обычный шрифт заголовка 1 уровня, было {\normalfont\Large\bfseries}}	
-\newcommand\subsection{\@startsection{subsection}{2}{0.7cm}				%(Изменено:Лесовой) Отступ перед заголовком 2 уровня, было {0cm}
-                                     {3.25ex\@plus 1ex \@minus .2ex}%		%(Изменено:Лесовой) Отступ перед абзацем после заголовка 1 уровня, было {-3.25ex\@plus -1ex \@minus -.2ex}
+                                   {\normalfont\normalsize\bfseries\raggedright}}	%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РћР±С‹С‡РЅС‹Р№ С€СЂРёС„С‚ Р·Р°РіРѕР»РѕРІРєР° 1 СѓСЂРѕРІРЅСЏ, Р±С‹Р»Рѕ {\normalfont\Large\bfseries}}	
+\newcommand\subsection{\@startsection{subsection}{2}{0.7cm}				%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РћС‚СЃС‚СѓРї РїРµСЂРµРґ Р·Р°РіРѕР»РѕРІРєРѕРј 2 СѓСЂРѕРІРЅСЏ, Р±С‹Р»Рѕ {0cm}
+                                     {3.25ex\@plus 1ex \@minus .2ex}%		%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РћС‚СЃС‚СѓРї РїРµСЂРµРґ Р°Р±Р·Р°С†РµРј РїРѕСЃР»Рµ Р·Р°РіРѕР»РѕРІРєР° 1 СѓСЂРѕРІРЅСЏ, Р±С‹Р»Рѕ {-3.25ex\@plus -1ex \@minus -.2ex}
                                      {1.5ex \@plus .2ex}%
-                                     {\normalfont\normalsize\bfseries\raggedright}}	%(Изменено:Лесовой) Обычный шрифт заголовка 2 уровня, было {\normalfont\large\bfseries}}
-\newcommand\subsubsection{\@startsection{subsubsection}{3}{0.7cm}				%(Изменено:Лесовой) Отступ перед заголовком 3 уровня, было {0cm}
-                                     {3.25ex\@plus 1ex \@minus .2ex}%		%(Изменено:Лесовой) Отступ перед абзацем после заголовка 3 уровня, было {-3.25ex\@plus -1ex \@minus -.2ex}
+                                     {\normalfont\normalsize\bfseries\raggedright}}	%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РћР±С‹С‡РЅС‹Р№ С€СЂРёС„С‚ Р·Р°РіРѕР»РѕРІРєР° 2 СѓСЂРѕРІРЅСЏ, Р±С‹Р»Рѕ {\normalfont\large\bfseries}}
+\newcommand\subsubsection{\@startsection{subsubsection}{3}{0.7cm}				%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РћС‚СЃС‚СѓРї РїРµСЂРµРґ Р·Р°РіРѕР»РѕРІРєРѕРј 3 СѓСЂРѕРІРЅСЏ, Р±С‹Р»Рѕ {0cm}
+                                     {3.25ex\@plus 1ex \@minus .2ex}%		%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РћС‚СЃС‚СѓРї РїРµСЂРµРґ Р°Р±Р·Р°С†РµРј РїРѕСЃР»Рµ Р·Р°РіРѕР»РѕРІРєР° 3 СѓСЂРѕРІРЅСЏ, Р±С‹Р»Рѕ {-3.25ex\@plus -1ex \@minus -.2ex}
                                      {1.5ex \@plus .2ex}%
-                                     {\normalfont\normalsize\bfseries\raggedright}}	%(Изменено:Лесовой) Обычный шрифт заголовка 3 уровня, было  {\normalfont\normalsize\bfseries}}
+                                     {\normalfont\normalsize\bfseries\raggedright}}	%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РћР±С‹С‡РЅС‹Р№ С€СЂРёС„С‚ Р·Р°РіРѕР»РѕРІРєР° 3 СѓСЂРѕРІРЅСЏ, Р±С‹Р»Рѕ  {\normalfont\normalsize\bfseries}}
 \newcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
                                     {3.25ex \@plus1ex \@minus.2ex}%
                                     {-1em}%
@@ -845,7 +845,7 @@
   \ifdim \wd\@tempboxa >\hsize
     \begingroup
 	\vspace{-5mm}
-        \center #1 -- #2.\sloppy\par		%(Изменено:Лесовой) Подпись рисунка, центрируется, в случае, если она не в одну строку, было #1 -- #2.\sloppy\par
+        \center #1 -- #2.\sloppy\par		%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РџРѕРґРїРёСЃСЊ СЂРёСЃСѓРЅРєР°, С†РµРЅС‚СЂРёСЂСѓРµС‚СЃСЏ, РІ СЃР»СѓС‡Р°Рµ, РµСЃР»Рё РѕРЅР° РЅРµ РІ РѕРґРЅСѓ СЃС‚СЂРѕРєСѓ, Р±С‹Р»Рѕ #1 -- #2.\sloppy\par
     \endgroup
   \else
     \global \@minipagefalse
@@ -930,14 +930,14 @@
 %        \begingroup
 %        \parindent \z@ \rightskip \@pnumwidth
 %        \parfillskip -\@pnumwidth		
-%	 \leavevmode						%(Изменено:Лесовой) Не печатать заголовки без линии точек,
+%	 \leavevmode						%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РќРµ РїРµС‡Р°С‚Р°С‚СЊ Р·Р°РіРѕР»РѕРІРєРё Р±РµР· Р»РёРЅРёРё С‚РѕС‡РµРє,
 %        \advance\leftskip\@tempdima
 %        \hskip -\leftskip
 %        #1\nobreak\hfil \nobreak\hb@xt@\@pnumwidth{\hss #2}\par
 %        \endgroup
 %    \fi}
 
-    \newcommand*\l@section{\@dottedtocline{1}{0.5em}{0.9em}}  	%(Добавлено:Лесовой) А печатать с линией точек. +изменены значения отступов в оглавлении
+    \newcommand*\l@section{\@dottedtocline{1}{0.5em}{0.9em}}  	%(Р”РѕР±Р°РІР»РµРЅРѕ:Р›РµСЃРѕРІРѕР№) Рђ РїРµС‡Р°С‚Р°С‚СЊ СЃ Р»РёРЅРёРµР№ С‚РѕС‡РµРє. +РёР·РјРµРЅРµРЅС‹ Р·РЅР°С‡РµРЅРёСЏ РѕС‚СЃС‚СѓРїРѕРІ РІ РѕРіР»Р°РІР»РµРЅРёРё
     \newcommand*\l@subsection{\@dottedtocline{2}{2.3em}{1.7em}}
     \newcommand*\l@subsubsection{\@dottedtocline{3}{3.8em}{3.2em}}
     \newcommand*\l@paragraph{\@dottedtocline{4}{7.0em}{4.1em}}
@@ -990,10 +990,10 @@
     \newenvironment{autobibliography}[1]{\begin{thebibliography}{#1}}{\end{thebibliography}}
     \def\citeboth#1#2{\@citess{\citen{#1,#2}}}
 \fi
-\def\@citess#1{~{[#1]}}		%(Изменено:Лесовой) Ссылки на литературу в квадратных скобках, было \def\@citess#1{\textsuperscript{~{\itshape(#1)}}}	
+\def\@citess#1{~{[#1]}}		%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РЎСЃС‹Р»РєРё РЅР° Р»РёС‚РµСЂР°С‚СѓСЂСѓ РІ РєРІР°РґСЂР°С‚РЅС‹С… СЃРєРѕР±РєР°С…, Р±С‹Р»Рѕ \def\@citess#1{\textsuperscript{~{\itshape(#1)}}}	
 \def\crossrefcite#1{\emph{(\citen{#1})}}
 
-\renewcommand{\@biblabel}[1]{#1\hfill}		%(Изменено:Лесовой) Номера источников литературы в списке без курсива и точки, было {\emph{#1}.\hfill}
+\renewcommand{\@biblabel}[1]{#1\hfill}		%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РќРѕРјРµСЂР° РёСЃС‚РѕС‡РЅРёРєРѕРІ Р»РёС‚РµСЂР°С‚СѓСЂС‹ РІ СЃРїРёСЃРєРµ Р±РµР· РєСѓСЂСЃРёРІР° Рё С‚РѕС‡РєРё, Р±С‹Р»Рѕ {\emph{#1}.\hfill}
 \newdimen\bibindent
 \setlength\bibindent{1.5em}
 \newenvironment{thebibliography}[1]
@@ -1167,16 +1167,16 @@
 
 
 
-\def\Сyril#1{\@Cyril{\@nameuse {c@#1}}}
-\def\@Cyril#1{\ifcase #1\or А\or Б\or В\or Г\or Д\or Е\or Ж\or З\or И\or Й\or К\or Л\or М\or
-Н\or О\or П\or Р\or С\or Т\or У\or Ф\or Х\or Ц\or Ч\or Ш\or Щ\or Ы\or
-Ю\or Э\or Я\else\@ctrerr  \fi
+\def\РЎyril#1{\@Cyril{\@nameuse {c@#1}}}
+\def\@Cyril#1{\ifcase #1\or Рђ\or Р‘\or Р’\or Р“\or Р”\or Р•\or Р–\or Р—\or Р\or Р™\or Рљ\or Р›\or Рњ\or
+Рќ\or Рћ\or Рџ\or Р \or РЎ\or Рў\or РЈ\or Р¤\or РҐ\or Р¦\or Р§\or РЁ\or Р©\or Р«\or
+Р®\or Р­\or РЇ\else\@ctrerr  \fi
 }
 
 \def\cyril#1{\@cyril{\@nameuse {c@#1}}}
-\def\@cyril#1{\ifcase #1\or а\or б\or в\or г\or д\or е\or ж\or з\or и\or й\or к\or л\or м\or
-н\or о\or п\or р\or с\or т\or у\or ф\or х\or ц\or ч\or ш\or щ\or ы\or
-ю\or э\or я\else\@ctrerr  \fi
+\def\@cyril#1{\ifcase #1\or Р°\or Р±\or РІ\or Рі\or Рґ\or Рµ\or Р¶\or Р·\or Рё\or Р№\or Рє\or Р»\or Рј\or
+РЅ\or Рѕ\or Рї\or СЂ\or СЃ\or С‚\or Сѓ\or С„\or С…\or С†\or С‡\or С€\or С‰\or С‹\or
+СЋ\or СЌ\or СЏ\else\@ctrerr  \fi
 }
 
 \def\@afterheading{%
@@ -1198,7 +1198,7 @@
     \frenchspacing
     \righthyphenmin=2
 
-    % изменение определения из стилевого пакета amsmath
+    % РёР·РјРµРЅРµРЅРёРµ РѕРїСЂРµРґРµР»РµРЅРёСЏ РёР· СЃС‚РёР»РµРІРѕРіРѕ РїР°РєРµС‚Р° amsmath
     \renewenvironment{subequations}{%
     \refstepcounter{equation}%
     \protected@edef\theparentequation{\theequation}%
@@ -1213,25 +1213,25 @@
 
     \def\today{\number\day\space
                     \ifcase\month\or
-                    января\or февраля\or марта\or апреля\or мая\or
-                    июня\or июля\or августа\or сентября\or октября\or
-                    ноября\or декабря\fi\space\number\year\space г.}
+                    СЏРЅРІР°СЂСЏ\or С„РµРІСЂР°Р»СЏ\or РјР°СЂС‚Р°\or Р°РїСЂРµР»СЏ\or РјР°СЏ\or
+                    РёСЋРЅСЏ\or РёСЋР»СЏ\or Р°РІРіСѓСЃС‚Р°\or СЃРµРЅС‚СЏР±СЂСЏ\or РѕРєС‚СЏР±СЂСЏ\or
+                    РЅРѕСЏР±СЂСЏ\or РґРµРєР°Р±СЂСЏ\fi\space\number\year\space Рі.}
 
-    \renewcommand{\partname}{Часть}
-    \renewcommand{\partitionname}{Раздел}
-    \renewcommand{\chaptername}{Глава}
-    \renewcommand{\contentsname}{Оглавление}
-    \renewcommand{\figurename}{Рисунок}
-    \renewcommand{\tablename}{Таблица}
-    \renewcommand{\appendixname}{Приложение}
-    \renewcommand{\appendixabbrev}{П}
-    \renewcommand{\refname}{Список литературы}
-    \renewcommand{\bibname}{Список литературы}
-    \renewcommand{\listtablename}{Список таблиц}
-    \renewcommand{\listfigurename}{Список иллюстраций}
-    \renewcommand{\abstractname}{Аннотация}
-    \renewcommand{\indexname}{Предметный указатель}
-    \renewcommand{\nameindexname}{Именной указатель}
+    \renewcommand{\partname}{Р§Р°СЃС‚СЊ}
+    \renewcommand{\partitionname}{Р Р°Р·РґРµР»}
+    \renewcommand{\chaptername}{Р“Р»Р°РІР°}
+    \renewcommand{\contentsname}{РћРіР»Р°РІР»РµРЅРёРµ}
+    \renewcommand{\figurename}{Р РёСЃСѓРЅРѕРє}
+    \renewcommand{\tablename}{РўР°Р±Р»РёС†Р°}
+    \renewcommand{\appendixname}{РџСЂРёР»РѕР¶РµРЅРёРµ}
+    \renewcommand{\appendixabbrev}{Рџ}
+    \renewcommand{\refname}{РЎРїРёСЃРѕРє Р»РёС‚РµСЂР°С‚СѓСЂС‹}
+    \renewcommand{\bibname}{РЎРїРёСЃРѕРє Р»РёС‚РµСЂР°С‚СѓСЂС‹}
+    \renewcommand{\listtablename}{РЎРїРёСЃРѕРє С‚Р°Р±Р»РёС†}
+    \renewcommand{\listfigurename}{РЎРїРёСЃРѕРє РёР»Р»СЋСЃС‚СЂР°С†РёР№}
+    \renewcommand{\abstractname}{РђРЅРЅРѕС‚Р°С†РёСЏ}
+    \renewcommand{\indexname}{РџСЂРµРґРјРµС‚РЅС‹Р№ СѓРєР°Р·Р°С‚РµР»СЊ}
+    \renewcommand{\nameindexname}{РРјРµРЅРЅРѕР№ СѓРєР°Р·Р°С‚РµР»СЊ}
 
     \def\tan{\mathop{\operator@font tg}\nolimits}
     \def\arctan{\mathop{\operator@font arctg}\nolimits}
@@ -1247,9 +1247,9 @@
 \def\@seccntformat#1{\csname pre#1\endcsname\csname the#1\endcsname \csname post#1\endcsname}
 \let\@Tocseccntformat\@seccntformat
 \def\@postskip@{\hskip.25em\relax}
-\def\postsection{\@postskip@}					%(Изменено:Лесовой) Нет точки после номера заголовка 1 уровня, было {.\@postskip@}
-\def\postsubsection{\@postskip@}					%(Изменено:Лесовой) Нет точки после номера заголовка 2 уровня, было {.\@postskip@}
-\def\postsubsubsection{\@postskip@}					%(Изменено:Лесовой) Нет точки после номера заголовка 3 уровня, было {.\@postskip@}
+\def\postsection{\@postskip@}					%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РќРµС‚ С‚РѕС‡РєРё РїРѕСЃР»Рµ РЅРѕРјРµСЂР° Р·Р°РіРѕР»РѕРІРєР° 1 СѓСЂРѕРІРЅСЏ, Р±С‹Р»Рѕ {.\@postskip@}
+\def\postsubsection{\@postskip@}					%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РќРµС‚ С‚РѕС‡РєРё РїРѕСЃР»Рµ РЅРѕРјРµСЂР° Р·Р°РіРѕР»РѕРІРєР° 2 СѓСЂРѕРІРЅСЏ, Р±С‹Р»Рѕ {.\@postskip@}
+\def\postsubsubsection{\@postskip@}					%(РР·РјРµРЅРµРЅРѕ:Р›РµСЃРѕРІРѕР№) РќРµС‚ С‚РѕС‡РєРё РїРѕСЃР»Рµ РЅРѕРјРµСЂР° Р·Р°РіРѕР»РѕРІРєР° 3 СѓСЂРѕРІРЅСЏ, Р±С‹Р»Рѕ {.\@postskip@}
 \def\postparagraph{.\@postskip@}
 \def\postsubparagraph{.\@postskip@}
 \def\presection{}
@@ -1258,7 +1258,7 @@
 \def\preparagraph{}
 \def\presubparagraph{}
 
-% этот кусок кода нужен, чтобы точки ставились в оглавлении
+% СЌС‚РѕС‚ РєСѓСЃРѕРє РєРѕРґР° РЅСѓР¶РµРЅ, С‡С‚РѕР±С‹ С‚РѕС‡РєРё СЃС‚Р°РІРёР»РёСЃСЊ РІ РѕРіР»Р°РІР»РµРЅРёРё
 \def\@sect#1#2#3#4#5#6[#7]#8{%
   \ifnum #2>\c@secnumdepth
     \let\@svsec\@empty
@@ -1384,18 +1384,17 @@
        \renewcommand{\sub}[1]{\raisebox{-2pt}{\scriptsize #1}}
 \fi
 
+\addto\captionsrussian{ 				%(Р”РѕР±Р°РІР»РµРЅРѕ:Р›РµСЃРѕРІРѕР№) Р СѓСЃСЃРєРёРµ РѕР±РѕР·РЅР°С‡РµРЅРёСЏ РїРѕ Р“РћРЎРў
+\def\figurename{\CYRR\cyri\cyrs\cyru\cyrn\cyro\cyrk} %Р РёСЃСѓРЅРѕРє
+}
+\addto\captionsrussian{ 				%(Р”РѕР±Р°РІР»РµРЅРѕ:Р›РµСЃРѕРІРѕР№) Р СѓСЃСЃРєРёРµ РѕР±РѕР·РЅР°С‡РµРЅРёСЏ РїРѕ Р“РћРЎРў
+\def\bibname{\CYRB\CYRI\CYRB\CYRL\CYRI\CYRO\CYRG\CYRR\CYRA\CYRF\CYRI\CYRCH\CYRE\CYRS\CYRK\CYRI{\u\CYRI} \CYRS\CYRP\CYRI\CYRS\CYRO\CYRK} %Р‘РР‘Р›РРћР“Р РђР¤РР§Р•РЎРљРР™ РЎРџРРЎРћРљ
+}
+\addto\captionsrussian{ 				%(Р”РѕР±Р°РІР»РµРЅРѕ:Р›РµСЃРѕРІРѕР№) Р СѓСЃСЃРєРёРµ РѕР±РѕР·РЅР°С‡РµРЅРёСЏ РїРѕ Р“РћРЎРў
+\def\contentsname{\CYRO\CYRG\CYRL\CYRA\CYRV\CYRL\CYRE\CYRN\CYRI\CYRE} %РћР“Р›РђР’Р›Р•РќРР•
+}
 
-\addto\captionsrussian{ 				%(Добавлено:Лесовой) Русские обозначения по ГОСТ
-\def\figurename{Рисунок} 
-}
-\addto\captionsrussian{ 				%(Добавлено:Лесовой) Русские обозначения по ГОСТ
-\def\bibname{БИБЛИОГРАФИЧЕСКИЙ СПИСОК} 
-}
-\addto\captionsrussian{ 				%(Добавлено:Лесовой) Русские обозначения по ГОСТ
-\def\contentsname{ОГЛАВЛЕНИЕ} 
-}
-
-\usepackage[lmargin=2.5cm,rmargin=1cm,tmargin=2cm,bmargin=2.6cm]{geometry}		%(Добавлено:Лесовой) Настройка размеров полей по ГОСТ 
+\usepackage[lmargin=2.5cm,rmargin=1cm,tmargin=2cm,bmargin=2.6cm]{geometry}		%(Р”РѕР±Р°РІР»РµРЅРѕ:Р›РµСЃРѕРІРѕР№) РќР°СЃС‚СЂРѕР№РєР° СЂР°Р·РјРµСЂРѕРІ РїРѕР»РµР№ РїРѕ Р“РћРЎРў 
 
 \endinput
 %%

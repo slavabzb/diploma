@@ -7,3 +7,5 @@ Standards/
 *.toc
 *.bak
 *.synctex.gz
+*.bbl
+*.blg

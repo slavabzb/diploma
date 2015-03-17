@@ -1,9 +1,9 @@
 #include "MatrixTest.h"
 
-#include <cmath>
-
 #include <cppunit/TestCaller.h>
 #include <cppunit/TestSuite.h>
+
+#include "MatrixUtilities.h"
 
 
 
@@ -13,7 +13,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MatrixTest );
 
 void MatrixTest::setUp()
 {
-
+  
 }
 
 
@@ -121,23 +121,22 @@ void MatrixTest::testMultiplication()
   const int32_t value = 2;
   CPPUNIT_ASSERT( value * m4 == m5 );
   
-  const uint64_t N = 500;
-  Matrix< uint64_t > A( N, N );
-  Matrix< uint64_t > E( N, N, 1.0 );
-  Matrix< uint64_t > R( A );
+  const uint64_t N = 300;
+  typedef double MatrixElement;
   
-  for( uint64_t i = 1; i <= N; ++i ) {
-    uint64_t sum = 0;
-    for( uint64_t j = 1; j <= N; ++j ) {
-      A( i-1, j-1 ) = i + j - 1;
-      sum += i + j - 1;
-    }
-    for( uint64_t j = 1; j <= N; ++j ) {
-      R( i-1, j-1 ) = sum;
-    }
-  }
+  Matrix< MatrixElement > A( N, N );
+  Matrix< MatrixElement > B( N, N );
+  Matrix< MatrixElement > C( N, N );
+  
+  std::thread thread( fillMatrixWithRandom< MatrixElement >, std::ref( A ) );
+  
+  fillMatrixWithRandom( B );
+  
+  thread.join();
+  
+  multiplyMatrices( C, A, B );
     
-  CPPUNIT_ASSERT( A * E == R );
+  CPPUNIT_ASSERT( A * B == C );
 }
 
 

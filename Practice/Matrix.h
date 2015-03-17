@@ -7,18 +7,6 @@
 #include <vector>
 #include <assert.h>
 
-#include <iostream>
-
-
-
-template< typename T >
-class Matrix;
-
-
-
-template< typename T >
-void printMatrix( const Matrix< T >& matrix );
-
 
 
 template< typename T >
@@ -177,7 +165,7 @@ public:
     const uint64_t minRowsPerThread = 25; 
     const uint64_t maxThreads = ( length + minRowsPerThread - 1 ) / minRowsPerThread;
     const uint64_t hardwareThreads = std::thread::hardware_concurrency();
-    const uint64_t nThreads = std::min( (hardwareThreads == 0 ? 2 : hardwareThreads), maxThreads );
+    const uint64_t nThreads = std::min( ( hardwareThreads == 0 ? 2 : hardwareThreads ), maxThreads );
     const uint64_t blockSize = length / nThreads;
 
     Matrix< T > result( this->rows, rhs.columns );
@@ -350,19 +338,6 @@ Matrix< T >& operator* ( const T& value , Matrix< T >& rhs )
   }
   
   return rhs;
-}
-
-
-
-template< typename T >
-void printMatrix( const Matrix< T >& matrix )
-{
-  for ( auto iRow = 0; iRow < matrix.get_rows(); ++iRow ) {
-    for ( auto iColumn = 0; iColumn < matrix.get_columns(); ++iColumn ) {
-      std::cout << matrix( iRow, iColumn ) << ' ';
-    }
-    std::cout << '\n';
-  }
 }
 
 

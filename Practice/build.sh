@@ -4,6 +4,8 @@ cd Build_Debug
 cmake -DCMAKE_BUILD_TYPE=Debug ../
 echo "BUILDING"
 make
-echo "TESTING"
-./Diploma
+if [ "$1" != "NOTEST" ]; then
+  echo "TESTING"
+  ./Diploma
+fi
 echo "DONE"

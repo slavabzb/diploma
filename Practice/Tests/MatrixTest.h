@@ -25,6 +25,7 @@ class MatrixTest : public CppUnit::TestFixture
   CPPUNIT_TEST_SUITE_END();
   
 public:
+
   void setUp() override;
   void tearDown() override;
   

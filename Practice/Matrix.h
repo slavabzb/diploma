@@ -2,10 +2,10 @@
 #define MATRIX_H
 
 #include <mutex>
-#include <thread>
 #include <valarray>
-#include <vector>
 #include <assert.h>
+
+#include "parallel_for.h"
 
 
 
@@ -88,12 +88,12 @@ public:
     if (this == &rhs) {
       return *this;
     }
-    
+        
     std::lock( this->mutex, rhs.mutex );
     Lock lock_myself( this->mutex, std::adopt_lock );
     Lock lock_rhs( rhs.mutex, std::adopt_lock );
     
-    this->elements = rhs.elements;
+    this->elements = rhs.elements;    
     this->rows = rhs.rows;
     this->columns = rhs.columns;
     
@@ -126,14 +126,25 @@ public:
     assert( this->rows == rhs.rows );
     assert( this->columns == rhs.columns );
     
+    Matrix< T > result( this->rows, this->columns );
+    
+    auto sum = [ this, &rhs, &result ]( Index iRowStart, Index iRowEnd ) -> void
+    {
+      for( Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
+        for( Index jColumn = 0; jColumn < this->columns; ++jColumn ) {
+          result.get( iRow, jColumn ) = this->get( iRow, jColumn ) + rhs.get( iRow, jColumn );
+        }
+      }
+    };
+    
     std::lock( this->mutex, rhs.mutex );
     Lock lock_myself( this->mutex, std::adopt_lock );
     Lock lock_rhs( rhs.mutex, std::adopt_lock );
     
-    Matrix< T > result( this->rows, this->columns );
-    
-    result.elements = this->elements + rhs.elements;
-    
+    Index first = 0;
+    Index last = this->rows;
+    parallel_for( first, last, sum );
+        
     return result;
   }
 
@@ -144,59 +155,54 @@ public:
     assert( this->rows == rhs.rows );
     assert( this->columns == rhs.columns );
     
+    Matrix< T > result( this->rows, this->columns );
+    
+    auto subtract = [ this, &rhs, &result ]( Index iRowStart, Index iRowEnd ) -> void
+    {
+      for( Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
+        for( Index jColumn = 0; jColumn < this->columns; ++jColumn ) {
+          result.get( iRow, jColumn ) = this->get( iRow, jColumn ) - rhs.get( iRow, jColumn );
+        }
+      }
+    };
+    
     std::lock( this->mutex, rhs.mutex );
     Lock lock_myself( this->mutex, std::adopt_lock );
     Lock lock_rhs( rhs.mutex, std::adopt_lock );
     
-    Matrix< T > result( this->rows, this->columns );
-    
-    result.elements = this->elements - rhs.elements;
-    
+    Index first = 0;
+    Index last = this->rows;
+    parallel_for( first, last, subtract );
+        
     return result;
   }
 
 
-
+  
   Matrix< T > operator* ( const Matrix< T >& rhs )
   {
     assert( this->columns == rhs.rows );
     
-    const uint64_t length = this->rows;
-    const uint64_t minRowsPerThread = 25; 
-    const uint64_t maxThreads = ( length + minRowsPerThread - 1 ) / minRowsPerThread;
-    const uint64_t hardwareThreads = std::thread::hardware_concurrency();
-    const uint64_t nThreads = std::min( ( hardwareThreads == 0 ? 2 : hardwareThreads ), maxThreads );
-    const uint64_t blockSize = length / nThreads;
-
     Matrix< T > result( this->rows, rhs.columns );
-    std::vector< std::thread > threads( nThreads - 1 );
     
-    std::lock( this->mutex, rhs.mutex );
-    Lock lock_myself( this->mutex, std::adopt_lock );
-    Lock lock_rhs( rhs.mutex, std::adopt_lock );
-    
-    auto calculateBlock = [ this, &rhs, &result ]( Index iRowStart, Index iRowEnd ) -> void
+    auto multiply = [ this, &rhs, &result ]( Index iRowStart, Index iRowEnd ) -> void
     {
       for( Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
         for( Index jColumn = 0; jColumn < rhs.columns; ++jColumn ) {
           for( Index sIndex = 0; sIndex < this->columns; ++sIndex ) {
-            result( iRow, jColumn ) += this->get( iRow, sIndex ) * rhs.get( sIndex, jColumn );
+            result.get( iRow, jColumn ) += this->get( iRow, sIndex ) * rhs.get( sIndex, jColumn );
           }
         }
       }
     };
     
-    Index iRowStart = 0;
-    for( uint64_t iThread = 0; iThread < (nThreads - 1); ++iThread ) {
-      Index iRowEnd = iRowStart;
-      iRowEnd += blockSize;
-      threads[ iThread ] = std::thread( calculateBlock, iRowStart, iRowEnd );
-      iRowStart = iRowEnd;
-    }
+    std::lock( this->mutex, rhs.mutex );
+    Lock lock_myself( this->mutex, std::adopt_lock );
+    Lock lock_rhs( rhs.mutex, std::adopt_lock );
     
-    calculateBlock( iRowStart, this->rows );
-    
-    std::for_each( threads.begin(), threads.end(), std::mem_fn( &std::thread::join ) );
+    Index first = 0;
+    Index last = this->rows;
+    parallel_for( first, last, multiply );
     
     return result;
   }
@@ -265,16 +271,23 @@ public:
   
     
   Matrix< T > transpose() const
-  {
+  {    
+    Matrix< T > result( this->columns, this->rows );  
+    
+    auto swap = [ this, &result ]( Index iRowStart, Index iRowEnd ) -> void
+    {
+      for( Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
+        for( Index jColumn = 0; jColumn < this->columns; ++jColumn ) {
+          result.get( jColumn, iRow ) = this->get( iRow, jColumn );
+        }
+      }
+    };
+    
     Lock lock( this->mutex );
     
-    Matrix< T > result( this->columns, this->rows );
-    
-    for( Index iRow = 0; iRow < this->rows; ++iRow ) {
-      for( Index jColumn = 0; jColumn < this->columns; ++jColumn ) {
-        result.get( jColumn, iRow ) = this->get( iRow, jColumn );
-      }
-    }
+    Index first = 0;
+    Index last = this->rows;
+    parallel_for( first, last, swap );  
     
     return result;
   }
@@ -318,7 +331,12 @@ private:
   }
 
 
-
+  
+  template< typename D >
+  friend Matrix< D >& operator* ( const D& value , Matrix< D >& rhs );
+  
+  
+  
   mutable std::mutex mutex;
   std::valarray< T > elements;
   Index rows;
@@ -331,11 +349,20 @@ private:
 template< typename T >
 Matrix< T >& operator* ( const T& value , Matrix< T >& rhs )
 {
-  for( std::size_t iRow = 0; iRow < rhs.get_rows(); ++iRow ) {
-    for( std::size_t jColumn = 0; jColumn < rhs.get_columns(); ++jColumn ) {
-      rhs( iRow, jColumn ) *= value;
+  auto multiply = [ &rhs, &value ]( typename Matrix< T >::Index iRowStart, typename Matrix< T >::Index iRowEnd ) -> void
+  {
+    for( typename Matrix< T >::Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
+      for( typename Matrix< T >::Index jColumn = 0; jColumn < rhs.columns; ++jColumn ) {
+        rhs.get( iRow, jColumn ) *= value;
+      }
     }
-  }
+  };
+  
+  typename Matrix< T >::Lock lock( rhs.mutex );
+  
+  typename Matrix< T >::Index first = 0;
+  typename Matrix< T >::Index last = rhs.rows;
+  parallel_for( first, last, multiply );
   
   return rhs;
 }

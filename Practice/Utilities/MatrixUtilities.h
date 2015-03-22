@@ -4,6 +4,7 @@
 #include <iostream>
 #include <chrono>
 #include <random>
+#include <thread>
 
 #include "Matrix.h"
 

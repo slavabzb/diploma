@@ -12,6 +12,8 @@ set( SOURCE
   main.cpp
   Tests/MatrixTest.cpp
   HelperClasses/MatrixPrinter.cpp
+  HelperClasses/TimeMeasurer.cpp
+  HelperClasses/Logger.cpp
 )
 
 add_executable( ${PROJECT} ${SOURCE} )

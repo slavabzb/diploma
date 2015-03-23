@@ -12,26 +12,27 @@ class MatrixPrinter : public MatrixOperationPerformer
 {
 public:
 
-  MatrixPrinter( std::ostream* stream );
+  MatrixPrinter( std::ostream* ostream );
 
 
 
   template< typename T >
   void print( const Matrix< T >& matrix )
   {
-    this->stream->precision( this->precision );
+    *this->ostream << this->matricesDelimiter;   
+    
     for ( std::size_t iRow = 0; iRow < matrix.get_rows(); ++iRow ) {
       for ( std::size_t iColumn = 0; iColumn < matrix.get_columns(); ++iColumn ) {
-        *this->stream << std::fixed << matrix( iRow, iColumn ) << this->columnDelimiter;
+        *this->ostream << matrix( iRow, iColumn ) << this->columnDelimiter;
       }
-      *this->stream << this->rowDelimiter;
+      *this->ostream << this->rowDelimiter;
     }
   }
   
   
   
   void setPrecision( std::streamsize precision );
-  void setStream( std::ostream& stream );
+  void setStream( std::ostream& ostream );
   void setRowDelimiter( const std::string& rowDelimiter );
   void setColumnDelimiter( const std::string& columnDelimiter );
 
@@ -41,10 +42,11 @@ public:
 
 private:
 
-  std::ostream* stream;
+  std::ostream* ostream;
   std::streamsize precision;
   std::string rowDelimiter;
   std::string columnDelimiter;
+  std::string matricesDelimiter;
 };
 
 

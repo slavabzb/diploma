@@ -9,7 +9,11 @@
 
 #include "Matrix.h"
 
-#include "HelperClasses/HelperClasses.h"
+#include "HelperClasses/MatrixRandomFiller.h"
+#include "HelperClasses/MatrixSummarizer.h"
+#include "HelperClasses/MatrixMultiplier.h"
+#include "HelperClasses/MatrixTransposer.h"
+#include "HelperClasses/TimeMeasurer.h"
 
 
 
@@ -42,13 +46,16 @@ private:
   
   std::size_t nIterations;
   std::size_t initialSize;
-  std::size_t sizeStep;
+  std::size_t stepSize;
   
-  MatrixPrinter printer;
   MatrixRandomFiller filler;
   MatrixSummarizer summarizer;
   MatrixMultiplier multiplier;
   MatrixTransposer transposer;
+  
+  TimeMeasurer timeMeasurer;
 };
+
+
 
 #endif // MATRIX_TEST

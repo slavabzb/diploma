@@ -2,14 +2,19 @@
 
 
 
-MatrixPrinter::MatrixPrinter( std::ostream* stream )
+MatrixPrinter::MatrixPrinter( std::ostream* ostream )
 {
-  assert( stream != nullptr );
-    
-  this->stream = stream;
+  assert( ostream != nullptr );
+  
+  this->ostream = ostream;
+  
   this->precision = 6;
+  this->ostream->precision( this->precision );
+  this->ostream->setf( std::ios::fixed, std:: ios::floatfield );
+  
   this->rowDelimiter = "\n";
   this->columnDelimiter = " ";
+  this->matricesDelimiter = "\n";
 }
 
 
@@ -21,9 +26,9 @@ void MatrixPrinter::setPrecision( std::streamsize precision )
 
 
   
-void MatrixPrinter::setStream( std::ostream& stream )
+void MatrixPrinter::setStream( std::ostream& ostream )
 {
-  this->stream = &stream;
+  this->ostream = &ostream;
 }
 
 

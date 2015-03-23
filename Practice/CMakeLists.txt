@@ -7,13 +7,11 @@ project( ${PROJECT} )
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -pthread" )
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/Tests )
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/Utilities )
 
 set( SOURCE
   main.cpp
   Tests/MatrixTest.cpp
-  Utilities/MatrixUtilities.cpp
+  HelperClasses/MatrixPrinter.cpp
 )
 
 add_executable( ${PROJECT} ${SOURCE} )

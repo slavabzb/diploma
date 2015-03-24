@@ -2,6 +2,7 @@
 #define MATRIX_TEST
 
 #include <memory>
+#include <gmpxx.h>
 
 #include <cppunit/Test.h>
 #include <cppunit/TestFixture.h>
@@ -42,7 +43,7 @@ public:
   
 private:
   
-  typedef double Element;
+  typedef mpz_class Element;
   
   std::size_t nIterations;
   std::size_t initialSize;

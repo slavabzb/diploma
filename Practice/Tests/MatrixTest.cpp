@@ -13,9 +13,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MatrixTest );
 
 MatrixTest::MatrixTest()
 {
-  this->initialSize = 5;
-  this->stepSize = 5;
-  this->nIterations = 9;
+  this->initialSize = 50;
+  this->stepSize = 50;
+  this->nIterations = 10;
 }
 
 
@@ -36,16 +36,11 @@ void MatrixTest::tearDown()
 
 void MatrixTest::testAddition()
 {
-  Logger::getInstance()->write( "\nAddition\n" );
+  Logger::getInstance()->write( "\nAddition" )->write( "\n", 0 );
   
   std::size_t size = this->initialSize;
   for( std::size_t iteration = 0; iteration < this->nIterations; ++iteration ) {
-    Logger::getInstance()->write( iteration )
-      ->whiteSpace()
-      ->write( size )
-      ->write( "x" )
-      ->write( size )
-      ->whiteSpace();
+    Logger::getInstance()->write( iteration, 5 )->write( size, 6 );
     
     Matrix< Element > A( size, size );
     this->filler.fill( A );
@@ -59,37 +54,33 @@ void MatrixTest::testAddition()
     this->timeMeasurer.end();
     
     double singleThreadTime = this->timeMeasurer.getDurationInSeconds();
-    Logger::getInstance()->write( singleThreadTime )->whiteSpace();
+    Logger::getInstance()->write( singleThreadTime );
 
     this->timeMeasurer.start();
     Matrix< Element > D( A + B );
     this->timeMeasurer.end();
     
     double multyThreadTime = this->timeMeasurer.getDurationInSeconds();
-    Logger::getInstance()->write( multyThreadTime )->whiteSpace();
+    Logger::getInstance()->write( multyThreadTime );
     
-    Logger::getInstance()->write( singleThreadTime / multyThreadTime )->write( "\n" );
+    Logger::getInstance()->write( singleThreadTime / multyThreadTime )->write( "\n", 0 );
     
     CPPUNIT_ASSERT( C == D );
     
     size += this->stepSize;
   }
+  
 }
 
 
 
 void MatrixTest::testMultiplication()
 {
-  Logger::getInstance()->write( "\nMultiplication\n" );
+  Logger::getInstance()->write( "\nMultiplication" )->write( "\n", 0 );
   
   std::size_t size = this->initialSize;
   for( std::size_t iteration = 0; iteration < this->nIterations; ++iteration ) {
-    Logger::getInstance()->write( iteration )
-      ->whiteSpace()
-      ->write( size )
-      ->write( "x" )
-      ->write( size )
-      ->whiteSpace();
+    Logger::getInstance()->write( iteration, 5 )->write( size, 6 );
     
     Matrix< Element > A( size, size );
     this->filler.fill( A );
@@ -103,16 +94,16 @@ void MatrixTest::testMultiplication()
     this->timeMeasurer.end();
     
     double singleThreadTime = this->timeMeasurer.getDurationInSeconds();
-    Logger::getInstance()->write( singleThreadTime )->whiteSpace();
+    Logger::getInstance()->write( singleThreadTime );
     
     this->timeMeasurer.start();
     Matrix< Element > D( A * B );
     this->timeMeasurer.end();
     
     double multyThreadTime = this->timeMeasurer.getDurationInSeconds();
-    Logger::getInstance()->write( multyThreadTime )->whiteSpace();
+    Logger::getInstance()->write( multyThreadTime );
     
-    Logger::getInstance()->write( singleThreadTime / multyThreadTime )->write( "\n" );
+    Logger::getInstance()->write( singleThreadTime / multyThreadTime )->write( "\n", 0 );
     
     CPPUNIT_ASSERT( C == D );
     
@@ -124,16 +115,11 @@ void MatrixTest::testMultiplication()
 
 void MatrixTest::testScalarMultiplication()
 {
-  Logger::getInstance()->write( "\nScalar multiplication\n" );
+  Logger::getInstance()->write( "\nScalar multiplication" )->write( "\n", 0 );
   
   std::size_t size = this->initialSize;
   for( std::size_t iteration = 0; iteration < this->nIterations; ++iteration ) {
-    Logger::getInstance()->write( iteration )
-      ->whiteSpace()
-      ->write( size )
-      ->write( "x" )
-      ->write( size )
-      ->whiteSpace();
+    Logger::getInstance()->write( iteration, 5 )->write( size, 6 );
     
     Matrix< Element > A( size, size );
     this->filler.fill( A );
@@ -145,16 +131,16 @@ void MatrixTest::testScalarMultiplication()
     this->timeMeasurer.end();
     
     double singleThreadTime = this->timeMeasurer.getDurationInSeconds();
-    Logger::getInstance()->write( singleThreadTime )->whiteSpace();
+    Logger::getInstance()->write( singleThreadTime );
     
     this->timeMeasurer.start();
     Matrix< Element > C( value * A );
     this->timeMeasurer.end();
     
     double multyThreadTime = this->timeMeasurer.getDurationInSeconds();
-    Logger::getInstance()->write( multyThreadTime )->whiteSpace();
+    Logger::getInstance()->write( multyThreadTime );
     
-    Logger::getInstance()->write( singleThreadTime / multyThreadTime )->write( "\n" );
+    Logger::getInstance()->write( singleThreadTime / multyThreadTime )->write( "\n", 0 );
     
     CPPUNIT_ASSERT( B == C );
     
@@ -166,16 +152,11 @@ void MatrixTest::testScalarMultiplication()
 
 void MatrixTest::testTransposition()
 {
-  Logger::getInstance()->write( "\nTransposition\n" );
+  Logger::getInstance()->write( "\nTransposition" )->write( "\n", 0 );
   
   std::size_t size = this->initialSize;
   for( std::size_t iteration = 0; iteration < this->nIterations; ++iteration ) {
-    Logger::getInstance()->write( iteration )
-      ->whiteSpace()
-      ->write( size )
-      ->write( "x" )
-      ->write( size )
-      ->whiteSpace();
+    Logger::getInstance()->write( iteration, 5 )->write( size, 6 );
     
     Matrix< Element > A( size, size );
     this->filler.fill( A );
@@ -186,16 +167,16 @@ void MatrixTest::testTransposition()
     this->timeMeasurer.end();
     
     double singleThreadTime = this->timeMeasurer.getDurationInSeconds();
-    Logger::getInstance()->write( singleThreadTime )->whiteSpace();
+    Logger::getInstance()->write( singleThreadTime );
     
     this->timeMeasurer.start();
     Matrix< Element > C( A.transpose() );
     this->timeMeasurer.end();
     
     double multyThreadTime = this->timeMeasurer.getDurationInSeconds();
-    Logger::getInstance()->write( multyThreadTime )->whiteSpace();
+    Logger::getInstance()->write( multyThreadTime );
     
-    Logger::getInstance()->write( singleThreadTime / multyThreadTime )->write( "\n" );
+    Logger::getInstance()->write( singleThreadTime / multyThreadTime )->write( "\n", 0 );
     
     CPPUNIT_ASSERT( B == C );
     

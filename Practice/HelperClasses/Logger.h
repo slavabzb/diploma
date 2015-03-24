@@ -10,21 +10,22 @@ class Logger
 public:
 
   ~Logger();
-  
+
   static Logger* getInstance();
   
-  Logger* whiteSpace();
-  
-  
+  std::streamsize getPrecision() const;
+
+
   template< typename T >
-  Logger* write( const T& message )
+  Logger* write( const T& message, std::streamsize fieldWide = Logger::getInstance()->getPrecision() + 6 )
   {
+    this->ofstream.width( fieldWide );
+        
     this->ofstream << message;
     
     return Logger::getInstance();
   }
-  
-  
+
 
 private:
 
@@ -33,7 +34,7 @@ private:
   
   
   std::ofstream ofstream;
-  const std::string space;
+  std::streamsize precision;
 };
 
 

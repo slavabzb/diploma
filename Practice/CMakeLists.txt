@@ -19,3 +19,5 @@ set( SOURCE
 add_executable( ${PROJECT} ${SOURCE} )
 
 target_link_libraries( ${PROJECT} cppunit )
+target_link_libraries( ${PROJECT} gmpxx )
+target_link_libraries( ${PROJECT} gmp )

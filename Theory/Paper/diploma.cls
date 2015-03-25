@@ -1122,7 +1122,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\usepackage{amsmath,amssymb}
+\usepackage{amsmath,amsfonts,amssymb}
 
 
 \def\Rot{\mathop{\operator@font rot}\nolimits}
@@ -1340,14 +1340,14 @@
 \end{center}}
 
 
-\if@hlink
-    \usepackage[pdftex]{hyperref}
-    \hypersetup{
-        colorlinks=true,
-        linkcolor=blue,
-        pdfpagemode=None,
-    }
-\fi
+%\if@hlink
+%    \usepackage[pdftex]{hyperref}
+%    \hypersetup{
+%        colorlinks=false,
+%        linkcolor=black,
+%        pdfpagemode=None,
+%    }
+%\fi
 
     \setlength{\topmargin}{-20mm}
     \setlength{\oddsidemargin}{0mm}

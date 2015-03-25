@@ -9,10 +9,10 @@
 \end{equation}
 при ограничениях
 \begin{equation}
-\label{eqLimits}
+\label{eq:limits}
 f_i(x)\le 0,\mbox{ }i=1,\ldots,m,\mbox{ }x\in E_n.
 \end{equation}
-$f_\nu(x)$ -- выпуклые функции, определенные на $E_n$; $g_\nu(x)$ -- соответствующие субградиенты, причем имеется априорная информация, что оптимальная точка $x^*$ существует (она не обязательно единственная) и находится в шаре радиуса $R$ с центром в точке $x_0$ (формально к системе ограничений~\ref{eqLimits} можно добавить ограничение $||x-x_0||\le R$).
+$f_\nu(x)$ -- выпуклые функции, определенные на $E_n$; $g_\nu(x)$ -- соответствующие субградиенты, причем имеется априорная информация, что оптимальная точка $x^*$ существует (она не обязательно единственная) и находится в шаре радиуса $R$ с центром в точке $x_0$ (формально к системе ограничений~\ref{eq:limits} можно добавить ограничение $||x-x_0||\le R$).
 
 Рассмотрим следующий итеративный алгоритм (при $n>1$).
 
@@ -22,6 +22,7 @@ $(k+1)$-й шаг. Вычисляем:
 \begin{flalign}
 &\mbox{1) }g(x_k)=
 \left\{
+\label{eq:algBegin}
 \begin{tabular}{ll}
 $g_0(x_k)$, & если $\displaystyle\max_{1\le i\le m}f_i(x_k)\le 0$, \\
 $g_{i^*}(x_k)$, & если $\displaystyle\max_{1\le i\le m}f_i(x_k)=f_{i^*}(x_k)>0$. \\
@@ -40,7 +41,20 @@ $g_{i^*}(x_k)$, & если $\displaystyle\max_{1\le i\le m}f_i(x_k)=f_{i^*}(x_k)>0$.
 &\\
 &\mbox{$R_\beta(\xi_k)$ -- оператор растяжения пространства в направлении $\xi_k$ с}\nonumber
 &\\
-&\mbox{коэффициентом $\beta$;}\nonumber
+&\mbox{коэффициентом $\beta$~\cite{Yudin_Nemirovsky1976};}\nonumber
 &\\
-&\mbox{5) }h_{k+1}=h_k\cdot r,\mbox{ }r=\frac{n}{\sqrt{n^2-1}}.&
+&\mbox{5) }
+\label{eq:algEnd}
+h_{k+1}=h_k\cdot r,\mbox{ }r=\frac{n}{\sqrt{n^2-1}}.&
 \end{flalign}
+
+Последовательность $\left\{x_k\right\}_{k=0}^\infty$, генерируемая алгоритмом~(\ref{eq:algBegin})--(\ref{eq:algEnd}), удовлетворяет неравенству
+\begin{equation}
+\label{eq:ellipsoid}
+||A_k(x_k-x^*)||\le h_k\cdot(n+1),\quad A_k=B_k^{-1},\quad k=0,1,2,\ldots
+\end{equation}
+Доказательство этого утверждения см. в~\cite{Shor1977}.
+
+Множество точек $x$, удовлетворяющих неравенству $$||A_k(x_k-x)||\le(n+1)h_k=R\cdot\left(\frac{n}{\sqrt{n^2-1}}\right)^k,$$ представляет собой эллипсоид $\Phi_k$, объем которого $v(\Phi_k)$ равен $$\frac{v_0R^n\left(\frac{n}{\sqrt{n^2-1}}\right)^{nk}}{\det A_k},$$ где $v_0$ -- объем единичного $n$-мерного шара. Получаем $$\frac{v(\Phi_{k+1})}{(\Phi_k)}=\frac{\left(\frac{n}{\sqrt{n^2-1}}\right)^n\cdot\det A_k}{\det A_{k+1}}=\frac{\left(\frac{n}{\sqrt{n^2-1}}\right)^n\cdot\det A_k}{\det R_\alpha(\xi_k)\cdot\det A_k}=\frac{1}{\alpha}\left(\frac{n}{\sqrt{n^2-1}}\right)^n=$$ $$=\sqrt{\frac{n-1}{n+1}}\left(\frac{n}{\sqrt{n^2-1}}\right)^n=q_n<1.$$
+
+Таким образом, объем эллипсоида, в котором локализуется оптимальная точка $x^*$ в соответствии с неравенством~(\ref{eq:ellipsoid}), убывает со скоростью геометрической прогрессии со знаменателем $q_n$.

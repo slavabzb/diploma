@@ -145,8 +145,8 @@
     \@headsfalse
     \renewcommand{\@oddhead}{}
     \renewcommand{\@evenhead}{}
-    \renewcommand{\@oddfoot}{\hfill \textbf{\,\thepage\,} \hfill}	%(Изменено:Лесовой) Нумерация страниц без тире, было {\,--\thepage\--,}
-    \renewcommand{\@evenfoot}{\hfill \textbf{\,\thepage\,} \hfill}	%(Изменено:Лесовой) Нумерация страниц без тире, было {\,--\thepage\--,}
+    \renewcommand{\@oddfoot}{\hfill {\,\thepage\,} \hfill}	%(Изменено:Лесовой) Нумерация страниц без тире, было {\,--\thepage\--,}
+    \renewcommand{\@evenfoot}{\hfill {\,\thepage\,} \hfill}	%(Изменено:Лесовой) Нумерация страниц без тире, было {\,--\thepage\--,}
 }
 
 \newif\if@heads

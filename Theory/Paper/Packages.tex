@@ -14,7 +14,28 @@
 \usepackage{multirow}
 \usepackage{setspace}
 \usepackage{tabularx}
+
 \usepackage{enumitem}
+\usepackage{algorithm}
+
+\usepackage{caption}
+\captionsetup[ruled]{labelsep=period}
+\renewcommand{\thealgorithm}{\arabic{algorithm}}
+
+\usepackage{ntheorem}
+\theoremstyle{plain}
+\theorembodyfont{}
+\theoremsymbol{}
+\theoremprework{}
+\theorempostwork{}
+\theoremseparator{.}
+
+\newtheorem{theorem}{Теорема}
+\newtheorem{corollary}{Следствие}[theorem]
+\newtheorem{lemma}[theorem]{Лемма}
+
+\makeatletter
+\def\@biblabel#1{#1. }
 
 \linespread{1.3}
 \extrarowheight=2pt

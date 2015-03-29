@@ -38,13 +38,21 @@ $\displaystyle x_{k+1}=x_k-h_k\cdot B_k\cdot\xi_k.$
 Перейти к шагу 4.
 
 \emph{Шаг 4.} Вычислить
-$\displaystyle B_{k+1}=B_k\cdot\left(E-(\beta-1)\xi_k\xi_k^T\right)$, где $\beta=\sqrt{\frac{n-1}{n+1}}.$
+$\displaystyle B_{k+1}=B_k\cdot R_\beta(\xi_k)$, где $R_\beta(\xi_k)$ -- оператор растяжения пространства в направлении $\xi_k$ с коэффициентом $\beta$ (см.~определение~\ref{def:operator}), $\beta=\sqrt{\frac{n-1}{n+1}}.$
 Перейти к шагу 5.
 
 \emph{Шаг 5.} Вычислить
 $\displaystyle h_{k+1}=h_k\cdot r$, где $r=\frac{n}{\sqrt{n^2-1}}.$
 Перейти к шагу 1.
 \end{algorithm}
+
+\begin{definition}
+\label{def:operator}
+Оператором растяжения пространства $E_n$ в направлении $\xi$ с коэффициентом $\beta$ называется оператор $R_\beta(\xi)$, действующий на вектор $x$ следующим образом~\cite{Shor1979}:
+$$R_\beta(\xi)x=\left(E-(\beta-1)\xi_k\xi_k^T\right)x.$$
+\end{definition}
+
+Рассмотрим вопрос оценки скорости сходимости метода эллипсоидов. Покажем, что данный вариант алгоритма ОГСРП сходится по функционалу со скоростью геометрической прогрессии, причем знаменатель этой прогрессии зависит только от размерности задачи.
 
 \begin{lemma}
 Последовательность $\left\{x_k\right\}_{k=0}^\infty$, генерируемая алгоритмом~\ref{alg:EllipsoidMethod}, удовлетворяет неравенству

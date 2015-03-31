@@ -16,11 +16,18 @@
 \usepackage{tabularx}
 
 \usepackage{enumitem}
-\usepackage{algorithm}
+\usepackage{array}
 
-\usepackage{caption}
-\captionsetup[ruled]{labelsep=period}
+\usepackage{algorithm}
 \renewcommand{\thealgorithm}{\arabic{algorithm}}
+
+\usepackage[tableposition=top]{caption}
+\DeclareCaptionLabelFormat{gostfigure}{Рисунок #2}
+\DeclareCaptionLabelFormat{gosttable}{Таблица #2}
+\DeclareCaptionLabelSeparator{gost}{~---~}
+\captionsetup{labelsep=gost}
+\captionsetup[figure]{labelformat=gostfigure}
+\captionsetup[table]{labelformat=gosttable}
 
 \usepackage{ntheorem}
 \theoremstyle{plain}
@@ -30,10 +37,10 @@
 \theorempostwork{}
 \theoremseparator{.}
 
-\newtheorem{theorem}{Теорема}
+\newtheorem{theorem}{Теорема}[section]
 \newtheorem{corollary}{Следствие}[theorem]
 \newtheorem{lemma}[theorem]{Лемма}
-\newtheorem{definition}{Определение}
+\newtheorem{definition}{Определение}[section]
 
 \makeatletter
 \def\@biblabel#1{#1. }

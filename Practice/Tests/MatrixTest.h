@@ -21,33 +21,23 @@
 class MatrixTest : public CppUnit::TestFixture
 {
   CPPUNIT_TEST_SUITE( MatrixTest );
-  
-  CPPUNIT_TEST( testAddition );
-  CPPUNIT_TEST( testMultiplication );
-  CPPUNIT_TEST( testScalarMultiplication );
-  CPPUNIT_TEST( testTransposition );
-  
+    CPPUNIT_TEST( testAddition );
+    CPPUNIT_TEST( testMultiplication );
+    CPPUNIT_TEST( testTransposition );
   CPPUNIT_TEST_SUITE_END();
   
 public:
-
-  MatrixTest();
 
   void setUp() override;
   void tearDown() override;
   
   void testAddition();
   void testMultiplication();
-  void testScalarMultiplication();
   void testTransposition();
   
 private:
   
   typedef mpz_class Element;
-  
-  std::size_t nIterations;
-  std::size_t initialSize;
-  std::size_t stepSize;
   
   MatrixRandomFiller filler;
   MatrixSummarizer summarizer;
@@ -55,6 +45,8 @@ private:
   MatrixTransposer transposer;
   
   TimeMeasurer timeMeasurer;
+  
+  std::size_t matrixSize = 50;
 };
 
 

@@ -10,6 +10,7 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 
 set( SOURCE
   main.cpp
+  ParallelHandler.cpp
   Tests/MatrixTest.cpp
   HelperClasses/MatrixPrinter.cpp
   HelperClasses/TimeMeasurer.cpp

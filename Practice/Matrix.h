@@ -1,11 +1,11 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
+#include <assert.h>
 #include <mutex>
 #include <valarray>
-#include <assert.h>
 
-#include "parallel_for.h"
+#include "ParallelHandler.h"
 
 
 
@@ -128,7 +128,7 @@ public:
     
     Matrix< T > result( this->rows, this->columns );
     
-    auto sum = [ this, &rhs, &result ]( Index iRowStart, Index iRowEnd ) -> void
+    auto summarize = [ this, &rhs, &result ]( const Index& iRowStart, const Index& iRowEnd ) -> void
     {
       for( Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
         for( Index jColumn = 0; jColumn < this->columns; ++jColumn ) {
@@ -143,7 +143,7 @@ public:
     
     Index first = 0;
     Index last = this->rows;
-    parallel_for( first, last, sum );
+    this->parallelHandler.loop_for( first, last, summarize );
         
     return result;
   }
@@ -172,7 +172,7 @@ public:
     
     Index first = 0;
     Index last = this->rows;
-    parallel_for( first, last, subtract );
+    this->parallelHandler.loop_for( first, last, subtract );
         
     return result;
   }
@@ -202,11 +202,10 @@ public:
     
     Index first = 0;
     Index last = this->rows;
-    parallel_for( first, last, multiply );
+    this->parallelHandler.loop_for( first, last, multiply );
     
     return result;
   }
-
 
 
 
@@ -262,7 +261,6 @@ public:
 
 
 
-
   bool operator!= ( const Matrix< T >& rhs ) const
   {
     return !( *this == rhs );
@@ -287,7 +285,7 @@ public:
     
     Index first = 0;
     Index last = this->rows;
-    parallel_for( first, last, swap );  
+    this->parallelHandler.loop_for( first, last, swap );  
     
     return result;
   }
@@ -334,10 +332,12 @@ private:
   
   template< typename D >
   friend Matrix< D >& operator* ( const D& value , Matrix< D >& rhs );
-  
-  
-  
+
+
+
+  mutable ParallelHandler parallelHandler;
   mutable std::mutex mutex;
+  
   std::valarray< T > elements;
   Index rows;
   Index columns;
@@ -345,7 +345,6 @@ private:
 
 
 
-// Scalar multiplication
 template< typename T >
 Matrix< T >& operator* ( const T& value , Matrix< T >& rhs )
 {
@@ -362,7 +361,7 @@ Matrix< T >& operator* ( const T& value , Matrix< T >& rhs )
   
   typename Matrix< T >::Index first = 0;
   typename Matrix< T >::Index last = rhs.rows;
-  parallel_for( first, last, multiply );
+  rhs.parallelHandler.loop_for( first, last, multiply );
   
   return rhs;
 }

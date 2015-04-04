@@ -2,12 +2,12 @@
 
 #include "Tests/MatrixTest.h"
 
-#include <cppunit/TestResult.h>
 #include <cppunit/CompilerOutputter.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/TestResultCollector.h>
+#include <cppunit/TestResult.h>
 #include <cppunit/TextTestProgressListener.h>
 #include <cppunit/ui/text/TestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
 
 
 
@@ -31,3 +31,6 @@ int main( int argc, const char* argv[ ] )
   
   return result.wasSuccessful() ? 0 : 1;
 }
+
+
+

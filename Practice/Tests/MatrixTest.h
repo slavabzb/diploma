@@ -24,25 +24,25 @@ class MatrixTest : public CppUnit::TestFixture
     CPPUNIT_TEST( testAddition );
     CPPUNIT_TEST( testMultiplication );
     CPPUNIT_TEST( testTransposition );
+    CPPUNIT_TEST( testTime );
   CPPUNIT_TEST_SUITE_END();
   
 public:
-
-  void setUp() override;
-  void tearDown() override;
   
   void testAddition();
   void testMultiplication();
   void testTransposition();
+  void testTime();
   
 private:
   
-  typedef mpz_class Element;
+  typedef mpz_class element_t;
+  typedef Matrix< element_t > matrix_t;
   
-  MatrixRandomFiller filler;
-  MatrixSummarizer summarizer;
-  MatrixMultiplier multiplier;
-  MatrixTransposer transposer;
+  MatrixRandomFiller matrixRandomFiller;
+  MatrixSummarizer matrixSummarizer;
+  MatrixMultiplier matrixMultiplier;
+  MatrixTransposer matrixTransposer;
   
   TimeMeasurer timeMeasurer;
   

@@ -5,7 +5,6 @@
 #include <random>
 
 #include "MatrixOperationPerformer.h"
-#include "parallel_for.h"
 
 
 
@@ -20,18 +19,11 @@ public:
     std::default_random_engine generator( seed );
     std::uniform_real_distribution<> distribution( 0, 1 );
     
-    auto fill = [ & ]( std::size_t iRowStart, std::size_t iRowEnd ) -> void
-    {
-      for( std::size_t iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
-        for( std::size_t jColumn = 0; jColumn < matrix.get_columns(); ++jColumn ) {
-          matrix( iRow, jColumn ) = distribution( generator );
-        }
+    for( std::size_t iRow = 0; iRow < matrix.get_rows(); ++iRow ) {
+      for( std::size_t jColumn = 0; jColumn < matrix.get_columns(); ++jColumn ) {
+        matrix( iRow, jColumn ) = distribution( generator );
       }
-    };
-    
-    std::size_t first = 0;
-    std::size_t last = matrix.get_rows();
-    parallel_for( first, last, fill );  
+    }
   }
   
 };

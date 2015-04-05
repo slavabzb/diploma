@@ -3,7 +3,6 @@
 
 #include <algorithm>
 #include <assert.h>
-#include <functional>
 #include <thread>
 #include <vector>
 

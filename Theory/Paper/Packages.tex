@@ -15,9 +15,24 @@
 \usepackage{setspace}
 \usepackage{tabularx}
 \usepackage{graphicx}
-
 \usepackage{enumitem}
 \usepackage{array}
+
+\usepackage{listings}
+\lstdefinestyle{cpp}{
+belowcaptionskip=\baselineskip,
+xleftmargin=\parindent,
+language=c++,
+showstringspaces=false,
+basicstyle=\footnotesize\ttfamily,
+basicstyle=\footnotesize,
+captionpos=b,
+frame=L,
+numbers=left
+}
+\lstset{style=cpp}
+\renewcommand{\lstlistingname}{Листинг}
+\renewcommand{\lstlistlistingname}{Список листингов}
 
 \usepackage{algorithm}
 \renewcommand{\thealgorithm}{\arabic{algorithm}}

@@ -12,9 +12,10 @@ set( SOURCE
   main.cpp
   ParallelHandler.cpp
   Tests/MatrixTest.cpp
+  HelperClasses/Logger.cpp
   HelperClasses/MatrixPrinter.cpp
-  HelperClasses/TimeMeasurer.cpp
   HelperClasses/Statistics.cpp
+  HelperClasses/TimeMeasurer.cpp
 )
 
 add_executable( ${PROJECT} ${SOURCE} )

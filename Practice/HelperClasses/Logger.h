@@ -1,7 +1,7 @@
 #ifndef LOGGER
 #define LOGGER
 
-#include <fstream>
+#include <iostream>
 
 
 
@@ -9,32 +9,25 @@ class Logger
 {
 public:
 
-  ~Logger();
-
   static Logger* getInstance();
-  
-  std::streamsize getPrecision() const;
+
 
 
   template< typename T >
-  Logger* write( const T& message, std::streamsize fieldWide = Logger::getInstance()->getPrecision() + 6 )
+  Logger* write( const T& message )
   {
-    this->ofstream.width( fieldWide );
-        
-    this->ofstream << message;
+    std::clog << message;
     
     return Logger::getInstance();
   }
 
 
+
 private:
 
-  Logger();
+  Logger() = default;
   Logger& operator=( const Logger& rhs ) = delete;
   
-  
-  std::ofstream ofstream;
-  std::streamsize precision;
 };
 
 

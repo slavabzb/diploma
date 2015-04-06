@@ -7,10 +7,9 @@ MatrixPrinter::MatrixPrinter( std::ostream* ostream )
   assert( ostream != nullptr );
   
   this->ostream = ostream;
-  
-  this->precision = 6;
-  this->ostream->precision( this->precision );
   this->ostream->setf( std::ios::fixed, std:: ios::floatfield );
+
+  this->setPrecision( 6 );
   
   this->rowDelimiter = "\n";
   this->columnDelimiter = " ";
@@ -22,6 +21,7 @@ MatrixPrinter::MatrixPrinter( std::ostream* ostream )
 void MatrixPrinter::setPrecision( std::streamsize precision )
 {
   this->precision = precision;
+  this->ostream->precision( this->precision );
 }
 
 

@@ -2,7 +2,7 @@
 #define STATISTICS
 
 #include <sstream>
-#include <unordered_map>
+#include <map>
 
 
 
@@ -14,7 +14,7 @@ struct TimePair
 
 
 
-typedef std::unordered_map< std::size_t, TimePair > TimeStatistics;
+typedef std::map< std::size_t, TimePair > TimeStatistics;
 
 
 

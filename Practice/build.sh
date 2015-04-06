@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "CONFIGURING"
 
-if [ ! -d "$Build_Debug" ]; then
+if [ ! -d "Build_Debug" ]; then
   mkdir Build_Debug
 fi
 

@@ -6,16 +6,24 @@
 
 void TimeStatisticsPrinter::print( const std::string& message, const TimeStatistics& timeStatistics )
 {
-  this->stringstream << message << ":\n";
-  this->stringstream << "Helper class time:\n";
-  for( auto it = timeStatistics.begin(); it != timeStatistics.end(); ++it ) {
+  this->stringstream << "Time statistics for \"" << message << "\".\n";
+  this->stringstream << "The sizes of the matrices: ";
+  for( auto it = timeStatistics.cbegin(); it != timeStatistics.cend(); ++it ) {
+    this->stringstream << it->first << ' ';
+  }
+  this->stringstream << "\nHelper class time: ";
+  for( auto it = timeStatistics.cbegin(); it != timeStatistics.cend(); ++it ) {
     this->stringstream << it->second.singleTime << ' ';
   }
-  this->stringstream << "\n\nMatrix class time:\n";
-  for( auto it = timeStatistics.begin(); it != timeStatistics.end(); ++it ) {
+  this->stringstream << "\nMatrix class time: ";
+  for( auto it = timeStatistics.cbegin(); it != timeStatistics.cend(); ++it ) {
     this->stringstream << it->second.multyTime << ' ';
   }
-  this->stringstream << "\n\n\n";
+  this->stringstream << "\nAcceleration: ";
+  for( auto it = timeStatistics.cbegin(); it != timeStatistics.cend(); ++it ) {
+    this->stringstream << it->second.singleTime / it->second.multyTime << ' ';
+  }
+  this->stringstream << "\n\n";
 }
 
 

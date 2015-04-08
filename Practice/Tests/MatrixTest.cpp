@@ -1,5 +1,7 @@
 #include "MatrixTest.h"
 
+#include <valarray>
+
 #include <cppunit/TestCaller.h>
 #include <cppunit/TestSuite.h>
 
@@ -75,14 +77,11 @@ void MatrixTest::testTime()
 {
   Logger::getInstance()->write( "\nTime test started." );
   
-  TimeStatistics additionStatistics;
-  TimeStatistics multiplicationStatistics;
-  TimeStatistics transpositionStatistics;
-  
   const std::size_t initialSize = 10;
   const std::size_t sizeStep = 2;
   const std::size_t nIterations = 4;
-  
+  const std::size_t nInnerLoopIterations = 100;
+    
   Logger::getInstance()->write( "\nInitial size: " )
     ->write( initialSize )
     ->write( "\nSize step: " )
@@ -92,97 +91,105 @@ void MatrixTest::testTime()
     ->write( nIterations )
     ->write( "\n\n" );
   
+  Statistics statistics;
+  
   std::size_t size = initialSize;
   for( std::size_t iteration = 0; iteration < nIterations; ++iteration ) {
+    std::valarray< double > durations( nInnerLoopIterations );
+    
     Logger::getInstance()->write( "[" )
-      ->write( iteration / static_cast< float >( nIterations ) * 100 )
-      ->write( "%] Size = " )
+      ->write( 100.0 * iteration / ( nIterations - 1 ) )
+      ->write( "%] The size of the matrices is " )
       ->write( size  )
-      ->write( "\n" );
+      ->write( ".\n\tIn-loop iterations number is " )
+      ->write( durations.size() )
+      ->write( ".\n" );
     
     Logger::getInstance()->write( "\tFilling lhs...                " );
     matrix_t lhs( size, size );
     this->timeMeasurer.start();
     this->matrixRandomFiller.fill( lhs );
     this->timeMeasurer.end();
-    Logger::getInstance()->write( "ok\t(" )
+    Logger::getInstance()->write( "          ok\t" )
       ->write( this->timeMeasurer.getDurationInSeconds() )
-      ->write( "s)\n" );
+      ->write( "s\n" );
     
     Logger::getInstance()->write( "\tFilling rhs...                " );
     matrix_t rhs( size, size );
     this->timeMeasurer.start();
     this->matrixRandomFiller.fill( rhs );
     this->timeMeasurer.end();
-    Logger::getInstance()->write( "ok\t(" )
+    Logger::getInstance()->write( "          ok\t" )
       ->write( this->timeMeasurer.getDurationInSeconds() )
-      ->write( "s)\n" );
+      ->write( "s\n" );
 
     matrix_t result( size, size );
     
-    Logger::getInstance()->write( "\tOut-of-class summarizing...   " );
-    this->timeMeasurer.start();
-    this->matrixSummarizer.summarize( result, lhs, rhs );
-    this->timeMeasurer.end();
-    additionStatistics[ size ].singleTime = this->timeMeasurer.getDurationInSeconds();
-    Logger::getInstance()->write( "ok\t(" )
-      ->write( this->timeMeasurer.getDurationInSeconds() )
-      ->write( "s)\n" );
+    Logger::getInstance()->write( "\tOut-of-class summarizing...   [       ]" );
+    for( std::size_t iDuration = 0; iDuration < durations.size(); ++iDuration ) {
+      this->timeMeasurer.start();
+      this->matrixSummarizer.summarize( result, lhs, rhs );
+      this->timeMeasurer.end();
+      durations[ iDuration ] = this->timeMeasurer.getDurationInSeconds();
+      Logger::getInstance()->write( "\b\b\b\b\b\b\b\b" )
+        ->write( 100.0 * iDuration / ( durations.size() - 1 ) )
+        ->write( "%]" );
+    }
+    statistics( size, Statistics::Addition ).setSingleThreadTime( durations.sum() / durations.size() );
+    Logger::getInstance()->write( " ok\t" )
+      ->write( statistics( size, Statistics::Addition ).getSingleThreadTime() )
+      ->write( "s\n" );
     
-    Logger::getInstance()->write( "\tIn-class summarizing...       " );
-    this->timeMeasurer.start();
-    lhs + rhs;
-    this->timeMeasurer.end();
-    additionStatistics[ size ].multyTime = this->timeMeasurer.getDurationInSeconds();
-    Logger::getInstance()->write( "ok\t(" )
-      ->write( this->timeMeasurer.getDurationInSeconds() )
-      ->write( "s)\n" );
-
-    Logger::getInstance()->write( "\tOut-of-class transposition... " );
-    this->timeMeasurer.start();
-    this->matrixTransposer.transpose( result, lhs );
-    this->timeMeasurer.end();
-    transpositionStatistics[ size ].singleTime = this->timeMeasurer.getDurationInSeconds();
-    Logger::getInstance()->write( "ok\t(" )
-      ->write( this->timeMeasurer.getDurationInSeconds() )
-      ->write( "s)\n" );
+    Logger::getInstance()->write( "\tIn-class summarizing...       [       ]" );
+    for( std::size_t iDuration = 0; iDuration < durations.size(); ++iDuration ) {
+      this->timeMeasurer.start();
+      lhs + rhs;
+      this->timeMeasurer.end();
+      durations[ iDuration ] = this->timeMeasurer.getDurationInSeconds();
+      Logger::getInstance()->write( "\b\b\b\b\b\b\b\b" )
+        ->write( 100.0 * iDuration / ( durations.size() - 1 ) )
+        ->write( "%]" );
+    }
+    statistics( size, Statistics::Addition ).setMultyThreadTime( durations.sum() / durations.size() );
+    Logger::getInstance()->write( " ok\t" )
+      ->write( statistics( size, Statistics::Addition ).getMultyThreadTime() )
+      ->write( "s\n" );
     
-    Logger::getInstance()->write( "\tIn-class transposition...     " );
-    this->timeMeasurer.start();
-    lhs.transpose();
-    this->timeMeasurer.end();
-    transpositionStatistics[ size ].multyTime = this->timeMeasurer.getDurationInSeconds();
-    Logger::getInstance()->write( "ok\t(" )
-      ->write( this->timeMeasurer.getDurationInSeconds() )
-      ->write( "s)\n" );
+    Logger::getInstance()->write( "\tOut-of-class multiplying...   [       ]" );
+    for( std::size_t iDuration = 0; iDuration < durations.size(); ++iDuration ) {
+      this->timeMeasurer.start();
+      this->matrixMultiplier.multiply( result, lhs, rhs );
+      this->timeMeasurer.end();
+      durations[ iDuration ] = this->timeMeasurer.getDurationInSeconds();
+      Logger::getInstance()->write( "\b\b\b\b\b\b\b\b" )
+        ->write( 100.0 * iDuration / ( durations.size() - 1 ) )
+        ->write( "%]" );
+    }
+    statistics( size, Statistics::Multiplication ).setSingleThreadTime( durations.sum() / durations.size() );
+    Logger::getInstance()->write( " ok\t" )
+      ->write( statistics( size, Statistics::Multiplication ).getSingleThreadTime() )
+      ->write( "s\n" );
     
-    Logger::getInstance()->write( "\tOut-of-class multiplying...   " );
-    this->timeMeasurer.start();
-    this->matrixMultiplier.multiply( result, lhs, rhs );
-    this->timeMeasurer.end();
-    multiplicationStatistics[ size ].singleTime = this->timeMeasurer.getDurationInSeconds();
-    Logger::getInstance()->write( "ok\t(" )
-      ->write( this->timeMeasurer.getDurationInSeconds() )
-      ->write( "s)\n" );
-    
-    Logger::getInstance()->write( "\tIn-class multiplying...       " );
-    this->timeMeasurer.start();
-    lhs * rhs;
-    this->timeMeasurer.end();
-    multiplicationStatistics[ size ].multyTime = this->timeMeasurer.getDurationInSeconds();
-    Logger::getInstance()->write( "ok\t(" )
-      ->write( this->timeMeasurer.getDurationInSeconds() )
-      ->write( "s)\n" );
-    
+    Logger::getInstance()->write( "\tIn-class multiplying...       [       ]" );
+    for( std::size_t iDuration = 0; iDuration < durations.size(); ++iDuration ) {
+      this->timeMeasurer.start();
+      lhs * rhs;
+      this->timeMeasurer.end();
+      durations[ iDuration ] = this->timeMeasurer.getDurationInSeconds();
+      Logger::getInstance()->write( "\b\b\b\b\b\b\b\b" )
+        ->write( 100.0 * iDuration / ( durations.size() - 1 ) )
+        ->write( "%]" );
+    }
+    statistics( size, Statistics::Multiplication ).setMultyThreadTime( durations.sum() / durations.size() );
+    Logger::getInstance()->write( " ok\t" )
+      ->write( statistics( size, Statistics::Multiplication ).getMultyThreadTime() )
+      ->write( "s\n" );
+        
     size += size * sizeStep;
   }
   
-  TimeStatisticsPrinter printer;
-  printer.print( "Addition", additionStatistics );
-  printer.print( "Multiplication", multiplicationStatistics );
-  printer.print( "Transposition", transpositionStatistics );
-  
-  printer.save( "statistics" );
+  const std::string fileName = "statistics";
+  statistics.save( fileName );
 }
 
 

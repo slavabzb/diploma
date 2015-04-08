@@ -1,35 +1,45 @@
 #ifndef STATISTICS
 #define STATISTICS
 
-#include <sstream>
+#include <array>
 #include <map>
 
-
-
-struct TimePair
-{
-  double singleTime;
-  double multyTime;
-};
+#include "Time.h"
 
 
 
-typedef std::map< std::size_t, TimePair > TimeStatistics;
-
-
-
-class TimeStatisticsPrinter
+class Statistics
 {
 public:
 
-  void print( const std::string& message, const TimeStatistics& timeStatistics );
+  enum StatisticsType
+  {
+    Addition,
+    Multiplication,
+    Transposition,
+    StatisticsTypeSize
+  };
+
+
+  
+  Time& operator() ( std::size_t matrixSize, StatisticsType statisticsType );
   void save( const std::string& fileName );
+
+
 
 private:
 
-  std::stringstream stringstream;
+  typedef std::map< StatisticsType, std::string > StatisticsTypeNameMap;
+  const StatisticsTypeNameMap statisticsTypeNames = {
+    { Addition, "Addition" },
+    { Multiplication, "Multiplication" },
+    { Transposition, "Transposition" }
+  };
+  
+  typedef std::map< std::size_t, Time > TimeStatistics;
+  std::array< TimeStatistics, StatisticsTypeSize > statisticsArray;
 };
-
-
+  
+  
 
 #endif // STATISTICS

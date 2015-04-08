@@ -36,10 +36,10 @@ public:
     
     const std::size_t chunkSize = size / this->getNumThreads();
     Iterator iFirst = first;
-    for( auto iThread = this->threads.begin(); iThread != this->threads.end(); ++iThread ) {
+    for( std::size_t iThread = 0; iThread < ( this->getNumThreads() - 1 ); ++iThread ) {
       Iterator iLast = iFirst;
       iLast += chunkSize;
-      *iThread = std::thread( function, iFirst, iLast );
+      this->threads[ iThread ] = std::thread( function, iFirst, iLast );
       iFirst = iLast;
     }
 

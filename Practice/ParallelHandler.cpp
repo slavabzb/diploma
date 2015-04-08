@@ -6,7 +6,7 @@ ParallelHandler::ParallelHandler( std::size_t minNumThreads, std::size_t minPerT
 {
   this->setMinNumThreads( minNumThreads );
   this->setMinPerThread( minPerThread );
-  this->parallelPolicy = policy_automatic;
+  this->setAutoParallelPolicy();
 }
 
 
@@ -85,7 +85,7 @@ void ParallelHandler::setUp( std::size_t size )
       break;
   }
 
-  this->threads.reserve( this->getNumThreads() - 1 );
+  this->threads.resize( this->getNumThreads() - 1 );
 }
 
 
@@ -116,10 +116,10 @@ std::size_t ParallelHandler::getNumThreads() const
 
 void ParallelHandler::autoCalculateNumThreads( std::size_t size )
 {
-  const std::size_t maxThreads = ( size + this->minPerThread - 1 ) / this->minPerThread;
-  const std::size_t hardwareBasedEstimate = ( this->hardwareThreads == 0 ?
-    this->minNumThreads : this->hardwareThreads );
-
+  const std::size_t maxThreads = ( size + this->getMinPerThread() - 1 ) / this->getMinPerThread();
+  const std::size_t hardwareBasedEstimate = ( this->getHardwareThreads() == 0 ?
+    this->getMinNumThreads() : this->getHardwareThreads() );
+  
   this->setNumThreads( std::min( hardwareBasedEstimate, maxThreads ) );
 }
 

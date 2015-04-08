@@ -10,10 +10,11 @@
 
 #include "Matrix.h"
 
+#include "HelperClasses/MatrixMultiplier.h"
 #include "HelperClasses/MatrixRandomFiller.h"
 #include "HelperClasses/MatrixSummarizer.h"
-#include "HelperClasses/MatrixMultiplier.h"
 #include "HelperClasses/MatrixTransposer.h"
+#include "HelperClasses/Statistics.h"
 #include "HelperClasses/TimeMeasurer.h"
 
 
@@ -38,6 +39,8 @@ private:
   
   typedef mpz_class element_t;
   typedef Matrix< element_t > matrix_t;
+  
+  
   
   MatrixRandomFiller matrixRandomFiller;
   MatrixSummarizer matrixSummarizer;

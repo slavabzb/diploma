@@ -20,6 +20,19 @@ public:
     
     return Logger::getInstance();
   }
+  
+  
+  
+  Logger* write( double value )
+  {
+    std::clog.setf( std::ios::fixed, std:: ios::floatfield );
+    std::clog.precision( 2 );
+    std::clog.width( 6 );
+
+    std::clog << value;
+    
+    return Logger::getInstance();
+  }
 
 
 

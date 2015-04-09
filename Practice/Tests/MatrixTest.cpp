@@ -59,16 +59,28 @@ void MatrixTest::testMultiplication()
 
 
 void MatrixTest::testTransposition()
-{
-  matrix_t A( this->matrixSize, this->matrixSize );
-  this->matrixRandomFiller.fill( A );
-
-  matrix_t B( this->matrixSize, this->matrixSize );
-  this->matrixTransposer.transpose( B, A );
-
-  matrix_t C( A.transpose() );
+{ 
+  matrix_t matrix( this->matrixSize, 2 * this->matrixSize );
+  this->matrixRandomFiller.fill( matrix );
   
-  CPPUNIT_ASSERT( B == C );
+  matrix_t matrix_copy = matrix;
+
+  matrix_t matrix_transp( matrix.get_columns(), matrix.get_rows() );
+  this->matrixTransposer.transpose( matrix_transp, matrix );
+
+  matrix.transpose();
+  
+  CPPUNIT_ASSERT( matrix == matrix_transp );
+  
+  const std::size_t row = 4;
+  const std::size_t column = 5;
+  
+  CPPUNIT_ASSERT( matrix_copy( row, column ) == matrix( column, row ) );
+  
+  matrix.transpose();
+  
+  CPPUNIT_ASSERT( matrix == matrix_copy );
+  CPPUNIT_ASSERT( matrix( row, column ) == matrix_copy( row, column ) );
 }
 
 
@@ -78,9 +90,9 @@ void MatrixTest::testTime()
   Logger::getInstance()->write( "\nTime test started." );
   
   const std::size_t initialSize = 10;
-  const std::size_t sizeStep = 2;
+  const std::size_t sizeStep = 1;
   const std::size_t nIterations = 4;
-  const std::size_t nInnerLoopIterations = 100;
+  const std::size_t nInnerLoopIterations = 10;
     
   Logger::getInstance()->write( "\nInitial size: " )
     ->write( initialSize )

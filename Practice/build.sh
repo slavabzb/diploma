@@ -14,7 +14,7 @@ make
 
 if [ "$1" != "NOTEST" ]; then
   echo "TESTING"
-  ./Diploma
+  ./MatrixTester
 fi
 
 echo "DONE"

@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 2.8 )
 
-set( PROJECT Diploma )
+set( PROJECT MatrixTester )
 
 project( ${PROJECT} )
 

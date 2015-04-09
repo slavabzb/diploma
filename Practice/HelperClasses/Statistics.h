@@ -16,7 +16,6 @@ public:
   {
     Addition,
     Multiplication,
-    Transposition,
     StatisticsTypeSize
   };
 
@@ -32,8 +31,7 @@ private:
   typedef std::map< StatisticsType, std::string > StatisticsTypeNameMap;
   const StatisticsTypeNameMap statisticsTypeNames = {
     { Addition, "Addition" },
-    { Multiplication, "Multiplication" },
-    { Transposition, "Transposition" }
+    { Multiplication, "Multiplication" }
   };
   
   typedef std::map< std::size_t, Time > TimeStatistics;

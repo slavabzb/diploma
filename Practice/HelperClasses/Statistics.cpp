@@ -1,6 +1,7 @@
 #include "Statistics.h"
 
 #include <fstream>
+#include <iostream>
 
 
 
@@ -13,35 +14,45 @@ Time& Statistics::operator() ( std::size_t matrixSize, StatisticsType statistics
 
 void Statistics::save( const std::string& fileName )
 {
-  std::ofstream ofstream( fileName );
-  ofstream << "Statistics report.\n\n";
+  std::fstream fstream( fileName, std::fstream::out );
+  std::ostream* ostream;
   
-  ofstream << "The sizes of the matrices: ";
+  if( fstream.is_open() ) {
+    ostream = &fstream;
+  }
+  else {
+    ostream = &std::cout;
+    *ostream << "Warning! Can't open file " << fileName << "; stream to std::cout.\n";
+  }
+  
+  *ostream << "Statistics report.\n\n";
+  
+  *ostream << "The sizes of the matrices: ";
   for( auto it = this->statisticsArray[ Multiplication ].cbegin(); it != this->statisticsArray[ Multiplication ].cend(); ++it ) {
-    ofstream << it->first << ' ';
+    *ostream << it->first << ' ';
   }
   
   for( StatisticsType statisticsType = Addition; statisticsType != StatisticsTypeSize;
     statisticsType = static_cast< StatisticsType >( static_cast< std::size_t >(statisticsType) + 1 ) ) {
     
-    ofstream << "\nTime statistics for " << this->statisticsTypeNames.at( statisticsType ) << ".";
+    *ostream << "\nTime statistics for " << this->statisticsTypeNames.at( statisticsType ) << ".";
     
-    ofstream << "\nOut-of-class time: ";
+    *ostream << "\nOut-of-class time: ";
     for( auto it = this->statisticsArray[ statisticsType ].cbegin(); it != this->statisticsArray[ statisticsType ].cend(); ++it ) {
-      ofstream << it->second.getSingleThreadTime() << ' ';
+      *ostream << it->second.getSingleThreadTime() << ' ';
     }
     
-    ofstream << "\nIn-class time: ";
+    *ostream << "\nIn-class time: ";
     for( auto it = this->statisticsArray[ statisticsType ].cbegin(); it != this->statisticsArray[ statisticsType ].cend(); ++it ) {
-      ofstream << it->second.getMultyThreadTime() << ' ';
+      *ostream << it->second.getMultyThreadTime() << ' ';
     }
   
-    ofstream << "\nAcceleration: ";
+    *ostream << "\nAcceleration: ";
     for( auto it = this->statisticsArray[ statisticsType ].cbegin(); it != this->statisticsArray[ statisticsType ].cend(); ++it ) {
-      ofstream << it->second.getSingleThreadTime() / it->second.getMultyThreadTime() << ' ';
+      *ostream << it->second.getSingleThreadTime() / it->second.getMultyThreadTime() << ' ';
     }
     
-    ofstream << "\n\n";
+    *ostream << "\n\n";
   }
 }
 

@@ -29,6 +29,7 @@ public:
     this->elements = std::valarray< T >( value, rows * columns );
     this->rows = rows;
     this->columns = columns;
+    this->isTransposed = false;
   }
 
 
@@ -42,6 +43,7 @@ public:
     this->elements = rhs.elements;
     this->rows = rhs.rows;
     this->columns = rhs.columns;
+    this->isTransposed = rhs.isTransposed;
   }
 
 
@@ -55,37 +57,38 @@ public:
     this->elements = std::move( rhs.elements );
     this->rows = rhs.rows;
     this->columns = rhs.columns;
+    this->isTransposed = rhs.isTransposed;
   }
 
 
 
   T& operator() ( Index row, Index column )
-  {
-    assert( row < this->rows );
-    assert( column < this->columns );
+  {    
+    assert( row < this->get_rows() );
+    assert( column < this->get_columns() );
     
     Lock lock( this->mutex );
     
-    return this->get( row, column );
+    return this->get_nonblock( row, column );
   }
   
   
   
   const T& operator() ( Index row, Index column ) const
-  {
-    assert( row < this->rows );
-    assert( column < this->columns );
+  {    
+    assert( row < this->get_rows() );
+    assert( column < this->get_columns() );
     
     Lock lock( this->mutex );
     
-    return this->get( row, column );
+    return this->get_nonblock( row, column );
   }
 
 
 
   Matrix< T >& operator= ( const Matrix< T >& rhs )
   {
-    if (this == &rhs) {
+    if( this == &rhs ) {
       return *this;
     }
         
@@ -93,9 +96,10 @@ public:
     Lock lock_myself( this->mutex, std::adopt_lock );
     Lock lock_rhs( rhs.mutex, std::adopt_lock );
     
-    this->elements = rhs.elements;    
+    this->elements = rhs.elements;
     this->rows = rhs.rows;
     this->columns = rhs.columns;
+    this->isTransposed = rhs.isTransposed;
     
     return *this;
   }
@@ -115,6 +119,7 @@ public:
     this->elements = std::move( rhs.elements );
     this->rows = rhs.rows;
     this->columns = rhs.columns;
+    this->isTransposed = rhs.isTransposed;
     
     return *this;
   }
@@ -123,16 +128,18 @@ public:
 
   Matrix< T > operator+ ( const Matrix< T >& rhs ) const
   {
-    assert( this->rows == rhs.rows );
-    assert( this->columns == rhs.columns );
+    assert( this->get_rows() == rhs.get_rows() );
+    assert( this->get_columns() == rhs.get_columns() );
     
-    Matrix< T > result( this->rows, this->columns );
+    Matrix< T > result( this->get_rows(), this->get_columns() );
     
     auto summarize = [ this, &rhs, &result ]( const Index& iRowStart, const Index& iRowEnd ) -> void
     {
       for( Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
         for( Index jColumn = 0; jColumn < this->columns; ++jColumn ) {
-          result.get( iRow, jColumn ) = this->get( iRow, jColumn ) + rhs.get( iRow, jColumn );
+          result.get_nonblock( iRow, jColumn ) = (
+            this->get_nonblock( iRow, jColumn ) + rhs.get_nonblock( iRow, jColumn ) 
+          );
         }
       }
     };
@@ -142,7 +149,7 @@ public:
     Lock lock_rhs( rhs.mutex, std::adopt_lock );
     
     Index first = 0;
-    Index last = this->rows;
+    Index last = this->get_rows_nonblock();
     this->parallelHandler.loop_for( first, last, summarize );
         
     return result;
@@ -152,16 +159,18 @@ public:
 
   Matrix< T > operator- ( const Matrix< T >& rhs ) const
   {
-    assert( this->rows == rhs.rows );
-    assert( this->columns == rhs.columns );
+    assert( this->get_rows() == rhs.get_rows() );
+    assert( this->get_columns() == rhs.get_columns() );
     
-    Matrix< T > result( this->rows, this->columns );
+    Matrix< T > result( this->get_rows(), this->get_columns() );
     
     auto subtract = [ this, &rhs, &result ]( Index iRowStart, Index iRowEnd ) -> void
     {
       for( Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
         for( Index jColumn = 0; jColumn < this->columns; ++jColumn ) {
-          result.get( iRow, jColumn ) = this->get( iRow, jColumn ) - rhs.get( iRow, jColumn );
+          result.get_nonblock( iRow, jColumn ) = (
+            this->get_nonblock( iRow, jColumn ) - rhs.get_nonblock( iRow, jColumn )
+          );
         }
       }
     };
@@ -171,7 +180,7 @@ public:
     Lock lock_rhs( rhs.mutex, std::adopt_lock );
     
     Index first = 0;
-    Index last = this->rows;
+    Index last = this->get_rows_nonblock();
     this->parallelHandler.loop_for( first, last, subtract );
         
     return result;
@@ -181,16 +190,18 @@ public:
   
   Matrix< T > operator* ( const Matrix< T >& rhs )
   {
-    assert( this->columns == rhs.rows );
+    assert( this->get_columns() == rhs.get_rows() );
     
-    Matrix< T > result( this->rows, rhs.columns );
+    Matrix< T > result( this->get_rows(), rhs.get_columns() );
     
     auto multiply = [ this, &rhs, &result ]( Index iRowStart, Index iRowEnd ) -> void
     {
       for( Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
         for( Index jColumn = 0; jColumn < rhs.columns; ++jColumn ) {
-          for( Index sIndex = 0; sIndex < this->columns; ++sIndex ) {
-            result.get( iRow, jColumn ) += this->get( iRow, sIndex ) * rhs.get( sIndex, jColumn );
+          for( Index sIndex = 0; sIndex < this->get_columns_nonblock(); ++sIndex ) {
+            result.get_nonblock( iRow, jColumn ) += (
+              this->get_nonblock( iRow, sIndex ) * rhs.get_nonblock( sIndex, jColumn )
+            );
           }
         }
       }
@@ -201,7 +212,7 @@ public:
     Lock lock_rhs( rhs.mutex, std::adopt_lock );
     
     Index first = 0;
-    Index last = this->rows;
+    Index last = this->get_rows_nonblock();
     this->parallelHandler.loop_for( first, last, multiply );
     
     return result;
@@ -211,7 +222,7 @@ public:
 
   Matrix< T >& operator+= ( const Matrix< T >& rhs )
   {
-    *this = *this + rhs;
+    *this = ( *this + rhs );
     
     return *this;
   }
@@ -220,7 +231,7 @@ public:
 
   Matrix< T >& operator-= ( const Matrix< T >& rhs )
   {
-    *this = *this - rhs;
+    *this = ( *this - rhs );
     
     return *this;
   }
@@ -229,7 +240,7 @@ public:
   
   Matrix< T >& operator*= ( const Matrix< T >& rhs )
   {
-    *this = *this * rhs;
+    *this = ( *this * rhs );
     
     return *this;
   }
@@ -246,8 +257,8 @@ public:
     Lock lock_myself( this->mutex, std::adopt_lock );
     Lock lock_rhs( rhs.mutex, std::adopt_lock );
         
-    bool rowsMismatch = ( this->rows != rhs.rows );
-    bool columnsMismatch = ( this->columns != rhs.columns );
+    bool rowsMismatch = ( this->get_rows_nonblock() != rhs.get_rows_nonblock() );
+    bool columnsMismatch = ( this->get_columns_nonblock() != rhs.get_columns_nonblock() );
     
     if ( rowsMismatch || columnsMismatch ) {
       return false;
@@ -268,26 +279,11 @@ public:
   
   
     
-  Matrix< T > transpose() const
+  Matrix< T >& transpose()
   {    
-    Matrix< T > result( this->columns, this->rows );  
+    this->isTransposed = !this->isTransposed;
     
-    auto swap = [ this, &result ]( Index iRowStart, Index iRowEnd ) -> void
-    {
-      for( Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
-        for( Index jColumn = 0; jColumn < this->columns; ++jColumn ) {
-          result.get( jColumn, iRow ) = this->get( iRow, jColumn );
-        }
-      }
-    };
-    
-    Lock lock( this->mutex );
-    
-    Index first = 0;
-    Index last = this->rows;
-    this->parallelHandler.loop_for( first, last, swap );  
-    
-    return result;
+    return *this;
   }
 
 
@@ -295,8 +291,8 @@ public:
   Index get_rows() const
   {
     Lock lock( this->mutex );
-    
-    return this->rows;
+        
+    return this->get_rows_nonblock();
   }
 
 
@@ -305,15 +301,33 @@ public:
   {
     Lock lock( this->mutex );
     
-    return this->columns;
+    return this->get_columns_nonblock();
+  }
+  
+  
+  
+private:
+
+  Index get_rows_nonblock() const
+  {
+    return ( this->isTransposed ? this->columns : this->rows );
   }
 
 
 
-private:
-
-  T& get( Index row, Index column )
+  Index get_columns_nonblock() const
   {
+    return ( this->isTransposed ? this->rows : this->columns );
+  }
+
+
+
+  T& get_nonblock( Index row, Index column )
+  {
+    if( this->isTransposed ) {
+      std::swap( row, column );
+    }
+    
     Index index = row * this->columns + column;
     
     return this->elements[ index ];
@@ -321,8 +335,12 @@ private:
 
 
 
-  const T& get( Index row, Index column ) const
+  const T& get_nonblock( Index row, Index column ) const
   {
+    if( this->isTransposed ) {
+      std::swap( row, column );
+    }
+    
     Index index = row * this->columns + column;
     
     return this->elements[ index ];
@@ -338,6 +356,8 @@ private:
   mutable ParallelHandler parallelHandler;
   mutable std::mutex mutex;
   
+  bool isTransposed;
+  
   std::valarray< T > elements;
   Index rows;
   Index columns;
@@ -351,8 +371,8 @@ Matrix< T >& operator* ( const T& value , Matrix< T >& rhs )
   auto multiply = [ &rhs, &value ]( typename Matrix< T >::Index iRowStart, typename Matrix< T >::Index iRowEnd ) -> void
   {
     for( typename Matrix< T >::Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
-      for( typename Matrix< T >::Index jColumn = 0; jColumn < rhs.columns; ++jColumn ) {
-        rhs.get( iRow, jColumn ) *= value;
+      for( typename Matrix< T >::Index jColumn = 0; jColumn < rhs.get_columns_nonblock(); ++jColumn ) {
+        rhs.get_nonblock( iRow, jColumn ) *= value;
       }
     }
   };
@@ -360,7 +380,7 @@ Matrix< T >& operator* ( const T& value , Matrix< T >& rhs )
   typename Matrix< T >::Lock lock( rhs.mutex );
   
   typename Matrix< T >::Index first = 0;
-  typename Matrix< T >::Index last = rhs.rows;
+  typename Matrix< T >::Index last = rhs.get_rows_nonblock();
   rhs.parallelHandler.loop_for( first, last, multiply );
   
   return rhs;

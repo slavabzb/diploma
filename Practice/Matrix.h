@@ -351,6 +351,10 @@ private:
   template< typename D >
   friend Matrix< D >& operator* ( const D& value , Matrix< D >& rhs );
 
+#ifdef TIME_TEST
+  friend class MatrixMultiplier;
+  friend class MatrixSummarizer;
+#endif // TIME_TEST
 
 
   mutable ParallelHandler parallelHandler;

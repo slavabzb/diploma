@@ -6,13 +6,12 @@ if [ ! -d "Build_Debug" ]; then
 fi
 
 cd Build_Debug
-
 cmake -DCMAKE_BUILD_TYPE=Debug ../
 
 echo "BUILDING"
 make
 
-if [ "$1" != "NOTEST" ]; then
+if [ "$1" = "-t" ]; then
   echo "TESTING"
   ./MatrixTester
 fi

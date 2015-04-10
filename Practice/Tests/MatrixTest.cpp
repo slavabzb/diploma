@@ -101,6 +101,9 @@ void MatrixTest::testTime()
     ->write( " x Current size" )
     ->write( "\nTotal iterations: " )
     ->write( nIterations )
+    ->write( "\n" )
+    ->write( "In-loop iterations number: " )
+    ->write( nInnerLoopIterations )
     ->write( "\n\n" );
   
   Statistics statistics;
@@ -113,8 +116,6 @@ void MatrixTest::testTime()
       ->write( 100.0 * iteration / ( nIterations - 1 ) )
       ->write( "%] The size of the matrices is " )
       ->write( size  )
-      ->write( ".\n\tIn-loop iterations number is " )
-      ->write( durations.size() )
       ->write( ".\n" );
     
     Logger::getInstance()->write( "\tFilling lhs...                " );

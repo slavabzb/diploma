@@ -197,7 +197,7 @@ public:
     auto multiply = [ this, &rhs, &result ]( Index iRowStart, Index iRowEnd ) -> void
     {
       for( Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
-        for( Index jColumn = 0; jColumn < rhs.columns; ++jColumn ) {
+        for( Index jColumn = 0; jColumn < rhs.get_columns_nonblock(); ++jColumn ) {
           for( Index sIndex = 0; sIndex < this->get_columns_nonblock(); ++sIndex ) {
             result.get_nonblock( iRow, jColumn ) += (
               this->get_nonblock( iRow, sIndex ) * rhs.get_nonblock( sIndex, jColumn )

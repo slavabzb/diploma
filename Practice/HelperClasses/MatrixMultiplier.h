@@ -35,7 +35,7 @@ public:
       for( std::size_t jColumn = 0; jColumn < rhs.get_columns(); ++jColumn ) {
         T sum = 0.0;
         for( std::size_t kIndex = 0; kIndex < lhs.get_columns(); ++kIndex ) {
-          sum += lhs( iRow, kIndex ) * rhs( kIndex, jColumn );
+          sum += ( lhs( iRow, kIndex ) * rhs( kIndex, jColumn ) );
         }
         result( iRow, jColumn ) = sum;
       }

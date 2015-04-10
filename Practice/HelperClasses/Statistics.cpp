@@ -3,6 +3,8 @@
 #include <fstream>
 #include <iostream>
 
+#include "HelperClasses/Logger.h"
+
 
 
 Time& Statistics::operator() ( std::size_t matrixSize, StatisticsType statisticsType )
@@ -19,6 +21,9 @@ void Statistics::save( const std::string& fileName )
   
   if( fstream.is_open() ) {
     ostream = &fstream;
+    Logger::getInstance()->write( "Writing collected info to \"" )
+      ->write( fileName )
+      ->write( "\" file." );
   }
   else {
     ostream = &std::cout;

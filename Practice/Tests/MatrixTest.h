@@ -34,6 +34,7 @@ public:
   void testMultiplication();
   void testTransposition();
   void testTime();
+  void testCrashDoubleType();
   
 private:
   

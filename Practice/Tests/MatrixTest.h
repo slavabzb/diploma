@@ -30,11 +30,11 @@ class MatrixTest : public CppUnit::TestFixture
   
 public:
   
+  void testCrashDoubleType();
   void testAddition();
   void testMultiplication();
   void testTransposition();
   void testTime();
-  void testCrashDoubleType();
   
 private:
   

@@ -13,6 +13,7 @@ public:
   void summarize( Matrix< T >& result, const Matrix< T >& lhs, const Matrix< T >& rhs )
   {
 #ifdef TIME_TEST
+
     assert( lhs.get_rows_nonblock() == rhs.get_rows_nonblock() );
     assert( lhs.get_columns_nonblock() == rhs.get_columns_nonblock() );
     assert( result.get_rows_nonblock() == lhs.get_rows_nonblock() );
@@ -25,7 +26,9 @@ public:
         );
       }
     }
+
 #else
+
     assert( lhs.get_rows() == rhs.get_rows() );
     assert( lhs.get_columns() == rhs.get_columns() );
     assert( result.get_rows() == lhs.get_rows() );
@@ -36,7 +39,9 @@ public:
         result( iRow, jColumn ) = lhs( iRow, jColumn ) + rhs( iRow, jColumn );
       }
     }
+
 #endif // TIME_TEST
+
   }
 
 };

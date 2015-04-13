@@ -6,10 +6,10 @@ if [ ! -d "Build_Debug" ]; then
 fi
 
 cd Build_Debug
-if [ "$1" = "-t" ]; then
-  cmake -DCMAKE_BUILD_TYPE=Debug -DTIME_TEST=ON ../
-else
+if [ "$1" = "-notime" ]; then
   cmake -DCMAKE_BUILD_TYPE=Debug -DTIME_TEST=OFF ../
+else
+  cmake -DCMAKE_BUILD_TYPE=Debug -DTIME_TEST=ON ../
 fi
 
 echo "BUILDING"

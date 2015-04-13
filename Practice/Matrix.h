@@ -19,26 +19,23 @@ private:
 
 public:
 
+  // Construct a rows-by-columns Matrix filled with the given value
   Matrix( Index rows, Index columns, const T& value = T( 0 ) )
+    : elements( value, rows * columns )
+    , rows( rows )
+    , columns( columns )
+    , isTransposed( false )
   {
     assert( rows > 0 );
     assert( columns > 0 );
-    
-    Lock lock( this->mutex );
-        
-    this->elements = std::valarray< T >( value, rows * columns );
-    this->rows = rows;
-    this->columns = columns;
-    this->isTransposed = false;
   }
 
 
 
+  // Construct a copy of other Matrix object
   Matrix( const Matrix< T >& rhs )
   {
-    std::lock( this->mutex, rhs.mutex );
-    Lock lock_myself( this->mutex, std::adopt_lock );
-    Lock lock_rhs( rhs.mutex, std::adopt_lock );
+    Lock lock_rhs( rhs.mutex );
     
     this->elements = rhs.elements;
     this->rows = rhs.rows;
@@ -48,20 +45,19 @@ public:
 
 
 
+  // Construct a copy using resources of temporary Matrix object
   Matrix( const Matrix< T >&& rhs )
+    : elements( std::move( rhs.elements ) )
+    , rows( rhs.rows )
+    , columns( rhs.columns )
+    , isTransposed( rhs.isTransposed )
   {
-    std::lock( this->mutex, rhs.mutex );
-    Lock lock_myself( this->mutex, std::adopt_lock );
-    Lock lock_rhs( rhs.mutex, std::adopt_lock );
-    
-    this->elements = std::move( rhs.elements );
-    this->rows = rhs.rows;
-    this->columns = rhs.columns;
-    this->isTransposed = rhs.isTransposed;
+
   }
 
 
 
+  // Retrieve the reference
   T& operator() ( Index row, Index column )
   {    
     assert( row < this->get_rows() );
@@ -71,9 +67,10 @@ public:
     
     return this->get_nonblock( row, column );
   }
-  
-  
-  
+
+
+
+  // Retrieve the const reference
   const T& operator() ( Index row, Index column ) const
   {    
     assert( row < this->get_rows() );
@@ -86,6 +83,7 @@ public:
 
 
 
+  // Make the matrix equal to other Matrix object
   Matrix< T >& operator= ( const Matrix< T >& rhs )
   {
     if( this == &rhs ) {
@@ -106,15 +104,14 @@ public:
 
 
 
-  Matrix< T >& operator= ( const Matrix< T >&& rhs )
+  // Make the matrix the owner of the resources of the temporary Matrix object
+  Matrix< T >& operator= ( Matrix< T >&& rhs )
   {
     if (this == &rhs) {
       return *this;
     }
     
-    std::lock( this->mutex, rhs.mutex );
     Lock lock_myself( this->mutex, std::adopt_lock );
-    Lock lock_rhs( rhs.mutex, std::adopt_lock );
     
     this->elements = std::move( rhs.elements );
     this->rows = rhs.rows;
@@ -126,6 +123,8 @@ public:
   
 
 
+  // Retrieve the Matrix each element of which is the sum of the corresponding
+  // elements of this and rhs Matrix objects
   Matrix< T > operator+ ( const Matrix< T >& rhs ) const
   {
     assert( this->get_rows() == rhs.get_rows() );
@@ -136,7 +135,7 @@ public:
     auto summarize = [ this, &rhs, &result ]( const Index& iRowStart, const Index& iRowEnd ) -> void
     {
       for( Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
-        for( Index jColumn = 0; jColumn < this->columns; ++jColumn ) {
+        for( Index jColumn = 0; jColumn < this->get_columns_nonblock(); ++jColumn ) {
           result.get_nonblock( iRow, jColumn ) = (
             this->get_nonblock( iRow, jColumn ) + rhs.get_nonblock( iRow, jColumn ) 
           );
@@ -157,6 +156,8 @@ public:
 
 
 
+  // Retrieve the Matrix each element of which is the difference of the corresponding
+  // elements of this and rhs Matrix objects
   Matrix< T > operator- ( const Matrix< T >& rhs ) const
   {
     assert( this->get_rows() == rhs.get_rows() );
@@ -167,7 +168,7 @@ public:
     auto subtract = [ this, &rhs, &result ]( Index iRowStart, Index iRowEnd ) -> void
     {
       for( Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
-        for( Index jColumn = 0; jColumn < this->columns; ++jColumn ) {
+        for( Index jColumn = 0; jColumn < this->get_columns_nonblock(); ++jColumn ) {
           result.get_nonblock( iRow, jColumn ) = (
             this->get_nonblock( iRow, jColumn ) - rhs.get_nonblock( iRow, jColumn )
           );
@@ -187,7 +188,9 @@ public:
   }
 
 
-  
+
+  // Retrieve the Matrix which is equal to result of matrix multiplication
+  // of this and rhs Matrix objects
   Matrix< T > operator* ( const Matrix< T >& rhs )
   {
     assert( this->get_columns() == rhs.get_rows() );
@@ -220,33 +223,8 @@ public:
 
 
 
-  Matrix< T >& operator+= ( const Matrix< T >& rhs )
-  {
-    *this = ( *this + rhs );
-    
-    return *this;
-  }
-
-
-
-  Matrix< T >& operator-= ( const Matrix< T >& rhs )
-  {
-    *this = ( *this - rhs );
-    
-    return *this;
-  }
-  
-  
-  
-  Matrix< T >& operator*= ( const Matrix< T >& rhs )
-  {
-    *this = ( *this * rhs );
-    
-    return *this;
-  }
-  
-  
-
+  // Check if each element of the matrix is equal to the corresponding
+  // element of the other Matrix object
   bool operator== ( const Matrix< T >& rhs ) const
   {
     if ( &rhs == this ) {
@@ -272,13 +250,15 @@ public:
 
 
 
+  // Check if the matrix is not equal to the other Matrix object
   bool operator!= ( const Matrix< T >& rhs ) const
   {
     return !( *this == rhs );
   }
-  
-  
-    
+
+
+
+  // Swap rows and columns
   Matrix< T >& transpose()
   {    
     this->isTransposed = !this->isTransposed;
@@ -288,6 +268,7 @@ public:
 
 
 
+  // Retrieve the number of rows of the matrix
   Index get_rows() const
   {
     Lock lock( this->mutex );
@@ -297,17 +278,19 @@ public:
 
 
 
+  // Retrieve the number of columns of the matrix
   Index get_columns() const
   {
     Lock lock( this->mutex );
     
     return this->get_columns_nonblock();
   }
-  
-  
-  
+
+
+
 private:
 
+  // Retrieve the number of rows of the matrix without using a mutex lock
   Index get_rows_nonblock() const
   {
     return ( this->isTransposed ? this->columns : this->rows );
@@ -315,6 +298,7 @@ private:
 
 
 
+  // Retrieve the number of columns of the matrix without using a mutex lock
   Index get_columns_nonblock() const
   {
     return ( this->isTransposed ? this->rows : this->columns );
@@ -322,26 +306,28 @@ private:
 
 
 
+  // Retrieve the reference by index without using a mutex lock
   T& get_nonblock( Index row, Index column )
   {
     if( this->isTransposed ) {
       std::swap( row, column );
     }
     
-    Index index = row * this->columns + column;
+    Index index = ( row * this->columns + column );
     
     return this->elements[ index ];
   }
 
 
 
+  // Retrieve the const reference by index without using a mutex lock
   const T& get_nonblock( Index row, Index column ) const
   {
     if( this->isTransposed ) {
       std::swap( row, column );
     }
     
-    Index index = row * this->columns + column;
+    Index index = ( row * this->columns + column );
     
     return this->elements[ index ];
   }
@@ -349,26 +335,28 @@ private:
 
   
   template< typename D >
-  friend Matrix< D >& operator* ( const D& value , Matrix< D >& rhs );
+  friend Matrix< D >& operator* ( const D& value, Matrix< D >& rhs );
 
 #ifdef TIME_TEST
   friend class MatrixMultiplier;
+  friend class MatrixRandomFiller;
   friend class MatrixSummarizer;
 #endif // TIME_TEST
 
 
   mutable ParallelHandler parallelHandler;
   mutable std::mutex mutex;
-  
-  bool isTransposed;
-  
+    
   std::valarray< T > elements;
   Index rows;
   Index columns;
+  
+  bool isTransposed;
 };
 
 
 
+// Multiply each element of the rhs by value
 template< typename T >
 Matrix< T >& operator* ( const T& value , Matrix< T >& rhs )
 {

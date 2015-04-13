@@ -13,6 +13,7 @@ public:
   void multiply( Matrix< T >& result, const Matrix< T >& lhs, const Matrix< T >& rhs )
   {
 #ifdef TIME_TEST
+
     assert( lhs.get_columns_nonblock() == rhs.get_rows_nonblock() );
     assert( result.get_rows_nonblock() == lhs.get_rows_nonblock() );
     assert( result.get_columns_nonblock() == rhs.get_columns_nonblock() );
@@ -26,7 +27,9 @@ public:
         result.get_nonblock( iRow, jColumn ) = sum;
       }
     }
+
 #else
+
     assert( lhs.get_columns() == rhs.get_rows() );
     assert( result.get_rows() == lhs.get_rows() );
     assert( result.get_columns() == rhs.get_columns() );
@@ -40,7 +43,9 @@ public:
         result( iRow, jColumn ) = sum;
       }
     }
+
 #endif // TIME_TEST
+
   }
   
   

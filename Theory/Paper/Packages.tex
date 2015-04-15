@@ -9,6 +9,7 @@
 \regtotcounter{page}
 \regtotcounter{figure}
 \regtotcounter{table}
+\regtotcounter{append}
 \newtotcounter{bibitem}
 \def\oldbibitem{} \let\oldbibitem=\bibitem
 \def\bibitem{\stepcounter{bibitem}\oldbibitem}
@@ -71,14 +72,14 @@ numbers=left
 \clubpenalty=10000
 \widowpenalty=10000
 
-\newcommand{\append}[1]{
-\stepcounter{section}
-\newpage
-\renewcommand\thesection{\Asbuk{section}}
-\renewcommand\thesubsection{\Asbuk{section}.\arabic{subsection}}
-\par\centerline{\bfseries ÏĞÈËÎÆÅÍÈÅ \Asbuk{section}}
-\par\centerline{(îáÿçàòåëüíîå)}
-\bigskip
-\par\centerline{\MakeTextUppercase{#1}}
-\addcontentsline{toc}{section}{ÏĞÈËÎÆÅÍÈÅ \Asbuk{section}. #1}
-}
+\makeatletter
+\newcounter{append}
+\renewcommand{\theappend}{\Asbuk{append}\,}
+\newcommand{\append}[1]{\newpage\refstepcounter{append}\par\vspace{1.5cm plus 1cm minus .5cm}
+	\par\centerline{\bfseries ÏĞÈËÎÆÅÍÈÅ~\theappend}%
+	\par\centerline{(îáÿçàòåëüíîå)}
+    \bigskip
+    \par\centerline{\MakeTextUppercase{#1}}
+	\addcontentsline{toc}{section}{ÏĞÈËÎÆÅÍÈÅ~\theappend. #1}\markboth{\theappend #1}{\theappend #1}%
+	\nopagebreak\bigskip\par}
+\makeatother

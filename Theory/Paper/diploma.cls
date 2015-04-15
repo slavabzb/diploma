@@ -716,7 +716,7 @@
   \if@chap
       \gdef\@chapapp{\appendixname}
       \setcounter{chapter}{-1}
-      \chapter{\mbox{}}
+      \chapter{\mbox{}\arabic{chapter}}
       \markboth{}{}
       \renewcommand\thefigure{\appendixabbrev.\@arabic\c@figure}
       \renewcommand\thetable{\appendixabbrev.\@arabic\c@table}

@@ -3,6 +3,7 @@
 \usepackage{pscyr}
 \usepackage[cp1251]{inputenc}
 
+\usepackage{textcase}
 \usepackage{totcount}
 \regtotcounter{section}
 \regtotcounter{page}
@@ -69,3 +70,15 @@ numbers=left
 
 \clubpenalty=10000
 \widowpenalty=10000
+
+\newcommand{\append}[1]{
+\stepcounter{section}
+\newpage
+\renewcommand\thesection{\Asbuk{section}}
+\renewcommand\thesubsection{\Asbuk{section}.\arabic{subsection}}
+\par\centerline{\bfseries ÏĞÈËÎÆÅÍÈÅ \Asbuk{section}}
+\par\centerline{(îáÿçàòåëüíîå)}
+\bigskip
+\par\centerline{\MakeTextUppercase{#1}}
+\addcontentsline{toc}{section}{ÏĞÈËÎÆÅÍÈÅ \Asbuk{section}. #1}
+}

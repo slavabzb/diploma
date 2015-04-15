@@ -57,7 +57,7 @@ void MatrixTest::testAddition()
   matrix_t C( this->matrixSize, this->matrixSize );
   this->matrixSummarizer.summarize( C, A, B );
 
-  matrix_t D( A + B );
+  matrix_t D( B + A );
 
   CPPUNIT_ASSERT( C == D );
 }

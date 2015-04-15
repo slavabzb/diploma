@@ -46,7 +46,7 @@ public:
 
 
   // Construct a copy using resources of temporary Matrix object
-  Matrix( const Matrix< T >&& rhs )
+  Matrix( Matrix< T >&& rhs )
     : elements( std::move( rhs.elements ) )
     , rows( rhs.rows )
     , columns( rhs.columns )

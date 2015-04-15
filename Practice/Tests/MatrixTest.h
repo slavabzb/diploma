@@ -4,9 +4,9 @@
 #include <memory>
 #include <gmpxx.h>
 
-#include <cppunit/Test.h>
-#include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/TestFixture.h>
+#include <cppunit/Test.h>
 
 #include "Matrix.h"
 
@@ -41,7 +41,7 @@ private:
   typedef mpz_class element_t;
   typedef Matrix< element_t > matrix_t;
   
-  
+  std::size_t matrixSize = 50;
   
   MatrixRandomFiller matrixRandomFiller;
   MatrixSummarizer matrixSummarizer;
@@ -49,8 +49,6 @@ private:
   MatrixTransposer matrixTransposer;
   
   TimeMeasurer timeMeasurer;
-  
-  std::size_t matrixSize = 50;
 };
 
 

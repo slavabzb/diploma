@@ -168,12 +168,13 @@ void MatrixTest::testTime()
       ->write( this->timeMeasurer.getDurationInSeconds() )
       ->write( "s\n" );
 
-    matrix_t result( size, size );
+    matrix_t result_external( size, size );
+    matrix_t result_internal( size, size );
     
     Logger::getInstance()->write( "\tOut-of-class summarizing...   [       ]" );
     for( std::size_t iDuration = 0; iDuration < durations.size(); ++iDuration ) {
       this->timeMeasurer.start();
-      this->matrixSummarizer.summarize( result, lhs, rhs );
+      this->matrixSummarizer.summarize( result_external, lhs, rhs );
       this->timeMeasurer.end();
       durations[ iDuration ] = this->timeMeasurer.getDurationInSeconds();
       Logger::getInstance()->write( "\b\b\b\b\b\b\b\b" )
@@ -188,8 +189,9 @@ void MatrixTest::testTime()
     Logger::getInstance()->write( "\tIn-class summarizing...       [       ]" );
     for( std::size_t iDuration = 0; iDuration < durations.size(); ++iDuration ) {
       this->timeMeasurer.start();
-      lhs + rhs;
+      result_internal = ( lhs + rhs );
       this->timeMeasurer.end();
+      CPPUNIT_ASSERT( result_external == result_internal );
       durations[ iDuration ] = this->timeMeasurer.getDurationInSeconds();
       Logger::getInstance()->write( "\b\b\b\b\b\b\b\b" )
         ->write( 100.0 * iDuration / ( durations.size() - 1 ) )
@@ -203,7 +205,7 @@ void MatrixTest::testTime()
     Logger::getInstance()->write( "\tOut-of-class multiplying...   [       ]" );
     for( std::size_t iDuration = 0; iDuration < durations.size(); ++iDuration ) {
       this->timeMeasurer.start();
-      this->matrixMultiplier.multiply( result, lhs, rhs );
+      this->matrixMultiplier.multiply( result_external, lhs, rhs );
       this->timeMeasurer.end();
       durations[ iDuration ] = this->timeMeasurer.getDurationInSeconds();
       Logger::getInstance()->write( "\b\b\b\b\b\b\b\b" )
@@ -218,8 +220,9 @@ void MatrixTest::testTime()
     Logger::getInstance()->write( "\tIn-class multiplying...       [       ]" );
     for( std::size_t iDuration = 0; iDuration < durations.size(); ++iDuration ) {
       this->timeMeasurer.start();
-      lhs * rhs;
+      result_internal = ( lhs * rhs );
       this->timeMeasurer.end();
+      CPPUNIT_ASSERT( result_external == result_internal );
       durations[ iDuration ] = this->timeMeasurer.getDurationInSeconds();
       Logger::getInstance()->write( "\b\b\b\b\b\b\b\b" )
         ->write( 100.0 * iDuration / ( durations.size() - 1 ) )

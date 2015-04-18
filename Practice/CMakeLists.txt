@@ -18,12 +18,6 @@ set( SOURCE
   HelperClasses/TimeMeasurer.cpp
 )
 
-option( TIME_TEST "Enable time test specific definitions" OFF )
-
-if( TIME_TEST )
-  add_definitions( -DTIME_TEST )
-endif( TIME_TEST)
-
 add_executable( ${PROJECT} ${SOURCE} )
 
 target_link_libraries( ${PROJECT} cppunit )

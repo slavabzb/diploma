@@ -25,7 +25,10 @@ public:
 
 
   template< typename Iterator, typename Function >
-  void loop_for( const Iterator& first, const Iterator& last, const Function& function )
+  void loop_for( const Iterator& first,
+    const Iterator& last,
+    const Function& function
+  )
   {
     const std::size_t size = ( last - first );
     if( size == 0 ) {
@@ -36,11 +39,12 @@ public:
     
     const std::size_t chunkSize = size / this->getNumThreads();
     Iterator iFirst = first;
-    for( std::size_t iThread = 0; iThread < ( this->getNumThreads() - 1 ); ++iThread ) {
-      Iterator iLast = iFirst;
-      iLast += chunkSize;
-      this->threads[ iThread ] = std::thread( function, iFirst, iLast );
-      iFirst = iLast;
+    for( std::size_t iThread = 0;
+      iThread < ( this->getNumThreads() - 1 ); ++iThread ) {
+        Iterator iLast = iFirst;
+        iLast += chunkSize;
+        this->threads[ iThread ] = std::thread( function, iFirst, iLast );
+        iFirst = iLast;
     }
 
     function( iFirst, last );

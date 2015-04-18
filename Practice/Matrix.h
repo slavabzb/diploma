@@ -2,7 +2,6 @@
 #define MATRIX_H
 
 #include <assert.h>
-#include <mutex>
 #include <valarray>
 
 #include "ParallelHandler.h"
@@ -15,7 +14,8 @@ class Matrix
 private:
 
   typedef std::size_t Index;
-  typedef std::lock_guard< std::mutex > Lock;
+
+
 
 public:
 
@@ -34,13 +34,12 @@ public:
 
   // Construct a copy of other Matrix object
   Matrix( const Matrix< T >& rhs )
+    : elements( rhs.elements )
+    , rows( rhs.rows )
+    , columns( rhs.columns )
+    , isTransposed( rhs.isTransposed )
   {
-    Lock lock_rhs( rhs.mutex );
-    
-    this->elements = rhs.elements;
-    this->rows = rhs.rows;
-    this->columns = rhs.columns;
-    this->isTransposed = rhs.isTransposed;
+
   }
 
 
@@ -58,27 +57,23 @@ public:
 
 
   // Retrieve the reference
-  T& operator() ( Index row, Index column )
+  T& operator() ( const Index& row, const Index& column )
   {    
     assert( row < this->get_rows() );
     assert( column < this->get_columns() );
-    
-    Lock lock( this->mutex );
-    
-    return this->get_nonblock( row, column );
+
+    return this->get( row, column );
   }
 
 
 
   // Retrieve the const reference
-  const T& operator() ( Index row, Index column ) const
+  const T& operator() ( const Index& row, const Index& column ) const
   {    
     assert( row < this->get_rows() );
     assert( column < this->get_columns() );
-    
-    Lock lock( this->mutex );
-    
-    return this->get_nonblock( row, column );
+
+    return this->get( row, column );
   }
 
 
@@ -89,16 +84,12 @@ public:
     if( this == &rhs ) {
       return *this;
     }
-        
-    std::lock( this->mutex, rhs.mutex );
-    Lock lock_myself( this->mutex, std::adopt_lock );
-    Lock lock_rhs( rhs.mutex, std::adopt_lock );
-    
+
     this->elements = rhs.elements;
     this->rows = rhs.rows;
     this->columns = rhs.columns;
     this->isTransposed = rhs.isTransposed;
-    
+
     return *this;
   }
 
@@ -110,17 +101,15 @@ public:
     if (this == &rhs) {
       return *this;
     }
-    
-    Lock lock_myself( this->mutex, std::adopt_lock );
-    
+
     this->elements = std::move( rhs.elements );
     this->rows = rhs.rows;
     this->columns = rhs.columns;
     this->isTransposed = rhs.isTransposed;
-    
+
     return *this;
   }
-  
+
 
 
   // Retrieve the Matrix each element of which is the sum of the corresponding
@@ -132,25 +121,27 @@ public:
     
     Matrix< T > result( this->get_rows(), this->get_columns() );
     
-    auto summarize = [ this, &rhs, &result ]( const Index& iRowStart, const Index& iRowEnd ) -> void
+    auto summarize = [ this, &rhs, &result ]( const Index& iRowStart,
+      const Index& iRowEnd ) -> void
     {
       for( Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
-        for( Index jColumn = 0; jColumn < this->get_columns_nonblock(); ++jColumn ) {
-          result.get_nonblock( iRow, jColumn ) = (
-            this->get_nonblock( iRow, jColumn ) + rhs.get_nonblock( iRow, jColumn ) 
+        for( Index jColumn = 0; jColumn < this->get_columns(); ++jColumn ) {
+          result.get( iRow, jColumn ) = (
+            this->get( iRow, jColumn ) + rhs.get( iRow, jColumn ) 
           );
         }
       }
     };
-    
-    std::lock( this->mutex, rhs.mutex );
-    Lock lock_myself( this->mutex, std::adopt_lock );
-    Lock lock_rhs( rhs.mutex, std::adopt_lock );
-    
-    Index first = 0;
-    Index last = this->get_rows_nonblock();
+
+    const std::size_t prev = this->parallelHandler.getMinPerThread();
+    this->parallelHandler.setMinPerThread( 10 * prev );
+
+    const Index first = 0;
+    const Index last = this->get_rows();
     this->parallelHandler.loop_for( first, last, summarize );
-        
+
+    this->parallelHandler.setMinPerThread( prev );
+
     return result;
   }
 
@@ -165,25 +156,22 @@ public:
     
     Matrix< T > result( this->get_rows(), this->get_columns() );
     
-    auto subtract = [ this, &rhs, &result ]( Index iRowStart, Index iRowEnd ) -> void
+    auto subtract = [ this, &rhs, &result ]( const Index& iRowStart,
+      const Index& iRowEnd ) -> void
     {
       for( Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
-        for( Index jColumn = 0; jColumn < this->get_columns_nonblock(); ++jColumn ) {
-          result.get_nonblock( iRow, jColumn ) = (
-            this->get_nonblock( iRow, jColumn ) - rhs.get_nonblock( iRow, jColumn )
+        for( Index jColumn = 0; jColumn < this->get_columns(); ++jColumn ) {
+          result.get( iRow, jColumn ) = (
+            this->get( iRow, jColumn ) - rhs.get( iRow, jColumn )
           );
         }
       }
     };
-    
-    std::lock( this->mutex, rhs.mutex );
-    Lock lock_myself( this->mutex, std::adopt_lock );
-    Lock lock_rhs( rhs.mutex, std::adopt_lock );
-    
-    Index first = 0;
-    Index last = this->get_rows_nonblock();
+
+    const Index first = 0;
+    const Index last = this->get_rows();
     this->parallelHandler.loop_for( first, last, subtract );
-        
+
     return result;
   }
 
@@ -197,27 +185,24 @@ public:
     
     Matrix< T > result( this->get_rows(), rhs.get_columns() );
     
-    auto multiply = [ this, &rhs, &result ]( Index iRowStart, Index iRowEnd ) -> void
+    auto multiply = [ this, &rhs, &result ]( const Index& iRowStart,
+      const Index& iRowEnd ) -> void
     {
       for( Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
-        for( Index jColumn = 0; jColumn < rhs.get_columns_nonblock(); ++jColumn ) {
-          for( Index sIndex = 0; sIndex < this->get_columns_nonblock(); ++sIndex ) {
-            result.get_nonblock( iRow, jColumn ) += (
-              this->get_nonblock( iRow, sIndex ) * rhs.get_nonblock( sIndex, jColumn )
+        for( Index jColumn = 0; jColumn < rhs.get_columns(); ++jColumn ) {
+          for( Index sIndex = 0; sIndex < this->get_columns(); ++sIndex ) {
+            result.get( iRow, jColumn ) += (
+              this->get( iRow, sIndex ) * rhs.get( sIndex, jColumn )
             );
           }
         }
       }
     };
-    
-    std::lock( this->mutex, rhs.mutex );
-    Lock lock_myself( this->mutex, std::adopt_lock );
-    Lock lock_rhs( rhs.mutex, std::adopt_lock );
-    
-    Index first = 0;
-    Index last = this->get_rows_nonblock();
+
+    const Index first = 0;
+    const Index last = this->get_rows();
     this->parallelHandler.loop_for( first, last, multiply );
-    
+
     return result;
   }
 
@@ -230,13 +215,9 @@ public:
     if ( &rhs == this ) {
       return true;
     }
-    
-    std::lock( this->mutex, rhs.mutex );
-    Lock lock_myself( this->mutex, std::adopt_lock );
-    Lock lock_rhs( rhs.mutex, std::adopt_lock );
-        
-    bool rowsMismatch = ( this->get_rows_nonblock() != rhs.get_rows_nonblock() );
-    bool columnsMismatch = ( this->get_columns_nonblock() != rhs.get_columns_nonblock() );
+
+    bool rowsMismatch = ( this->get_rows() != rhs.get_rows() );
+    bool columnsMismatch = ( this->get_columns() != rhs.get_columns() );
     
     if ( rowsMismatch || columnsMismatch ) {
       return false;
@@ -271,9 +252,7 @@ public:
   // Retrieve the number of rows of the matrix
   Index get_rows() const
   {
-    Lock lock( this->mutex );
-        
-    return this->get_rows_nonblock();
+    return ( this->isTransposed ? this->columns : this->rows );
   }
 
 
@@ -281,33 +260,15 @@ public:
   // Retrieve the number of columns of the matrix
   Index get_columns() const
   {
-    Lock lock( this->mutex );
-    
-    return this->get_columns_nonblock();
+    return ( this->isTransposed ? this->rows : this->columns );
   }
 
 
 
 private:
 
-  // Retrieve the number of rows of the matrix without using a mutex lock
-  Index get_rows_nonblock() const
-  {
-    return ( this->isTransposed ? this->columns : this->rows );
-  }
-
-
-
-  // Retrieve the number of columns of the matrix without using a mutex lock
-  Index get_columns_nonblock() const
-  {
-    return ( this->isTransposed ? this->rows : this->columns );
-  }
-
-
-
-  // Retrieve the reference by index without using a mutex lock
-  T& get_nonblock( Index row, Index column )
+  // Retrieve the reference by index
+  T& get( Index row, Index column )
   {
     if( this->isTransposed ) {
       std::swap( row, column );
@@ -320,8 +281,8 @@ private:
 
 
 
-  // Retrieve the const reference by index without using a mutex lock
-  const T& get_nonblock( Index row, Index column ) const
+  // Retrieve the const reference by index
+  const T& get( Index row, Index column ) const
   {
     if( this->isTransposed ) {
       std::swap( row, column );
@@ -333,46 +294,41 @@ private:
   }
 
 
-  
+
   template< typename D >
-  friend Matrix< D >& operator* ( const D& value, Matrix< D >& rhs );
+  friend Matrix< D >& operator* ( const D& value , Matrix< D >& rhs );
 
-#ifdef TIME_TEST
-  friend class MatrixMultiplier;
-  friend class MatrixRandomFiller;
-  friend class MatrixSummarizer;
-#endif // TIME_TEST
 
 
   mutable ParallelHandler parallelHandler;
-  mutable std::mutex mutex;
     
   std::valarray< T > elements;
   Index rows;
   Index columns;
-  
+
   bool isTransposed;
 };
 
 
 
-// Multiply each element of the rhs by value
+// Multiply each element of the Matrix by value
 template< typename T >
 Matrix< T >& operator* ( const T& value , Matrix< T >& rhs )
 {
-  auto multiply = [ &rhs, &value ]( typename Matrix< T >::Index iRowStart, typename Matrix< T >::Index iRowEnd ) -> void
+  using Index = typename Matrix< T >::Index;
+
+  auto multiply = [ &rhs, &value ]( const Index& iRowStart,
+    const Index& iRowEnd ) -> void
   {
-    for( typename Matrix< T >::Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
-      for( typename Matrix< T >::Index jColumn = 0; jColumn < rhs.get_columns_nonblock(); ++jColumn ) {
-        rhs.get_nonblock( iRow, jColumn ) *= value;
+    for( Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
+      for( Index jColumn = 0; jColumn < rhs.get_columns(); ++jColumn ) {
+        rhs.get( iRow, jColumn ) *= value;
       }
     }
   };
-  
-  typename Matrix< T >::Lock lock( rhs.mutex );
-  
-  typename Matrix< T >::Index first = 0;
-  typename Matrix< T >::Index last = rhs.get_rows_nonblock();
+
+  const Index first = 0;
+  const Index last = rhs.get_rows();
   rhs.parallelHandler.loop_for( first, last, multiply );
   
   return rhs;

@@ -176,7 +176,7 @@ public:
 
   // Retrieve the Matrix which is equal to result of matrix multiplication
   // of this and rhs Matrix objects
-  my_t operator* ( const my_t& rhs )
+  my_t operator* ( const my_t& rhs ) const
   {
     assert( this->get_columns() == rhs.get_rows() );
     

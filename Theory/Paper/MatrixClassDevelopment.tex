@@ -1,1 +1,68 @@
 \subsection{Распараллеливание матричных операций}
+
+В первой главе показано, что метод эллипсоидов активно использует матричные операции. Вычислительная сложность матричных операций варьируется от $O(n^2)$ (сложение, вычитание, транспонирование) до $O(n^3)$ (умножение). Ускорив выполнение этих операций, можно добиться ускорения выполнение всего метода.
+
+Стандартная библиотека C++ не предоставляет класса для представления матриц в программе. Для языка существуют различные реализации класса матриц, работающие без использования многопоточности~\cite{Boost, Armadillo, ItPlusPlus}. Для ускорения работы метода эллипсоидов требуется разработать класс матриц, поддерживающий распараллеливание матричных операций.
+
+Полный исходный код класса приведен в приложении~\ref{app:matrixSource}. Здесь рассматриваются основные идеи, лежащие в данной реализации.
+
+Класс \texttt{Matrix} -- шаблонный класс, параметризованный типом \texttt{T} элементов матрицы.
+
+\lstset{caption=}
+\lstinputlisting[firstline=11,lastline=12,firstnumber=11]{../../Practice/Matrix.h}
+
+В классе используется следующие обозначения типов.
+
+\lstinputlisting[firstline=16,lastline=18,firstnumber=16]{../../Practice/Matrix.h}
+
+Класс предоставляет три конструктора. Первый создает матрицу указанной размерности, все элементы которой заполнены начальным значением.
+
+\lstinputlisting[firstline=25,lastline=25,firstnumber=25]{../../Practice/Matrix.h}
+
+Второй -- конструктор копирования -- создает матрицу, все элементы которой равны элементам указанной матрицы.
+
+\lstinputlisting[firstline=38,lastline=38,firstnumber=38]{../../Practice/Matrix.h}
+
+Третий -- конструктор перемещения -- берет во владение ресурсы временно созданной матрицы.
+
+\lstinputlisting[firstline=50,lastline=50,firstnumber=50]{../../Practice/Matrix.h}
+
+Для индексного доступа к элементам применяются две версии оператора вызова функции (для константных и неконстантных объектов).
+
+\lstinputlisting[firstline=62,lastline=62,firstnumber=62]{../../Practice/Matrix.h}
+
+\lstinputlisting[firstline=73,lastline=73,firstnumber=73]{../../Practice/Matrix.h}
+
+Имеются две версии оператора присваивания (по копии и по временному объекту).
+
+\lstinputlisting[firstline=84,lastline=84,firstnumber=84]{../../Practice/Matrix.h}
+
+\lstinputlisting[firstline=101,lastline=101,firstnumber=101]{../../Practice/Matrix.h}
+
+Для класса перегружены основные бинарные операторы.
+
+\lstinputlisting[firstline=119,lastline=119,firstnumber=119]{../../Practice/Matrix.h}
+
+\lstinputlisting[firstline=149,lastline=149,firstnumber=149]{../../Practice/Matrix.h}
+
+\lstinputlisting[firstline=179,lastline=179,firstnumber=179]{../../Practice/Matrix.h}
+
+Операторы сравнения выполняют проверку на равенство элементов двух матриц.
+
+\lstinputlisting[firstline=210,lastline=210,firstnumber=210]{../../Practice/Matrix.h}
+
+\lstinputlisting[firstline=232,lastline=232,firstnumber=232]{../../Practice/Matrix.h}
+
+Для операции транспонирования класс предоставляет функцию.
+
+\lstinputlisting[firstline=240,lastline=240,firstnumber=240]{../../Practice/Matrix.h}
+
+Две функции для получения информации о размерности матрицы.
+
+\lstinputlisting[firstline=250,lastline=250,firstnumber=250]{../../Practice/Matrix.h}
+
+\lstinputlisting[firstline=258,lastline=258,firstnumber=258]{../../Practice/Matrix.h}
+
+Это открытый интерфейс класса \texttt{Matrix}, доступный пользователю. Помимо перечисленного функционала, класс содержит статическую функцию для доступа к объекту, управляющему механизмом параллельного выполнения операций.
+
+\lstinputlisting[firstline=266,lastline=266,firstnumber=266]{../../Practice/Matrix.h}

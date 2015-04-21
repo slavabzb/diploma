@@ -1,0 +1,14 @@
+Statistics report.
+
+The sizes of the matrices: 500 1000 1500 2000 
+Time statistics for Addition.
+Out-of-class time: 0 0 0 0 
+In-class time: 0.0284761 0.13567 0.317038 0.607013 
+Acceleration: 0 0 0 0 
+
+
+Time statistics for Multiplication.
+Out-of-class time: 0 0 0 0 
+In-class time: 5.04941 39.3446 139.403 351.304 
+Acceleration: 0 0 0 0 
+

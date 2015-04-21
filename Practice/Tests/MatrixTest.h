@@ -22,11 +22,12 @@
 class MatrixTest : public CppUnit::TestFixture
 {
   CPPUNIT_TEST_SUITE( MatrixTest );
-    CPPUNIT_TEST( testAddition );
-    CPPUNIT_TEST( testMultiplication );
-    CPPUNIT_TEST( testTransposition );
-    CPPUNIT_TEST( testAcceleration );
-    CPPUNIT_TEST( testMultithreadingTime );
+//    CPPUNIT_TEST( testAddition );
+//    CPPUNIT_TEST( testMultiplication );
+//    CPPUNIT_TEST( testTransposition );
+//    CPPUNIT_TEST( testAcceleration );
+//    CPPUNIT_TEST( testMultithreadingTime );
+    CPPUNIT_TEST( testThreadsNumberTime );
   CPPUNIT_TEST_SUITE_END();
   
 public:
@@ -37,6 +38,7 @@ public:
   void testTransposition();
   void testAcceleration();
   void testMultithreadingTime();
+  void testThreadsNumberTime();
   
 private:
 

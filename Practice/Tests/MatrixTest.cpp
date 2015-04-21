@@ -213,3 +213,30 @@ void MatrixTest::testMultithreadingTime()
 
 
 
+void MatrixTest::testThreadsNumberTime()
+{
+  const std::size_t matrixSize = 500;
+  this->nInnerLoopIterations = 1;
+
+  matrix_t lhs( matrixSize, matrixSize );
+  this->matrixRandomFiller.fill( lhs );
+
+  matrix_t rhs( matrixSize, matrixSize );
+  this->matrixRandomFiller.fill( rhs );
+
+  matrix_t result( matrixSize, matrixSize );
+
+  auto internalMultiplication = [ & ]() {
+    result = ( lhs * rhs );
+  };
+
+  double time = this->calculateAverageTime( internalMultiplication );
+  
+  const std::string fileName = "Time (using 2 threads)";
+  std::ofstream fstream( fileName );
+  
+  fstream << time;
+}
+
+
+

@@ -10,12 +10,12 @@ class MatrixSummarizer : public MatrixOperationPerformer
 public:
 
   template< typename T >
-  void summarize( Matrix< T >& result, const Matrix< T >& lhs, const Matrix< T >& rhs )
+  Matrix< T > summarize( const Matrix< T >& lhs, const Matrix< T >& rhs )
   {
     assert( lhs.get_rows() == rhs.get_rows() );
     assert( lhs.get_columns() == rhs.get_columns() );
-    assert( result.get_rows() == lhs.get_rows() );
-    assert( result.get_columns() == lhs.get_columns() );
+        
+    Matrix< T > result( lhs.get_rows(), lhs.get_columns() );
     
     for( std::size_t iRow = 0; iRow < lhs.get_rows(); ++iRow ) {
       for( std::size_t jColumn = 0; jColumn < rhs.get_columns(); ++jColumn ) {
@@ -24,6 +24,8 @@ public:
         );
       }
     }
+
+    return result;
   }
 
 };

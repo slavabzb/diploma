@@ -10,11 +10,11 @@ class MatrixMultiplier : public MatrixOperationPerformer
 public:
 
   template< typename T >
-  void multiply( Matrix< T >& result, const Matrix< T >& lhs, const Matrix< T >& rhs )
+  Matrix< T > multiply( const Matrix< T >& lhs, const Matrix< T >& rhs )
   {
     assert( lhs.get_columns() == rhs.get_rows() );
-    assert( result.get_rows() == lhs.get_rows() );
-    assert( result.get_columns() == rhs.get_columns() );
+    
+    Matrix< T > result( lhs.get_rows(), rhs.get_columns() );
     
     for( std::size_t iRow = 0; iRow < lhs.get_rows(); ++iRow ) {
       for( std::size_t jColumn = 0; jColumn < rhs.get_columns(); ++jColumn ) {
@@ -25,6 +25,8 @@ public:
         result( iRow, jColumn ) = sum;
       }
     }
+    
+    return result;
   }
 
 

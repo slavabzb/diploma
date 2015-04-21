@@ -21,13 +21,10 @@ void Statistics::save( const std::string& fileName )
   
   if( fstream.is_open() ) {
     ostream = &fstream;
-    Logger::getInstance()->write( "Writing collected info to \"" )
-      ->write( fileName )
-      ->write( "\" file." );
   }
   else {
-    ostream = &std::cout;
-    *ostream << "Warning! Can't open file " << fileName << "; stream to std::cout.\n";
+    ostream = &std::clog;
+    *ostream << "\nWarning! Can't open file " << fileName << "; redirect stream to std::clog.\n";
   }
   
   *ostream << "Statistics report.\n\n";

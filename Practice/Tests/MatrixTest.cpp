@@ -35,7 +35,7 @@ void MatrixTest::testCrashDoubleType()
   printer.print( matrix_b );
   
   Matrix< double > matrix_c( nRows, nColumns );
-  multiplier.multiply( matrix_c, matrix_a, matrix_b );
+  matrix_c = multiplier.multiply( matrix_a, matrix_b );
   
   Matrix< double > matrix_d( nRows, nColumns );
   matrix_d = matrix_a * matrix_b;
@@ -55,7 +55,7 @@ void MatrixTest::testAddition()
   this->matrixRandomFiller.fill( B );
 
   matrix_t C( this->matrixSize, this->matrixSize );
-  this->matrixSummarizer.summarize( C, A, B );
+  C = this->matrixSummarizer.summarize( A, B );
 
   matrix_t D( B + A );
 
@@ -73,7 +73,7 @@ void MatrixTest::testMultiplication()
   this->matrixRandomFiller.fill( B );
 
   matrix_t C( this->matrixSize, this->matrixSize );
-  this->matrixMultiplier.multiply( C, A, B );
+  C = this->matrixMultiplier.multiply( A, B );
 
   matrix_t D( A * B );
 
@@ -117,127 +117,98 @@ void MatrixTest::testTransposition()
 
 
 
-void MatrixTest::testTime()
+void MatrixTest::testAcceleration()
 {
-  Logger::getInstance()->write( "\nTime test started." );
-  
-  const std::size_t initialSize = 10;
-  const std::size_t sizeStep = 1;
-  const std::size_t nIterations = 4;
-  const std::size_t nInnerLoopIterations = 10;
-    
-  Logger::getInstance()->write( "\nInitial size: " )
-    ->write( initialSize )
-    ->write( "\nSize step: " )
-    ->write( sizeStep )
-    ->write( " x Current size" )
-    ->write( "\nTotal iterations: " )
-    ->write( nIterations )
-    ->write( "\n" )
-    ->write( "In-loop iterations number: " )
-    ->write( nInnerLoopIterations )
-    ->write( "\n\n" );
-  
-  Statistics statistics;
-  
-  std::size_t size = initialSize;
-  for( std::size_t iteration = 0; iteration < nIterations; ++iteration ) {
-    std::valarray< double > durations( nInnerLoopIterations );
-    
-    Logger::getInstance()->write( "[" )
-      ->write( 100.0 * iteration / ( nIterations - 1 ) )
-      ->write( "%] The size of the matrices is " )
-      ->write( size  )
-      ->write( ".\n" );
-    
-    Logger::getInstance()->write( "\tFilling lhs...                " );
+  std::size_t size = this->initialSize;
+  for( std::size_t iteration = 0; iteration < nIterations; ++iteration ) {    
     matrix_t lhs( size, size );
-    this->timeMeasurer.start();
     this->matrixRandomFiller.fill( lhs );
-    this->timeMeasurer.end();
-    Logger::getInstance()->write( "          ok\t" )
-      ->write( this->timeMeasurer.getDurationInSeconds() )
-      ->write( "s\n" );
     
-    Logger::getInstance()->write( "\tFilling rhs...                " );
     matrix_t rhs( size, size );
-    this->timeMeasurer.start();
     this->matrixRandomFiller.fill( rhs );
-    this->timeMeasurer.end();
-    Logger::getInstance()->write( "          ok\t" )
-      ->write( this->timeMeasurer.getDurationInSeconds() )
-      ->write( "s\n" );
 
-    matrix_t result_external( size, size );
-    matrix_t result_internal( size, size );
+    matrix_t resultExternal( size, size );
+    matrix_t resultInternal( size, size );
     
-    Logger::getInstance()->write( "\tOut-of-class summarizing...   [       ]" );
-    for( std::size_t iDuration = 0; iDuration < durations.size(); ++iDuration ) {
-      this->timeMeasurer.start();
-      this->matrixSummarizer.summarize( result_external, lhs, rhs );
-      this->timeMeasurer.end();
-      durations[ iDuration ] = this->timeMeasurer.getDurationInSeconds();
-      Logger::getInstance()->write( "\b\b\b\b\b\b\b\b" )
-        ->write( 100.0 * iDuration / ( durations.size() - 1 ) )
-        ->write( "%]" );
-    }
-    statistics( size, Statistics::Addition ).setSingleThreadTime( durations.sum() / durations.size() );
-    Logger::getInstance()->write( " ok\t" )
-      ->write( statistics( size, Statistics::Addition ).getSingleThreadTime() )
-      ->write( "s\n" );
+    auto externalSummarizing = [ & ]() {
+      resultExternal = this->matrixSummarizer.summarize( lhs, rhs );
+    };
     
-    Logger::getInstance()->write( "\tIn-class summarizing...       [       ]" );
-    for( std::size_t iDuration = 0; iDuration < durations.size(); ++iDuration ) {
-      this->timeMeasurer.start();
-      result_internal = ( lhs + rhs );
-      this->timeMeasurer.end();
-      CPPUNIT_ASSERT( result_external == result_internal );
-      durations[ iDuration ] = this->timeMeasurer.getDurationInSeconds();
-      Logger::getInstance()->write( "\b\b\b\b\b\b\b\b" )
-        ->write( 100.0 * iDuration / ( durations.size() - 1 ) )
-        ->write( "%]" );
-    }
-    statistics( size, Statistics::Addition ).setMultyThreadTime( durations.sum() / durations.size() );
-    Logger::getInstance()->write( " ok\t" )
-      ->write( statistics( size, Statistics::Addition ).getMultyThreadTime() )
-      ->write( "s\n" );
+    auto internalSummarizing = [ & ]() {
+      resultInternal = ( lhs + rhs );
+    };
     
-    Logger::getInstance()->write( "\tOut-of-class multiplying...   [       ]" );
-    for( std::size_t iDuration = 0; iDuration < durations.size(); ++iDuration ) {
-      this->timeMeasurer.start();
-      this->matrixMultiplier.multiply( result_external, lhs, rhs );
-      this->timeMeasurer.end();
-      durations[ iDuration ] = this->timeMeasurer.getDurationInSeconds();
-      Logger::getInstance()->write( "\b\b\b\b\b\b\b\b" )
-        ->write( 100.0 * iDuration / ( durations.size() - 1 ) )
-        ->write( "%]" );
-    }
-    statistics( size, Statistics::Multiplication ).setSingleThreadTime( durations.sum() / durations.size() );
-    Logger::getInstance()->write( " ok\t" )
-      ->write( statistics( size, Statistics::Multiplication ).getSingleThreadTime() )
-      ->write( "s\n" );
+    auto externalMultiplication = [ & ]() {
+      resultExternal = this->matrixMultiplier.multiply( lhs, rhs );
+    };
     
-    Logger::getInstance()->write( "\tIn-class multiplying...       [       ]" );
-    for( std::size_t iDuration = 0; iDuration < durations.size(); ++iDuration ) {
-      this->timeMeasurer.start();
-      result_internal = ( lhs * rhs );
-      this->timeMeasurer.end();
-      CPPUNIT_ASSERT( result_external == result_internal );
-      durations[ iDuration ] = this->timeMeasurer.getDurationInSeconds();
-      Logger::getInstance()->write( "\b\b\b\b\b\b\b\b" )
-        ->write( 100.0 * iDuration / ( durations.size() - 1 ) )
-        ->write( "%]" );
-    }
-    statistics( size, Statistics::Multiplication ).setMultyThreadTime( durations.sum() / durations.size() );
-    Logger::getInstance()->write( " ok\t" )
-      ->write( statistics( size, Statistics::Multiplication ).getMultyThreadTime() )
-      ->write( "s\n" );
-        
-    size += size * sizeStep;
+    auto internalMultiplication = [ & ]() {
+      resultInternal = ( lhs * rhs );
+    };
+    
+    this->statistics( size, Statistics::Addition ).setSingleThreadTime(
+      this->calculateAverageTime( externalSummarizing )
+    );
+
+    this->statistics( size, Statistics::Addition ).setMultyThreadTime(
+      this->calculateAverageTime( internalSummarizing )
+    );
+
+    this->statistics( size, Statistics::Multiplication ).setSingleThreadTime(
+      this->calculateAverageTime( externalMultiplication )
+    );
+
+    this->statistics( size, Statistics::Multiplication ).setMultyThreadTime(
+      this->calculateAverageTime( internalMultiplication )
+    );
+
+    size = this->initialSize * (this->sizeStep + 10 * iteration);
   }
   
-  const std::string fileName = "statistics";
-  statistics.save( fileName );
+  const std::string fileName = "Acceleration statistics";
+  this->statistics.save( fileName );
+}
+
+
+
+void MatrixTest::testMultithreadingTime()
+{
+  this->nInnerLoopIterations = 1;
+  this->initialSize = 500;
+  this->sizeStep = 500;
+  this->nIterations = 1;
+  
+  std::size_t size = this->initialSize;
+  for( std::size_t iteration = 0; iteration < nIterations; ++iteration ) {    
+    matrix_t lhs( size, size );
+    this->matrixRandomFiller.fill( lhs );
+    
+    matrix_t rhs( size, size );
+    this->matrixRandomFiller.fill( rhs );
+
+    matrix_t resultInternal( size, size );
+        
+    auto internalSummarizing = [ & ]() {
+      resultInternal = ( lhs + rhs );
+    };
+
+    auto internalMultiplication = [ & ]() {
+      resultInternal = ( lhs * rhs );
+    };
+    
+    this->statistics( size, Statistics::Addition ).setMultyThreadTime(
+      this->calculateAverageTime( internalSummarizing )
+    );
+
+    this->statistics( size, Statistics::Multiplication ).setMultyThreadTime(
+      this->calculateAverageTime( internalMultiplication )
+    );
+
+    size += this->sizeStep;
+  }
+  
+  const std::string fileName = "Multithreading statistics";
+  this->statistics.save( fileName );
 }
 
 

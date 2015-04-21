@@ -13,15 +13,17 @@ class Matrix
 {
 private:
 
-  typedef std::size_t Index;
+  typedef T value_t;
+  typedef Matrix< value_t > my_t;
+  typedef std::size_t index_t;
 
 
 
 public:
 
   // Construct a rows-by-columns Matrix filled with the given value
-  Matrix( Index rows, Index columns, const T& value = T( 0 ) )
-    : elements( value, rows * columns )
+  Matrix( index_t rows, index_t columns, const value_t& value = value_t( 0 ) )
+    : values( value, rows * columns )
     , rows( rows )
     , columns( columns )
     , isTransposed( false )
@@ -33,8 +35,8 @@ public:
 
 
   // Construct a copy of other Matrix object
-  Matrix( const Matrix< T >& rhs )
-    : elements( rhs.elements )
+  Matrix( const my_t& rhs )
+    : values( rhs.values )
     , rows( rhs.rows )
     , columns( rhs.columns )
     , isTransposed( rhs.isTransposed )
@@ -45,8 +47,8 @@ public:
 
 
   // Construct a copy using resources of temporary Matrix object
-  Matrix( Matrix< T >&& rhs )
-    : elements( std::move( rhs.elements ) )
+  Matrix( my_t&& rhs )
+    : values( std::move( rhs.values ) )
     , rows( rhs.rows )
     , columns( rhs.columns )
     , isTransposed( rhs.isTransposed )
@@ -57,7 +59,7 @@ public:
 
 
   // Retrieve the reference
-  T& operator() ( const Index& row, const Index& column )
+  value_t& operator() ( const index_t& row, const index_t& column )
   {    
     assert( row < this->get_rows() );
     assert( column < this->get_columns() );
@@ -68,7 +70,7 @@ public:
 
 
   // Retrieve the const reference
-  const T& operator() ( const Index& row, const Index& column ) const
+  const value_t& operator() ( const index_t& row, const index_t& column ) const
   {    
     assert( row < this->get_rows() );
     assert( column < this->get_columns() );
@@ -79,13 +81,13 @@ public:
 
 
   // Make the matrix equal to other Matrix object
-  Matrix< T >& operator= ( const Matrix< T >& rhs )
+  my_t& operator= ( const my_t& rhs )
   {
     if( this == &rhs ) {
       return *this;
     }
 
-    this->elements = rhs.elements;
+    this->values = rhs.values;
     this->rows = rhs.rows;
     this->columns = rhs.columns;
     this->isTransposed = rhs.isTransposed;
@@ -96,13 +98,13 @@ public:
 
 
   // Make the matrix the owner of the resources of the temporary Matrix object
-  Matrix< T >& operator= ( Matrix< T >&& rhs )
+  my_t& operator= ( my_t&& rhs )
   {
     if (this == &rhs) {
       return *this;
     }
 
-    this->elements = std::move( rhs.elements );
+    this->values = std::move( rhs.values );
     this->rows = rhs.rows;
     this->columns = rhs.columns;
     this->isTransposed = rhs.isTransposed;
@@ -113,19 +115,19 @@ public:
 
 
   // Retrieve the Matrix each element of which is the sum of the corresponding
-  // elements of this and rhs Matrix objects
-  Matrix< T > operator+ ( const Matrix< T >& rhs ) const
+  // values of this and rhs Matrix objects
+  my_t operator+ ( const my_t& rhs ) const
   {
     assert( this->get_rows() == rhs.get_rows() );
     assert( this->get_columns() == rhs.get_columns() );
     
-    Matrix< T > result( this->get_rows(), this->get_columns() );
+    my_t result( this->get_rows(), this->get_columns() );
     
-    auto summarize = [ this, &rhs, &result ]( const Index& iRowStart,
-      const Index& iRowEnd ) -> void
+    auto summarize = [ this, &rhs, &result ]( const index_t& iRowStart,
+      const index_t& iRowEnd ) -> void
     {
-      for( Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
-        for( Index jColumn = 0; jColumn < this->get_columns(); ++jColumn ) {
+      for( index_t iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
+        for( index_t jColumn = 0; jColumn < this->get_columns(); ++jColumn ) {
           result.get( iRow, jColumn ) = (
             this->get( iRow, jColumn ) + rhs.get( iRow, jColumn ) 
           );
@@ -133,14 +135,9 @@ public:
       }
     };
 
-    const std::size_t prev = this->parallelHandler.getMinPerThread();
-    this->parallelHandler.setMinPerThread( 10 * prev );
-
-    const Index first = 0;
-    const Index last = this->get_rows();
-    this->parallelHandler.loop_for( first, last, summarize );
-
-    this->parallelHandler.setMinPerThread( prev );
+    const index_t first = 0;
+    const index_t last = this->get_rows();
+    my_t::getParallelHandler()->loop_for( first, last, summarize );
 
     return result;
   }
@@ -148,19 +145,19 @@ public:
 
 
   // Retrieve the Matrix each element of which is the difference of the corresponding
-  // elements of this and rhs Matrix objects
-  Matrix< T > operator- ( const Matrix< T >& rhs ) const
+  // values of this and rhs Matrix objects
+  my_t operator- ( const my_t& rhs ) const
   {
     assert( this->get_rows() == rhs.get_rows() );
     assert( this->get_columns() == rhs.get_columns() );
     
-    Matrix< T > result( this->get_rows(), this->get_columns() );
+    my_t result( this->get_rows(), this->get_columns() );
     
-    auto subtract = [ this, &rhs, &result ]( const Index& iRowStart,
-      const Index& iRowEnd ) -> void
+    auto subtract = [ this, &rhs, &result ]( const index_t& iRowStart,
+      const index_t& iRowEnd ) -> void
     {
-      for( Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
-        for( Index jColumn = 0; jColumn < this->get_columns(); ++jColumn ) {
+      for( index_t iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
+        for( index_t jColumn = 0; jColumn < this->get_columns(); ++jColumn ) {
           result.get( iRow, jColumn ) = (
             this->get( iRow, jColumn ) - rhs.get( iRow, jColumn )
           );
@@ -168,9 +165,9 @@ public:
       }
     };
 
-    const Index first = 0;
-    const Index last = this->get_rows();
-    this->parallelHandler.loop_for( first, last, subtract );
+    const index_t first = 0;
+    const index_t last = this->get_rows();
+    my_t::getParallelHandler()->loop_for( first, last, subtract );
 
     return result;
   }
@@ -179,18 +176,18 @@ public:
 
   // Retrieve the Matrix which is equal to result of matrix multiplication
   // of this and rhs Matrix objects
-  Matrix< T > operator* ( const Matrix< T >& rhs )
+  my_t operator* ( const my_t& rhs )
   {
     assert( this->get_columns() == rhs.get_rows() );
     
-    Matrix< T > result( this->get_rows(), rhs.get_columns() );
+    my_t result( this->get_rows(), rhs.get_columns() );
     
-    auto multiply = [ this, &rhs, &result ]( const Index& iRowStart,
-      const Index& iRowEnd ) -> void
+    auto multiply = [ this, &rhs, &result ]( const index_t& iRowStart,
+      const index_t& iRowEnd ) -> void
     {
-      for( Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
-        for( Index jColumn = 0; jColumn < rhs.get_columns(); ++jColumn ) {
-          for( Index sIndex = 0; sIndex < this->get_columns(); ++sIndex ) {
+      for( index_t iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
+        for( index_t jColumn = 0; jColumn < rhs.get_columns(); ++jColumn ) {
+          for( index_t sIndex = 0; sIndex < this->get_columns(); ++sIndex ) {
             result.get( iRow, jColumn ) += (
               this->get( iRow, sIndex ) * rhs.get( sIndex, jColumn )
             );
@@ -199,9 +196,9 @@ public:
       }
     };
 
-    const Index first = 0;
-    const Index last = this->get_rows();
-    this->parallelHandler.loop_for( first, last, multiply );
+    const index_t first = 0;
+    const index_t last = this->get_rows();
+    my_t::getParallelHandler()->loop_for( first, last, multiply );
 
     return result;
   }
@@ -210,7 +207,7 @@ public:
 
   // Check if each element of the matrix is equal to the corresponding
   // element of the other Matrix object
-  bool operator== ( const Matrix< T >& rhs ) const
+  bool operator== ( const my_t& rhs ) const
   {
     if ( &rhs == this ) {
       return true;
@@ -223,7 +220,7 @@ public:
       return false;
     }
     
-    std::valarray< bool > comp = ( this->elements == rhs.elements );
+    std::valarray< bool > comp = ( this->values == rhs.values );
     bool isEqual = ( comp.min() == true );
     
     return isEqual;
@@ -232,7 +229,7 @@ public:
 
 
   // Check if the matrix is not equal to the other Matrix object
-  bool operator!= ( const Matrix< T >& rhs ) const
+  bool operator!= ( const my_t& rhs ) const
   {
     return !( *this == rhs );
   }
@@ -240,7 +237,7 @@ public:
 
 
   // Swap rows and columns
-  Matrix< T >& transpose()
+  my_t& transpose()
   {    
     this->isTransposed = !this->isTransposed;
     
@@ -250,7 +247,7 @@ public:
 
 
   // Retrieve the number of rows of the matrix
-  Index get_rows() const
+  index_t get_rows() const
   {
     return ( this->isTransposed ? this->columns : this->rows );
   }
@@ -258,9 +255,19 @@ public:
 
 
   // Retrieve the number of columns of the matrix
-  Index get_columns() const
+  index_t get_columns() const
   {
     return ( this->isTransposed ? this->rows : this->columns );
+  }
+
+
+
+  // Retrieve an instance of parallel execution controller
+  static ParallelHandler* getParallelHandler()
+  {
+    static ParallelHandler parallelHandler;
+
+    return &parallelHandler;
   }
 
 
@@ -268,29 +275,29 @@ public:
 private:
 
   // Retrieve the reference by index
-  T& get( Index row, Index column )
+  value_t& get( index_t row, index_t column )
   {
     if( this->isTransposed ) {
       std::swap( row, column );
     }
     
-    Index index = ( row * this->columns + column );
+    index_t index = ( row * this->columns + column );
     
-    return this->elements[ index ];
+    return this->values[ index ];
   }
 
 
 
   // Retrieve the const reference by index
-  const T& get( Index row, Index column ) const
+  const value_t& get( index_t row, index_t column ) const
   {
     if( this->isTransposed ) {
       std::swap( row, column );
     }
     
-    Index index = ( row * this->columns + column );
+    index_t index = ( row * this->columns + column );
     
-    return this->elements[ index ];
+    return this->values[ index ];
   }
 
 
@@ -300,11 +307,9 @@ private:
 
 
 
-  mutable ParallelHandler parallelHandler;
-    
-  std::valarray< T > elements;
-  Index rows;
-  Index columns;
+  std::valarray< value_t > values;
+  index_t rows;
+  index_t columns;
 
   bool isTransposed;
 };
@@ -315,21 +320,21 @@ private:
 template< typename T >
 Matrix< T >& operator* ( const T& value , Matrix< T >& rhs )
 {
-  using Index = typename Matrix< T >::Index;
+  using index_t = typename Matrix< T >::index_t;
 
-  auto multiply = [ &rhs, &value ]( const Index& iRowStart,
-    const Index& iRowEnd ) -> void
+  auto multiply = [ &rhs, &value ]( const index_t& iRowStart,
+    const index_t& iRowEnd ) -> void
   {
-    for( Index iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
-      for( Index jColumn = 0; jColumn < rhs.get_columns(); ++jColumn ) {
+    for( index_t iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
+      for( index_t jColumn = 0; jColumn < rhs.get_columns(); ++jColumn ) {
         rhs.get( iRow, jColumn ) *= value;
       }
     }
   };
 
-  const Index first = 0;
-  const Index last = rhs.get_rows();
-  rhs.parallelHandler.loop_for( first, last, multiply );
+  const index_t first = 0;
+  const index_t last = rhs.get_rows();
+  Matrix< T >::getParallelHandler()->loop_for( first, last, multiply );
   
   return rhs;
 }

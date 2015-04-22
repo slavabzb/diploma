@@ -109,3 +109,33 @@ frame=none
 ѕроведем вычислительный эксперимент: измерим врем€ выполнени€ последовательного и параллельного алгоритма суммировани€ и умножени€ матриц.
 
 ѕри суммировании элементов матрицы на каждой итерации цикла выполн€етс€ проста€ операци€ сложени€ двух чисел. ѕри умножении матриц на каждой итерации цикла выполн€ютс€ две операции: более сложна€ операци€ умножени€ и операци€ сложени€. Ќо, несмотр€ на большую вычислительную сложность, врем€ работы алгоритма умножени€ матриц превосходит врем€ выполнени€ сложени€ всего на [TODO: X\%]. Ётот эксперимент можно рассматривать, как подтверждение предположени€ о том, что значительна€ часть времени тратитс€ на выборку необходимых данных из оперативной пам€ти в кэш процессора.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.8\textwidth]{Figures/MultiplicationAcceleration}
+\caption{\label{fig:MultiplicationAcceleration} MultiplicationAcceleration}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.8\textwidth]{Figures/MultiplicationTime}
+\caption{\label{fig:MultiplicationTime} MultiplicationTime}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.8\textwidth]{Figures/SummarizingAcceleration}
+\caption{\label{fig:SummarizingAcceleration} SummarizingAcceleration}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.8\textwidth]{Figures/SummarizingTime}
+\caption{\label{fig:SummarizingTime} SummarizingTime}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.8\textwidth]{Figures/ThreadsNumberTime}
+\caption{\label{fig:ThreadsNumberTime} ThreadsNumberTime}
+\end{figure}

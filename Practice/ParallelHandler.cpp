@@ -3,6 +3,7 @@
 
 
 ParallelHandler::ParallelHandler( std::size_t minNumThreads, std::size_t minPerThread )
+  : hardwareThreads( std::thread::hardware_concurrency() )
 {
   this->setMinNumThreads( minNumThreads );
   this->setMinPerThread( minPerThread );

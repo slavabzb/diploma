@@ -27,8 +27,7 @@ public:
   template< typename Iterator, typename Function >
   void loop_for( const Iterator& first,
     const Iterator& last,
-    const Function& function
-  )
+    Function&& function )
   {
     const std::size_t size = ( last - first );
     if( size == 0 ) {
@@ -82,7 +81,7 @@ private:
 
   ParallelPolicy parallelPolicy;
 
-  const std::size_t hardwareThreads = std::thread::hardware_concurrency();
+  const std::size_t hardwareThreads;
   
   std::size_t numThreads;
   std::size_t userDefinedNumThreads;

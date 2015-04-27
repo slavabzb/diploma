@@ -6,15 +6,13 @@
 
 
 
-template< typename T, std::size_t N >
+template< typename T, std::size_t Dimension >
 class Point
 {
   typedef T value_t;
-  typedef std::array< value_t, N > values_container_t;
-  typedef Point< value_t, N > my_t;
-  typedef std::size_t index_t;
-
-  using size_t = typename values_container_t::size_type;
+  typedef std::array< value_t, Dimension > container_t;
+  typedef Point< value_t, Dimension > my_t;
+  typedef typename container_t::size_type index_t;
 
 
 
@@ -39,7 +37,7 @@ public:
 
 
 
-  size_t size() const
+  index_t size() const
   {
     return this->values.size();
   }
@@ -77,7 +75,7 @@ public:
   {
     my_t result;
     
-    for( size_t index = 0; index < result.values.size(); ++index ) {
+    for( index_t index = 0; index < result.values.size(); ++index ) {
       result.values[ index ] = ( this->values[ index ] + rhs.values[ index ] );
     }
     
@@ -90,7 +88,7 @@ public:
   {
     my_t result;
     
-    for( size_t index = 0; index < result.values.size(); ++index ) {
+    for( index_t index = 0; index < result.values.size(); ++index ) {
       result.values[ index ] = ( this->values[ index ] - rhs.values[ index ] );
     }
     
@@ -101,7 +99,7 @@ public:
 
   my_t& operator+= ( const my_t& rhs )
   {
-    for( size_t index = 0; index < this->values.size(); ++index ) {
+    for( index_t index = 0; index < this->values.size(); ++index ) {
       this->values[ index ] += rhs.values[ index ];
     }
     
@@ -112,7 +110,7 @@ public:
 
   my_t& operator-= ( const my_t& rhs )
   {
-    for( size_t index = 0; index < this->values.size(); ++index ) {
+    for( index_t index = 0; index < this->values.size(); ++index ) {
       this->values[ index ] -= rhs.values[ index ];
     }
     
@@ -121,9 +119,43 @@ public:
 
 
 
+  bool operator== ( const my_t& rhs ) const
+  {
+    return ( this->values == rhs.values );
+  }
+  
+  
+  
+  bool operator== ( const value_t& rhs ) const
+  {
+    bool isAllEqual = true;
+    for( const auto& value : this->values ) {
+      if( value != rhs ) {
+        isAllEqual = false;
+        break;
+      }
+    }
+    
+    return isAllEqual;
+  }
+
+
+
+  bool operator!= ( const value_t& rhs ) const
+  {
+    return !( *this == rhs );
+  }
+
+
+
+  bool operator!= ( const my_t& rhs ) const
+  {
+    return ( this->values != rhs.values );
+  }
+
 private:
 
-  values_container_t values;
+  container_t values;
 };
 
 

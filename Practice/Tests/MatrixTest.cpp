@@ -176,10 +176,10 @@ void MatrixTest::testMultithreadingTime()
   this->nInnerLoopIterations = 1;
   this->initialSize = 500;
   this->sizeStep = 500;
-  this->nIterations = 1;
+  this->nIterations = 0;
   
   std::size_t size = this->initialSize;
-  for( std::size_t iteration = 0; iteration < nIterations; ++iteration ) {    
+  for( std::size_t iteration = 0; iteration < this->nIterations; ++iteration ) {    
     matrix_t lhs( size, size );
     this->matrixRandomFiller.fill( lhs );
     
@@ -216,7 +216,7 @@ void MatrixTest::testMultithreadingTime()
 void MatrixTest::testThreadsNumberTime()
 {
   const std::size_t matrixSize = 500;
-  this->nInnerLoopIterations = 1;
+  this->nInnerLoopIterations = 0;
 
   matrix_t lhs( matrixSize, matrixSize );
   this->matrixRandomFiller.fill( lhs );

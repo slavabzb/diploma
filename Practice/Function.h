@@ -5,11 +5,11 @@
 
 
 
-template< typename T, std::size_t N >
+template< typename T, std::size_t Dimension >
 class Function
 {
   typedef T value_t;
-  typedef Point< value_t, N > point_t;
+  typedef Point< value_t, Dimension > point_t;
 
 
 
@@ -22,8 +22,7 @@ public:
 
 
 
-  virtual value_t operator() ( const point_t& x );
-
+  virtual value_t operator() ( const point_t& point ) const = 0;
 };
 
 

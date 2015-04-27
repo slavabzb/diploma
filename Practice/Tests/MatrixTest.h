@@ -21,14 +21,14 @@
 
 class MatrixTest : public CppUnit::TestFixture
 {
-  CPPUNIT_TEST_SUITE( MatrixTest );
-    CPPUNIT_TEST( testAddition );
-    CPPUNIT_TEST( testMultiplication );
-    CPPUNIT_TEST( testTransposition );
-    CPPUNIT_TEST( testAcceleration );
-    CPPUNIT_TEST( testMultithreadingTime );
-    CPPUNIT_TEST( testThreadsNumberTime );
-  CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE( MatrixTest );
+      CPPUNIT_TEST( testAddition );
+      CPPUNIT_TEST( testMultiplication );
+      CPPUNIT_TEST( testTransposition );
+      CPPUNIT_TEST( testAcceleration );
+      CPPUNIT_TEST( testMultithreadingTime );
+      CPPUNIT_TEST( testThreadsNumberTime );
+    CPPUNIT_TEST_SUITE_END();
   
 public:
   
@@ -64,7 +64,7 @@ private:
   std::size_t matrixSize = 50;
   std::size_t initialSize = 10;
   std::size_t sizeStep = 10;
-  std::size_t nIterations = 4;
+  std::size_t nIterations = 0;
   std::size_t nInnerLoopIterations = 1;
 
   Statistics statistics;

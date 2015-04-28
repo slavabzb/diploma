@@ -18,6 +18,8 @@ class ConstraintList
   typedef Subgradient< point_t >* subgradient_ptr_t;
   typedef Constraint< T, Dimension > constraint_t;
   typedef std::vector< constraint_t > container_t;
+  typedef typename container_t::iterator iterator_t;
+  typedef typename container_t::const_iterator const_iterator_t;
   typedef typename container_t::size_type index_t;
 
 
@@ -57,6 +59,34 @@ public:
   index_t size() const
   {
     return this->container.size();
+  }
+
+
+
+  iterator_t begin()
+  {
+    return this->container.begin();
+  }
+
+
+
+  iterator_t end()
+  {
+    return this->container.end();
+  }
+
+
+
+  const_iterator_t begin() const
+  {
+    return this->container.begin();
+  }
+
+
+
+  const_iterator_t end() const
+  {
+    return this->container.end();
   }
 
 

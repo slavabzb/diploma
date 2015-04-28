@@ -28,6 +28,7 @@ class MatrixTest : public CppUnit::TestFixture
       CPPUNIT_TEST( testAcceleration );
       CPPUNIT_TEST( testMultithreadingTime );
       CPPUNIT_TEST( testThreadsNumberTime );
+      CPPUNIT_TEST( testMatrixTypes );
     CPPUNIT_TEST_SUITE_END();
   
 public:
@@ -39,6 +40,7 @@ public:
   void testAcceleration();
   void testMultithreadingTime();
   void testThreadsNumberTime();
+  void testMatrixTypes();
   
 private:
 

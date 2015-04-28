@@ -272,6 +272,24 @@ public:
 
 
 
+  class Type
+  {
+  public:
+  
+    static Matrix< T > Identity( index_t size )
+    {
+      Matrix< T > identityMatrix( size, size );
+      
+      for( index_t index = 0; index < size; ++index ) {
+        identityMatrix( index, index ) = value_t( 1 );
+      }
+      
+      return identityMatrix;
+    }
+  };
+
+
+
 private:
 
   // Retrieve the reference by index

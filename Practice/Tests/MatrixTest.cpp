@@ -240,3 +240,14 @@ void MatrixTest::testThreadsNumberTime()
 
 
 
+void MatrixTest::testMatrixTypes()
+{
+  Matrix< int > E( 3, 3 );
+  E( 0, 0 ) = 1;
+  E( 1, 1 ) = 1;
+  E( 2, 2 ) = 1;
+  CPPUNIT_ASSERT( E == Matrix< int >::Type::Identity( 3 ) );
+}
+
+
+

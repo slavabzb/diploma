@@ -2,9 +2,6 @@
 
 #include "ConstraintList.h"
 #include "EllipsoidMethod.h"
-#include "Example.h"
-#include "Example1.h"
-#include "Example2.h"
 
 
 
@@ -47,36 +44,75 @@ void EllipsoidMethodTest::testPoint()
 
 
 
-void EllipsoidMethodTest::testEnvironment()
-{  
-  ConstraintList< mpz_class, 6 > constraintList;
-  CPPUNIT_ASSERT( constraintList.size() == 0 );
-  
-  Function2 function2;
-  Function2Subgradient function2Subgradient;
-  constraintList.add( &function2, &function2Subgradient );
-  CPPUNIT_ASSERT( constraintList.size() == 1 );
-  
-  Point< mpz_class, 6 > point2( 6, 5, 4, 3, 2, 1 );
-  Point< mpz_class, 6 > value2( 2*6, 20*5, 60*4, 100*3, 180*2, 200*1 );
-  mpz_class result2 = 1676;
-  
-  CPPUNIT_ASSERT( constraintList[ 0 ].function( point2 ) == result2 );
-  CPPUNIT_ASSERT( constraintList[ 0 ].subgradient( point2 ) == value2 );
-}
-
-
-
 void EllipsoidMethodTest::testEllipsoidMethod()
 {
-  ExampleFunction function;
-//  Function2 function2;
-//  Function2Subgradient function2Subgradient;
-//  Constraint< mpz_class, 6 > objective( &function2, &function2Subgradient );
-//  ConstraintList< mpz_class, 6 > constraints;
-//  mpz_class R = 0;
-//  Point< mpz_class, 6 > x0;
-//  
-//  EllipsoidMethod< mpz_class, 6 > ellipsoidMethod;
-//  ellipsoidMethod.optimize( objective, constraints, R, x0 );
+  typedef double value_t;
+  const std::size_t Dimension = 2;
+  typedef Point< value_t, Dimension > point_t;
+  
+  // x1 + x2 <= 11
+  auto constraint_1 = []( const point_t& x ) {
+    return x[0] + x[1] - 11;
+  };
+
+  // g1 = ( 1, 1 )
+  auto subgradient_1 = []( const point_t& x ) {
+    return point_t( 1.0, 1.0 );
+  };
+
+  // 4 * x1 - x2 <= 4
+  auto constraint_2 = []( const point_t& x ) {
+    return 4 * x[0] - x[1] - 4;
+  };
+
+  // g2 = ( 4, -1 )
+  auto subgradient_2 = []( const point_t& x ) {
+    return point_t( 4.0, -1.0 );
+  };
+
+  // x1 >= 0
+  auto constraint_3 = []( const point_t& x ) {
+    return -x[0];
+  };
+
+  // g3 = ( -1, 0 )
+  auto subgradient_3 = []( const point_t& x ) {
+    return point_t( -1.0, 0.0 );
+  };
+
+  // x2 >= 0
+  auto constraint_4 = []( const point_t& x ) {
+    return -x[1];
+  };
+
+  // g4 = ( 0, -1 )
+  auto subgradient_4 = []( const point_t& x ) {
+    return point_t( 0.0, -1.0 );
+  };
+
+  // f( x1, x2 ) = ( x1 - 5 )^2 + ( x2 - 10 )^2
+  auto objectiveFunction = []( const point_t& x ) {
+    return ( std::pow( x[0] - 5, 2 ) + std::pow( x[1] - 10, 2 ) );
+  };
+
+  // grad f( x1, x2 ) = ( 2 * x1, 2 * x2 )
+  auto objectiveSubgradient = []( const point_t& x ) {
+    return point_t( 2 * x[0], 2 * x[1] );
+  };
+  
+  Constraint< value_t, Dimension > objective( objectiveFunction, objectiveSubgradient );
+  
+  ConstraintList< value_t, Dimension > constraints;
+  constraints.add( constraint_1, subgradient_1 );
+  constraints.add( constraint_2, subgradient_2 );
+  constraints.add( constraint_3, subgradient_3 );
+  constraints.add( constraint_4, subgradient_4 );
+  
+  EllipsoidMethod< value_t, Dimension > ellipsoidMethod;
+  const value_t ballRadius = 1.0;
+  const point_t initialPoint( 0.0, 0.0 );
+  point_t point = ellipsoidMethod.optimize( objective,
+    constraints, ballRadius, initialPoint );
+  
+  point.print();
 }

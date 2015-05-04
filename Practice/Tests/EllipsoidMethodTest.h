@@ -11,7 +11,6 @@ class EllipsoidMethodTest : public CppUnit::TestFixture
 {
   CPPUNIT_TEST_SUITE( EllipsoidMethodTest );
     CPPUNIT_TEST( testPoint );
-    CPPUNIT_TEST( testEnvironment );
     CPPUNIT_TEST( testEllipsoidMethod );
   CPPUNIT_TEST_SUITE_END();
 
@@ -20,7 +19,6 @@ class EllipsoidMethodTest : public CppUnit::TestFixture
 public:
 
   void testPoint();
-  void testEnvironment();
   void testEllipsoidMethod();
 };
 

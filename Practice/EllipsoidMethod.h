@@ -25,12 +25,12 @@ public:
 
   point_t optimize( const constraint_t& objective,
     const constraint_list_t& constraints,
-    const value_t& ball_radius,
-    const point_t& initial_point )
+    const value_t& ballRadius,
+    const point_t& initialPoint )
   {
     const std::size_t n = Dimension;
-    const value_t hk = ball_radius / ( n + 1 );
-    point_t xk = initial_point;
+    const value_t hk = ballRadius / ( n + 1 );
+    point_t xk = initialPoint;
     matrix_t Bk = matrix_t::Type::Identity( n );
     
     for( point_t g_xk = this->calculate_subgradient( objective, constraints, xk );

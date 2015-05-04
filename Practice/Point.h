@@ -20,10 +20,11 @@ public:
 
   void print() const
   {
+    std::cout << "( ";
     for( const auto& value : this->values ) {
       std::cout << value << ' ';
     }
-    std::cout << '\n';
+    std::cout << ")\n";
   }
 
 

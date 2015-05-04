@@ -1,8 +1,9 @@
 #ifndef CONSTRAINT
 #define CONSTRAINT
 
-#include "Function.h"
-#include "Subgradient.h"
+#include <functional>
+
+#include "Point.h"
 
 
 
@@ -11,18 +12,16 @@ class Constraint
 {
   typedef T value_t;
   typedef Point< value_t, Dimension > point_t;
-  typedef Function< value_t, Dimension > function_t;
-  typedef Function< value_t, Dimension >* function_ptr_t;
-  typedef Subgradient< point_t > subgradient_t;
-  typedef Subgradient< point_t >* subgradient_ptr_t;
-  typedef std::pair< function_ptr_t, subgradient_ptr_t > container_t;
+  typedef std::function< value_t( const point_t& ) > function_t;
+  typedef std::function< point_t( const point_t& ) > subgradient_t;
+  typedef std::pair< function_t, subgradient_t > container_t;
 
 
 
 public:
 
-  Constraint( const function_ptr_t function_ptr, const subgradient_ptr_t subgradient_ptr )
-    : container( std::make_pair( function_ptr, subgradient_ptr ) )
+  Constraint( const function_t& function, const subgradient_t& subgradient )
+    : container( std::make_pair( function, subgradient ) )
   {
     
   }
@@ -31,14 +30,14 @@ public:
 
   value_t function( const point_t& point ) const
   {
-    return ( *this->container.first )( point );
+    return ( this->container.first )( point );
   }
 
 
 
   point_t subgradient( const point_t& point ) const
   {
-    return ( *this->container.second )( point );
+    return ( this->container.second )( point );
   }
 
 

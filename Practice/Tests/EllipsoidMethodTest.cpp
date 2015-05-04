@@ -2,6 +2,7 @@
 
 #include "ConstraintList.h"
 #include "EllipsoidMethod.h"
+#include "Example.h"
 #include "Example1.h"
 #include "Example2.h"
 
@@ -68,13 +69,14 @@ void EllipsoidMethodTest::testEnvironment()
 
 void EllipsoidMethodTest::testEllipsoidMethod()
 {
-  Function2 function2;
-  Function2Subgradient function2Subgradient;
-  Constraint< mpz_class, 6 > objective( &function2, &function2Subgradient );
-  ConstraintList< mpz_class, 6 > constraints;
-  mpz_class R = 0;
-  Point< mpz_class, 6 > x0;
-  
-  EllipsoidMethod< mpz_class, 6 > ellipsoidMethod;
-  ellipsoidMethod.optimize( objective, constraints, R, x0 );
+  ExampleFunction function;
+//  Function2 function2;
+//  Function2Subgradient function2Subgradient;
+//  Constraint< mpz_class, 6 > objective( &function2, &function2Subgradient );
+//  ConstraintList< mpz_class, 6 > constraints;
+//  mpz_class R = 0;
+//  Point< mpz_class, 6 > x0;
+//  
+//  EllipsoidMethod< mpz_class, 6 > ellipsoidMethod;
+//  ellipsoidMethod.optimize( objective, constraints, R, x0 );
 }

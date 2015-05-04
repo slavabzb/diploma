@@ -6,6 +6,8 @@
 template< typename Point >
 class Subgradient
 {
+protected:
+
   typedef Point point_t;
 
 

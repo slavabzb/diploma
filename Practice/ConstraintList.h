@@ -26,13 +26,6 @@ class ConstraintList
 
 public:
 
-  void add( const constraint_t& constraint )
-  {
-    this->container.push_back( constraint );
-  }
-
-
-
   void add( const function_ptr_t function_ptr, const subgradient_ptr_t subgradient_ptr )
   {
     constraint_t constraint( function_ptr, subgradient_ptr );

@@ -11,6 +11,8 @@
 template< typename T, std::size_t Dimension >
 class EllipsoidMethod
 {
+  static_assert( Dimension >= 2u, "Dimension of space is too small" );
+
   typedef T value_t;
   typedef Matrix< T > matrix_t;
   typedef Point< value_t, Dimension > point_t;
@@ -23,16 +25,19 @@ public:
 
   point_t optimize( const constraint_t& objective,
     const constraint_list_t& constraints,
-    const value_t& R,
-    const point_t& x0 )
+    const value_t& ball_radius,
+    const point_t& initial_point )
   {
     const std::size_t n = Dimension;
-    point_t xk = x0;
+    const value_t hk = ball_radius / ( n + 1 );
+    point_t xk = initial_point;
     matrix_t Bk = matrix_t::Type::Identity( n );
-    value_t hk = R / ( n + 1 );
     
-    while( this->calculate_subgradient( objective, constraints, xk ) != value_t( 0 ) ) {
-    
+    for( point_t g_xk = this->calculate_subgradient( objective, constraints, xk );
+      g_xk != value_t( 0 );
+      g_xk = this->calculate_subgradient( objective, constraints, xk ) )
+    {
+      
     }
     
     

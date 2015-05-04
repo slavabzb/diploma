@@ -8,6 +8,8 @@
 template< typename T, std::size_t Dimension >
 class Function
 {
+protected:
+
   typedef T value_t;
   typedef Point< value_t, Dimension > point_t;
 

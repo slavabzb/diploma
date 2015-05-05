@@ -29,17 +29,15 @@ public:
     const point_t& initialPoint )
   {
     const std::size_t n = Dimension;
-    const value_t hk = ballRadius / ( n + 1 );
+    value_t hk = ballRadius / ( n + 1 );
     point_t xk = initialPoint;
     matrix_t Bk = matrix_t::Type::Identity( n );
     
-    for( point_t g_xk = this->calculate_subgradient( objective, constraints, xk );
-      g_xk != value_t( 0 );
-      g_xk = this->calculate_subgradient( objective, constraints, xk ) )
-    {
+    point_t g_xk = this->calculate_subgradient( objective, constraints, xk );
+    while( g_xk != value_t( 0 ) ) {
       
-    }
-    
+      g_xk = this->calculate_subgradient( objective, constraints, xk );
+    }  
     
     return xk;
   }

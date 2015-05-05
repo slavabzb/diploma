@@ -11,8 +11,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( EllipsoidMethodTest );
 
 void EllipsoidMethodTest::testPoint()
 {
-  Point< double, 5 > point5d( 1.0, 2.0, 3.0 );
-  Point< double, 5 > point5d_copy( 1.0, 2.0, 3.0, 0.0, 0.0 );
+  Point< double, 5 > point5d{ 1.0, 2.0, 3.0 };
+  Point< double, 5 > point5d_copy{ 1.0, 2.0, 3.0, 0.0, 0.0 };
   CPPUNIT_ASSERT( point5d == point5d_copy );
   CPPUNIT_ASSERT( point5d.size() == 5 );
   
@@ -23,9 +23,9 @@ void EllipsoidMethodTest::testPoint()
   point5d = point5d_copy;
   CPPUNIT_ASSERT( point5d == point5d_copy );
   
-  Point< int, 2 > lhs( 1, 2 );
-  Point< int, 2 > rhs( 3, 4 );
-  Point< int, 2 > result( 4, 6 );
+  Point< int, 2 > lhs{ 1, 2 };
+  Point< int, 2 > rhs{ 3, 4 };
+  Point< int, 2 > result{ 4, 6 };
   CPPUNIT_ASSERT( result == (lhs + rhs) );
   
   result[ 0 ] = 2;
@@ -57,7 +57,7 @@ void EllipsoidMethodTest::testEllipsoidMethod()
 
   // g1 = ( 1, 1 )
   auto subgradient_1 = []( const point_t& x ) {
-    return point_t( 1.0, 1.0 );
+    return point_t{ 1.0, 1.0 };
   };
 
   // 4 * x1 - x2 <= 4
@@ -67,7 +67,7 @@ void EllipsoidMethodTest::testEllipsoidMethod()
 
   // g2 = ( 4, -1 )
   auto subgradient_2 = []( const point_t& x ) {
-    return point_t( 4.0, -1.0 );
+    return point_t{ 4.0, -1.0 };
   };
 
   // x1 >= 0
@@ -77,7 +77,7 @@ void EllipsoidMethodTest::testEllipsoidMethod()
 
   // g3 = ( -1, 0 )
   auto subgradient_3 = []( const point_t& x ) {
-    return point_t( -1.0, 0.0 );
+    return point_t{ -1.0, 0.0 };
   };
 
   // x2 >= 0
@@ -87,7 +87,7 @@ void EllipsoidMethodTest::testEllipsoidMethod()
 
   // g4 = ( 0, -1 )
   auto subgradient_4 = []( const point_t& x ) {
-    return point_t( 0.0, -1.0 );
+    return point_t{ 0.0, -1.0 };
   };
 
   // f( x1, x2 ) = ( x1 - 5 )^2 + ( x2 - 10 )^2
@@ -97,7 +97,7 @@ void EllipsoidMethodTest::testEllipsoidMethod()
 
   // grad f( x1, x2 ) = ( 2 * x1, 2 * x2 )
   auto objectiveSubgradient = []( const point_t& x ) {
-    return point_t( 2 * x[0], 2 * x[1] );
+    return point_t{ 2 * x[0], 2 * x[1] };
   };
   
   Constraint< value_t, Dimension > objective( objectiveFunction, objectiveSubgradient );
@@ -110,9 +110,11 @@ void EllipsoidMethodTest::testEllipsoidMethod()
   
   EllipsoidMethod< value_t, Dimension > ellipsoidMethod;
   const value_t ballRadius = 1.0;
-  const point_t initialPoint( 0.0, 0.0 );
+  const point_t initialPoint{ 0.0, 0.0 };
   point_t point = ellipsoidMethod.optimize( objective,
     constraints, ballRadius, initialPoint );
   
   point.print();
+  
+  point.transpose();
 }

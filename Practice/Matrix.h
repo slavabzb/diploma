@@ -11,7 +11,7 @@
 template< typename T >
 class Matrix
 {
-private:
+protected:
 
   typedef T value_t;
   typedef Matrix< value_t > my_t;

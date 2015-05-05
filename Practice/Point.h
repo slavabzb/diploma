@@ -1,18 +1,20 @@
 #ifndef POINT_H
 #define POINT_H
 
-#include <array>
+#include <initializer_list>
 #include <iostream>
+
+#include "Matrix.h"
 
 
 
 template< typename T, std::size_t Dimension >
-class Point
+class Point : public Matrix< T >
 {
-  typedef T value_t;
-  typedef std::array< value_t, Dimension > container_t;
+  typedef Matrix< T > base_t;
+  typedef typename base_t::value_t value_t;
+  typedef typename base_t::index_t index_t;
   typedef Point< value_t, Dimension > my_t;
-  typedef typename container_t::size_type index_t;
 
 
 
@@ -21,98 +23,38 @@ public:
   void print() const
   {
     std::cout << "( ";
-    for( const auto& value : this->values ) {
-      std::cout << value << ' ';
+    for( index_t index = 0; index < this->size(); ++index ) {
+      std::cout << ( *this )[ index ] << ' ';
     }
     std::cout << ")\n";
   }
 
 
 
-  template< typename... Values >
-  Point( const Values&... values )
-    : values{ values... }
+  Point( std::initializer_list< T > list )
+    : base_t( Dimension, 1 )
   {
-
-  }
-
-
-
-  index_t size() const
-  {
-    return this->values.size();
-  }
-
-
-
-  value_t& operator[] ( const index_t& index )
-  {
-    return this->values[ index ];
-  }
-
-
-
-  const value_t& operator[] ( const index_t& index ) const
-  {
-    return this->values[ index ];
-  }
-
-
-
-  my_t& operator= ( const my_t& rhs )
-  {
-    if( this == &rhs ) {
-      return *this;
+    index_t index = 0;
+    for( auto it = list.begin(); it != list.end(); ++it ) {
+      ( *this )[ index ] = *it;
+      ++index;
     }
-    
-    this->values = rhs.values;
-    
-    return *this;
   }
 
 
 
-  my_t operator+ ( const my_t& rhs ) const
+  Point( value_t initialValue = value_t( 0 ) )
+    : base_t( Dimension, 1, initialValue )
   {
-    my_t result;
-    
-    for( index_t index = 0; index < result.values.size(); ++index ) {
-      result.values[ index ] = ( this->values[ index ] + rhs.values[ index ] );
-    }
-    
-    return result;
-  }
 
-
-
-  my_t operator- ( const my_t& rhs ) const
-  {
-    my_t result;
-    
-    for( index_t index = 0; index < result.values.size(); ++index ) {
-      result.values[ index ] = ( this->values[ index ] - rhs.values[ index ] );
-    }
-    
-    return result;
-  }
-
-
-
-  my_t& operator+= ( const my_t& rhs )
-  {
-    for( index_t index = 0; index < this->values.size(); ++index ) {
-      this->values[ index ] += rhs.values[ index ];
-    }
-    
-    return *this;
   }
 
 
 
   my_t& operator-= ( const my_t& rhs )
   {
-    for( index_t index = 0; index < this->values.size(); ++index ) {
-      this->values[ index ] -= rhs.values[ index ];
+    for( index_t index = 0; index < this->size(); ++index ) {
+      ( *this )[ index ] -= rhs[ index ];
     }
     
     return *this;
@@ -120,18 +62,28 @@ public:
 
 
 
-  bool operator== ( const my_t& rhs ) const
+  my_t& operator+= ( const my_t& rhs )
   {
-    return ( this->values == rhs.values );
+    for( index_t index = 0; index < this->size(); ++index ) {
+      ( *this )[ index ] += rhs[ index ];
+    }
+    
+    return *this;
   }
-  
-  
-  
+
+
+
+  bool operator== ( const base_t& rhs ) const
+  {
+    return ( *dynamic_cast< const base_t* >( this ) ) == rhs;
+  }
+
+
   bool operator== ( const value_t& rhs ) const
   {
     bool isAllEqual = true;
-    for( const auto& value : this->values ) {
-      if( value != rhs ) {
+    for( index_t index = 0; index < this->size(); ++index ) {
+      if( ( *this )[ index ] != rhs ) {
         isAllEqual = false;
         break;
       }
@@ -142,21 +94,48 @@ public:
 
 
 
-  bool operator!= ( const value_t& rhs ) const
-  {
-    return !( *this == rhs );
-  }
-
-
-
   bool operator!= ( const my_t& rhs ) const
   {
-    return ( this->values != rhs.values );
+    return !( ( *this ) == rhs );
   }
+
+
+
+  bool operator!= ( const value_t& rhs ) const
+  {
+    return !( ( *this ) == rhs );
+  }
+
+
+
+  index_t size() const
+  {
+    return this->get_rows();
+  }
+
+
+
+  value_t& operator[] ( const index_t& index )
+  {
+    return ( *this )( index, 0 );
+  }
+
+
+
+  const value_t& operator[] ( const index_t& index ) const
+  {
+    return ( *this )( index, 0 );
+  }
+
+
 
 private:
 
-  container_t values;
+//  value_t& operator() ( const index_t& row, const index_t& column );
+//  const value_t& operator() ( const index_t& row, const index_t& column ) const;
+//  base_t& transpose();
+//  index_t get_rows() const;
+//  index_t get_columns() const;
 };
 
 

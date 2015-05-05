@@ -31,12 +31,21 @@ public:
     const std::size_t n = Dimension;
     value_t hk = ballRadius / ( n + 1 );
     point_t xk = initialPoint;
-    matrix_t Bk = matrix_t::Type::Identity( n );
+    const matrix_t E = matrix_t::Type::Identity( n );
+    matrix_t Bk( E );
     
     point_t g_xk = this->calculate_subgradient( objective, constraints, xk );
     while( g_xk != value_t( 0 ) ) {
       point_t ksi = Bk.transpose() * g_xk;
       ksi = ksi * ( 1.0 / ksi.norm() );
+      xk = ( xk - ( Bk * hk ) * ksi );
+      
+      const value_t beta = std::sqrt( (n-1) / (n+1) );
+      Bk = Bk * ( E - ( ksi * ( beta - 1 ) ) * ksi.transpose() );
+      
+      const value_t r = ( n / std::sqrt( std::pow( n, 2 ) - 1 ) );
+      hk *= r;
+      
       g_xk = this->calculate_subgradient( objective, constraints, xk );
     }  
     

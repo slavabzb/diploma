@@ -48,7 +48,7 @@ void EllipsoidMethodTest::testPoint()
 
 void EllipsoidMethodTest::testEllipsoidMethod()
 {
-  typedef mpz_class value_t;
+  typedef mpf_class value_t;
   const std::size_t Dimension = 2;
   typedef Point< value_t, Dimension > point_t;
   

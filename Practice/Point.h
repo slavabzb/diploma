@@ -175,7 +175,6 @@ private:
 
 
 
-  my_t& transpose();
   std::size_t get_columns() const;
 
   class Type;

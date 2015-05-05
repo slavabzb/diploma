@@ -35,7 +35,8 @@ public:
     
     point_t g_xk = this->calculate_subgradient( objective, constraints, xk );
     while( g_xk != value_t( 0 ) ) {
-      
+      point_t ksi = Bk.transpose() * g_xk;
+      ksi = ksi * ( 1.0 / ksi.norm() );
       g_xk = this->calculate_subgradient( objective, constraints, xk );
     }  
     

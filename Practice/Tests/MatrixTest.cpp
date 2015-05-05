@@ -83,7 +83,7 @@ void MatrixTest::testMultiplication()
   element_t value = 2;
   this->matrixMultiplier.multiply( value, E );
 
-  matrix_t F( value * A );
+  matrix_t F( A * value );
 
   CPPUNIT_ASSERT( A == E );
 }

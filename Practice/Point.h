@@ -5,15 +5,16 @@
 #include <iostream>
 
 #include "Matrix.h"
+#include "Specializations.h"
 
 
 
 template< typename T, std::size_t Dimension >
 class Point : public Matrix< T >
 {
-  typedef Matrix< T > base_t;
-  typedef typename base_t::value_t value_t;
-  typedef typename base_t::index_t index_t;
+  typedef T value_t;
+  typedef std::size_t index_t;
+  typedef Matrix< value_t > base_t;
   typedef Point< value_t, Dimension > my_t;
 
 
@@ -31,6 +32,23 @@ public:
 
 
 
+  Point()
+    : base_t( Dimension, 1 )
+  {
+
+  }
+
+
+
+  Point( const base_t& rhs )
+    : base_t( rhs )
+  {
+    assert( rhs.get_rows() == Dimension );
+    assert( rhs.get_columns() == 1 );
+  }
+
+
+
   Point( std::initializer_list< T > list )
     : base_t( Dimension, 1 )
   {
@@ -39,14 +57,6 @@ public:
       ( *this )[ index ] = *it;
       ++index;
     }
-  }
-
-
-
-  Point( value_t initialValue = value_t( 0 ) )
-    : base_t( Dimension, 1, initialValue )
-  {
-
   }
 
 
@@ -108,7 +118,7 @@ public:
 
 
 
-  index_t size() const
+  std::size_t size() const
   {
     return this->get_rows();
   }
@@ -129,6 +139,19 @@ public:
 
 
 
+  value_t norm() const
+  {
+    value_t sumSquare( 0 );
+    for( index_t index = 0; index < this->size(); ++index ) {
+      value_t value = ( *this )[ index ];
+      sumSquare += std::pow( value, 2 );
+    }
+    
+    return std::sqrt( sumSquare );
+  }
+
+
+
 private:
 
   value_t& operator() ( const index_t& row, const index_t& column )
@@ -145,7 +168,7 @@ private:
 
 
 
-  index_t get_rows() const
+  std::size_t get_rows() const
   {
     return base_t::get_rows();
   }
@@ -153,7 +176,7 @@ private:
 
 
   my_t& transpose();
-  index_t get_columns() const;
+  std::size_t get_columns() const;
 
   class Type;
 };

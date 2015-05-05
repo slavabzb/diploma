@@ -1,5 +1,7 @@
 #include "EllipsoidMethodTest.h"
 
+#include <gmpxx.h>
+
 #include "ConstraintList.h"
 #include "EllipsoidMethod.h"
 
@@ -46,7 +48,7 @@ void EllipsoidMethodTest::testPoint()
 
 void EllipsoidMethodTest::testEllipsoidMethod()
 {
-  typedef double value_t;
+  typedef mpz_class value_t;
   const std::size_t Dimension = 2;
   typedef Point< value_t, Dimension > point_t;
   

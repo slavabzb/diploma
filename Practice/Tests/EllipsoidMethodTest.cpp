@@ -115,6 +115,4 @@ void EllipsoidMethodTest::testEllipsoidMethod()
     constraints, ballRadius, initialPoint );
   
   point.print();
-  
-  point.transpose();
 }

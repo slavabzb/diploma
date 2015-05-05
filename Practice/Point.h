@@ -131,11 +131,31 @@ public:
 
 private:
 
-//  value_t& operator() ( const index_t& row, const index_t& column );
-//  const value_t& operator() ( const index_t& row, const index_t& column ) const;
-//  base_t& transpose();
-//  index_t get_rows() const;
-//  index_t get_columns() const;
+  value_t& operator() ( const index_t& row, const index_t& column )
+  {
+    return base_t::operator() ( row, column );
+  }
+
+
+
+  const value_t& operator() ( const index_t& row, const index_t& column ) const
+  {
+    return base_t::operator() ( row, column );
+  }
+
+
+
+  index_t get_rows() const
+  {
+    return base_t::get_rows();
+  }
+
+
+
+  my_t& transpose();
+  index_t get_columns() const;
+
+  class Type;
 };
 
 

@@ -23,6 +23,8 @@ barplot( M,
   beside = TRUE
 )
 
+grid( NA, ny = NULL, col = "darkgray" )
+
 legend_labels <- c( "8 потоков", "1 поток" )
 
 legend(

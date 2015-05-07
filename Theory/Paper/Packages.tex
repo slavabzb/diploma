@@ -83,3 +83,13 @@ numbers=left
 	\nopagebreak\bigskip\par
 	\setcounter{lstlisting}{0}}
 \makeatother
+
+\renewcommand{\appendix}{
+\renewcommand{\thelstlisting}{\theappend.\arabic{lstlisting}}
+\newpage
+\topskip0pt
+\vspace*{\fill}
+\par\centerline{\bfseries ÏĞÈËÎÆÅÍÈß~\theappend}
+\vspace*{\fill}
+\newpage
+}

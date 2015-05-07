@@ -16,6 +16,8 @@ plot( add_acc,
   ann = FALSE
 )
 
+grid( col = "darkgray" )
+
 axis( 1,
   at = 1 : length( add_acc ),
   lab = sizes
@@ -31,8 +33,9 @@ axis( 2,
 
 box()
 
-title( main = "Производительность\nСложение матриц" )
+title( main = "Сложение матриц" )
 title( xlab = "Размерность матриц, N x N элементов" )
+title( ylab = "Коэффициент ускорения" )
 
 legend( "bottomright",
   max( add_acc ),

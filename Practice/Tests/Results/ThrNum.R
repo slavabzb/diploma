@@ -16,6 +16,8 @@ plot( time,
   ann = FALSE
 )
 
+grid( col = "darkgray" )
+
 axis( 1,
   at = 1 : length( time ),
   lab = threads

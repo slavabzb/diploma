@@ -16,6 +16,8 @@ plot( mul_acc,
   ann = FALSE
 )
 
+grid( col = "darkgray" )
+
 axis( 1,
   at = 1 : length( mul_acc ),
   lab = sizes
@@ -31,8 +33,9 @@ axis( 2,
 
 box()
 
-title( main = "Производительность\nУмножение матриц" )
+title( main = "Умножение матриц" )
 title( xlab = "Размерность матриц, N x N элементов" )
+title( ylab = "Коэффициент ускорения" )
 
 legend( "bottomright",
   max( mul_acc ),

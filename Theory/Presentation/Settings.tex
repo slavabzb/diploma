@@ -4,15 +4,20 @@
 \useinnertheme{rectangles}
 
 % Colors
-\setbeamercolor{block body}{bg=normal text.bg!90!blue}
-\setbeamercolor{block body example}{bg=normal text.bg!90!blue}
-\setbeamercolor{block title}{fg=white, bg=normal text.bg!20!blue}
+\definecolor{headerColor}{HTML}{3333B2}
+\definecolor{bodyColor}{HTML}{D6D6F0}
+\setbeamercolor{block body}{bg=bodyColor}
+\setbeamercolor{block body example}{bg=bodyColor}
+\setbeamercolor{block title}{fg=white, bg=headerColor}
 
 % Templates
 \setbeamertemplate{blocks}[rounded][shadow=true]
+\setbeamertemplate{enumerate item}[default]
+\setbeamertemplate{itemize item}{\color{headerColor}$\blacksquare$}
 
 % Fonts
 \usefonttheme{serif}
+\setbeamerfont{block title}{size=\small}
 \setbeamerfont{author}{size=\small}
 \setbeamerfont{institute}{size=\footnotesize}
 \setbeamerfont{date}{size=\scriptsize}
@@ -28,6 +33,10 @@
 
 \usepackage{hyperref}
 \hypersetup{unicode=true}
+
+% Theorem
+\newtheorem{rustheorem}{Теорема}
+\newtheorem{ruscorollary}{Следствие}
 
 % Fits the presentation to the window when first displayed
 \hypersetup{pdfstartview={Fit}}

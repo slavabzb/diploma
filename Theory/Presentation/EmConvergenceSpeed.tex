@@ -1,0 +1,14 @@
+\begin{frame}{О сходимости метода эллипсоидов}
+
+\begin{rustheorem}[О скорости сходимости]
+Для всех итераций метода эллипсоидов коэффициент уменьшения объема эллипсоида, локализующего $x^*$, есть величина постоянная и равная
+$$
+q(n)=\frac{vol(\varepsilon_{k+1})}{vol(\varepsilon_k)}=\frac{1}{\alpha}\left(\frac{1}{2}\left(\alpha+\frac{1}{\alpha}\right)\right)^n<1,\quad k=0,1,2,\ldots
+$$
+\end{rustheorem}
+
+\begin{block}{Оптимальный коэффициент растяжения пространства}
+$$\alpha=\sqrt{\frac{n+1}{n-1}}\Rightarrow q(n)=\sqrt{\frac{n-1}{n+1}}\left(\frac{n^2}{n^2-1}\right)^{n/2}\le 1-\frac{1}{2n}.$$
+\end{block}
+
+\end{frame}

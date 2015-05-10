@@ -1,0 +1,14 @@
+\begin{frame}{Алгоритм}
+
+\begin{exampleblock}{}
+Пусть на $k$-й итерации найдены $x_k\in E_n$, $r_k$ и $B_k$. Для перехода к $(k+1)$-й итерации выполнить:
+\end{exampleblock}
+
+\begin{description}
+\item[Шаг 1.] Вычислить $g(x_k)$. Если $g(x_k)=0$, то \textbf{ОСТАНОВ$(x^*=x_k)$}.
+\item[Шаг 2.] Вычислить очередную точку $\displaystyle x_{k+1}=x_k-h_kB_k\xi_k$, где $\displaystyle h_k=\frac{1}{2}\left(1-\frac{1}{\alpha^2}\right)$, $\displaystyle\xi_k=\frac{B_k^Tg(x_k)}{||B_k^Tg(x_k)||}$.
+\item[Шаг 3.] Пересчитать матрицу $B_{k+1}$ и радиус $r_{k+1}$ \\ $B_{k+1}=B_k+(\beta-1)(B_k\xi_k)\xi_k^T$, $\displaystyle\beta=\frac{1}{\alpha}$, $\displaystyle r_{k+1}=\left(\alpha+\beta\right)\frac{r_k}{2}$.
+\item[Шаг 4.] Перейти к $(k+1)$-й итерации с $x_{k+1}$, $r_{k+1}$ и $B_{k+1}$.
+\end{description}
+
+\end{frame}

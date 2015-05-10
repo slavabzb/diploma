@@ -10,3 +10,5 @@ Standards/
 *.bbl
 *.blg
 *.thm
+*.nav
+*.snm

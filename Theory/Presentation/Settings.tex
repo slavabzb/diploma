@@ -34,9 +34,16 @@
 \usepackage{hyperref}
 \hypersetup{unicode=true}
 
-% Theorem
+% Environments
 \newtheorem{rustheorem}{Теорема}
 \newtheorem{ruscorollary}{Следствие}
+
+% Display current position
+\AtBeginSubsection[]{
+\begin{frame}{Содержание}
+\tableofcontents[currentsection,currentsubsection]
+\end{frame}
+}
 
 % Fits the presentation to the window when first displayed
 \hypersetup{pdfstartview={Fit}}

@@ -3,10 +3,18 @@
 \useoutertheme{infolines}
 \useinnertheme{rectangles}
 
+% Colors
+\setbeamercolor{block body}{bg=normal text.bg!90!blue}
+\setbeamercolor{block body example}{bg=normal text.bg!90!blue}
+\setbeamercolor{block title}{fg=white, bg=normal text.bg!20!blue}
+
+% Templates
+\setbeamertemplate{blocks}[rounded][shadow=true]
+
 % Fonts
-\setbeamerfont{title}{family=\rm}
+\usefonttheme{serif}
 \setbeamerfont{author}{size=\small}
-\setbeamerfont{institute}{family=\rm, size=\footnotesize}
+\setbeamerfont{institute}{size=\footnotesize}
 \setbeamerfont{date}{size=\scriptsize}
 
 % Packages
@@ -30,4 +38,4 @@
 
 \institute[ЭММиС, ВМИ-413]{ФГБОУ ВПО ЮУрГУ\\г.~Челябинск}
 
-\date[\today,~г.~Челябинск]{\today}
+\date[Челябинск, \today]{\today}

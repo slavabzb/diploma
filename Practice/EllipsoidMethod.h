@@ -25,29 +25,41 @@ public:
 
   point_t optimize( const constraint_t& objective,
     const constraint_list_t& constraints,
-    const value_t& ballRadius,
-    const point_t& initialPoint )
+    const value_t& ball_radius,
+    const point_t& initial_point,
+    std::size_t iteration_limit )
   {
     const std::size_t n = Dimension;
-    value_t hk = ballRadius / ( n + 1 );
-    point_t xk = initialPoint;
+    value_t hk = ball_radius / ( n + 1 );
+    point_t xk = initial_point;
     const matrix_t E = matrix_t::Type::Identity( n );
     matrix_t Bk( E );
     
     point_t g_xk = this->calculate_subgradient( objective, constraints, xk );
-    while( g_xk != value_t( 0 ) ) {
+    std::size_t iteration = 0;
+    
+    bool stopping_criterion = ( ( g_xk == value_t( 0 ) )
+      || ( iteration >= iteration_limit ) );
+    
+    while( !stopping_criterion ) {
       point_t ksi = Bk.transpose() * g_xk;
-      ksi = ksi * ( 1.0 / ksi.norm() );
-      xk = ( xk - ( Bk * hk ) * ksi );
+      ksi *= ( 1.0 / ksi.norm() );
       
-      const value_t beta = std::sqrt( (n-1) / (n+1) );
-      Bk = Bk * ( E - ( ksi * ( beta - 1 ) ) * ksi.transpose() );
+      xk -= ( Bk * hk ) * ksi;
+      
+      const value_t beta = std::sqrt( ( n - 1.0 ) / ( n + 1.0 ) );
+      Bk = Bk * ( E + ( ksi * ksi.transpose() ) * ( beta - 1) );    
       
       const value_t r = ( n / std::sqrt( std::pow( n, 2 ) - 1 ) );
       hk *= r;
       
       g_xk = this->calculate_subgradient( objective, constraints, xk );
-    }  
+      ++iteration;
+      
+      stopping_criterion = ( ( g_xk == value_t( 0 ) )
+        || ( iteration >= iteration_limit ) );
+
+    }
     
     return xk;
   }
@@ -57,22 +69,23 @@ public:
 private:
 
   point_t calculate_subgradient( const constraint_t& objective,
-    const constraint_list_t& constraints, const point_t& point )
-  {
+    const constraint_list_t& constraints,
+    const point_t& point ) const
+  {   
     auto max = std::max_element( constraints.begin(), constraints.end(),
       [ & ]( const constraint_t& lhs, const constraint_t& rhs ) -> bool {
         return ( lhs.function( point ) < rhs.function( point ) );
       } );
-    
-    point_t subgradient_at_point;
+        
+    point_t subgradient;
     if( ( *max ).function( point ) <= value_t( 0 ) ) {
-      subgradient_at_point = objective.subgradient( point );
+      subgradient = objective.subgradient( point );
     }
     else {
-      subgradient_at_point = ( *max ).subgradient( point );
+      subgradient = ( *max ).subgradient( point );
     }
     
-    return subgradient_at_point;
+    return subgradient;
   }
 };
 

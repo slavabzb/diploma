@@ -2,7 +2,6 @@
 #define POINT_H
 
 #include <initializer_list>
-#include <iostream>
 
 #include "Matrix.h"
 #include "Specializations.h"
@@ -20,17 +19,6 @@ class Point : public Matrix< T >
 
 
 public:
-
-  void print() const
-  {
-    std::cout << "( ";
-    for( index_t index = 0; index < this->size(); ++index ) {
-      std::cout << ( *this )[ index ] << ' ';
-    }
-    std::cout << ")\n";
-  }
-
-
 
   Point()
     : base_t( Dimension, 1 )
@@ -77,6 +65,15 @@ public:
     for( index_t index = 0; index < this->size(); ++index ) {
       ( *this )[ index ] += rhs[ index ];
     }
+    
+    return *this;
+  }
+
+
+
+  my_t& operator*= ( const value_t& rhs )
+  {
+    *this = ( *this ) * rhs;
     
     return *this;
   }
@@ -141,13 +138,13 @@ public:
 
   value_t norm() const
   {
-    value_t sumSquare( 0 );
+    value_t sum_square( 0 );
     for( index_t index = 0; index < this->size(); ++index ) {
       value_t value = ( *this )[ index ];
-      sumSquare += std::pow( value, 2 );
+      sum_square += std::pow( value, 2 );
     }
     
-    return std::sqrt( sumSquare );
+    return std::sqrt( sum_square );
   }
 
 

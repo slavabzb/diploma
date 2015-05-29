@@ -99,10 +99,8 @@ void MatrixTest::testTransposition()
 
   matrix_t matrix_transp( matrix.get_columns(), matrix.get_rows() );
   this->matrixTransposer.transpose( matrix_transp, matrix );
-
-  matrix.transpose();
   
-  CPPUNIT_ASSERT( matrix == matrix_transp );
+  CPPUNIT_ASSERT( matrix.transpose() == matrix_transp );
   
   const std::size_t row = 4;
   const std::size_t column = 5;

@@ -3,6 +3,7 @@
 
 #include <assert.h>
 #include <valarray>
+#include <iostream>
 
 #include "ParallelHandler.h"
 
@@ -261,11 +262,12 @@ public:
 
 
   // Swap rows and columns
-  my_t& transpose()
-  {    
-    this->isTransposed = !this->isTransposed;
+  my_t transpose() const
+  {
+    my_t copy( *this );
+    copy.isTransposed = !this->isTransposed;
     
-    return *this;
+    return copy;
   }
 
 
@@ -311,6 +313,24 @@ public:
       return identityMatrix;
     }
   };
+
+
+
+  void print( const std::string& string ) const
+  {
+    std::cout << string << '\n';
+    std::cout.unsetf ( std::ios::floatfield );
+    std::cout.setf( std::ios::fixed, std:: ios::floatfield );
+    std::cout.precision(10);
+    
+    for( index_t iRow = 0; iRow < this->get_rows(); ++iRow ) {
+      for( index_t iColumn = 0; iColumn < this->get_columns(); ++iColumn ) {
+        std::cout << this->get( iRow, iColumn ) << ' ';
+      }
+      std::cout << '\n';
+    }
+    std::cout << '\n';
+  }
 
 
 

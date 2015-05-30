@@ -48,37 +48,37 @@ void EllipsoidMethodTest::testPoint()
 
 void EllipsoidMethodTest::testEllipsoidMethod()
 {
-  typedef /*mpf_class*/double value_t;
+  typedef mpf_class value_t;
   const std::size_t Dimension = 2;
   typedef Point< value_t, Dimension > point_t;
   
   // f1 = x1^2 + x2^2 - 9
-  auto constraint_1 = []( const point_t& x ) {
+  auto constraint_1 = []( const point_t& x ) -> value_t {
     return ( std::pow( x[0], 2 ) + std::pow( x[1], 2 ) - 9 );
   };
 
   // g1 = ( 2 * x1, 2 * x2 )
-  auto subgradient_1 = []( const point_t& x ) {
+  auto subgradient_1 = []( const point_t& x ) -> point_t {
     return point_t{ 2 * x[0], 2 * x[1] };
   };
 
   // f2 = x1^2 + ( x2 - 4 )^2 - 9
-  auto constraint_2 = []( const point_t& x ) {
+  auto constraint_2 = []( const point_t& x ) -> value_t {
     return ( std::pow( x[0], 2 ) + std::pow( x[1] - 4, 2 ) - 9 );
   };
 
   // g2 = ( 2 * x1, 2 * ( x2 - 4 ) )
-  auto subgradient_2 = []( const point_t& x ) {
+  auto subgradient_2 = []( const point_t& x ) -> point_t {
     return point_t{ 2 * x[0], 2 * ( x[1] - 4 ) };
   };
 
   // f0 = x1^2 + ( x2 - 2 )^2
-  auto objective_function = []( const point_t& x ) {
+  auto objective_function = []( const point_t& x ) -> value_t {
     return ( std::pow( x[0], 2 ) + std::pow( x[1] - 2, 2 ) );
   };
 
   // g0 = ( 2 * x1, 2 * ( x2 - 2 ) )
-  auto objective_subgradient = []( const point_t& x ) {
+  auto objective_subgradient = []( const point_t& x ) -> point_t {
     return point_t{ 2 * x[0], 2 * ( x[1] - 2 ) };
   };
   
@@ -89,11 +89,11 @@ void EllipsoidMethodTest::testEllipsoidMethod()
   ConstraintList< value_t, Dimension > constraints;
   constraints.add( constraint_1, subgradient_1 );
   constraints.add( constraint_2, subgradient_2 );
-  
+    
   EllipsoidMethod< value_t, Dimension > ellipsoid_method;
   const value_t ball_radius = 10.0;
   const point_t initial_point{ 1.0, 2.0 };
-  const std::size_t iteration_limit = 500;
+  const std::size_t iteration_limit = 1000;
   point_t point = ellipsoid_method.optimize( objective,
     constraints,
     ball_radius,

@@ -61,6 +61,10 @@ public:
 
     }
     
+    std::cout << "\n" << iteration << "\n";
+    
+    g_xk.print( "g(xk)" );
+    
     return xk;
   }
 

@@ -13,7 +13,7 @@ make
 
 if [ "$1" = "-r" ]; then
   echo "TESTING"
-  ./MatrixTester
+  ./EmTester
 fi
 
 echo "DONE"

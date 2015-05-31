@@ -38,7 +38,8 @@ public:
 
 
   /**
-   * Retrieve a value of the function at given point, i.e. call function( point ).
+   * Call function( point ).
+   * Retrieve a value of the function at given point.
    */
   value_t function( const point_t& point ) const
   {
@@ -48,7 +49,8 @@ public:
 
 
   /**
-   * Retrieve a value of the subgradient at given point, i.e. call subgradient( point ).
+   * Call subgradient( point ).
+   * Retrieve a value of the subgradient at given point.
    */
   point_t subgradient( const point_t& point ) const
   {

@@ -9,79 +9,83 @@
 #include "HelperClasses/MatrixPrinter.h"
 #include "HelperClasses/Statistics.h"
 
+#include "HelperClasses/MatrixSummarizer.h"
+#include "HelperClasses/MatrixMultiplier.h"
+
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION( MatrixTest );
 
 
 
-void MatrixTest::testCrashDoubleType()
+void MatrixTest::crash_double_type()
 {
-  MatrixRandomFiller filler;
-  MatrixMultiplier multiplier;
-  MatrixPrinter printer( &std::cout );
-  printer.setPrecision( 20 );
+  std::size_t rows = 2;
+  std::size_t columns = 2;
   
-  std::size_t nRows = 2;
-  std::size_t nColumns = 2;
+  Matrix< double > A( rows, columns );
+  Matrix< double > B( rows, columns );
   
-  Matrix< double > matrix_a( nRows, nColumns );
-  Matrix< double > matrix_b( nRows, nColumns );
+  MatrixRandomFiller matrix_random_filler;
+  matrix_random_filler.fill( A );
+  matrix_random_filler.fill( B );
   
-  filler.fill( matrix_a );
-  filler.fill( matrix_b );
+  MatrixPrinter matrix_printer( &std::cout );
+  matrix_printer.setPrecision( 20 );
+  matrix_printer.print( A );
+  matrix_printer.print( B );
   
-  printer.print( matrix_a );
-  printer.print( matrix_b );
+  Matrix< double > C( rows, columns );
+  MatrixMultiplier matrix_multiplier;
+  matrix_multiplier.multiply( C, A, B );
   
-  Matrix< double > matrix_c( nRows, nColumns );
-  matrix_c = multiplier.multiply( matrix_a, matrix_b );
+  Matrix< double > D( rows, columns );
+  D = A * B;
   
-  Matrix< double > matrix_d( nRows, nColumns );
-  matrix_d = matrix_a * matrix_b;
-  
-  printer.print( matrix_c );
-  printer.print( matrix_d );
+  matrix_printer.print( C );
+  matrix_printer.print( D );
 }
 
 
 
-void MatrixTest::testAddition()
+void MatrixTest::addition()
 {  
-  matrix_t A( this->matrixSize, this->matrixSize );
-  this->matrixRandomFiller.fill( A );
+  matrix_t A( this->matrix_size, this->matrix_size );
+  this->matrix_random_filler.fill( A );
 
-  matrix_t B( this->matrixSize, this->matrixSize );
-  this->matrixRandomFiller.fill( B );
+  matrix_t B( this->matrix_size, this->matrix_size );
+  this->matrix_random_filler.fill( B );
 
-  matrix_t C( this->matrixSize, this->matrixSize );
-  C = this->matrixSummarizer.summarize( A, B );
+  matrix_t C( this->matrix_size, this->matrix_size );
+  MatrixSummarizer matrix_summarizer;
+  matrix_summarizer.summarize( C, A, B );
 
-  matrix_t D( B + A );
+  matrix_t D = ( B + A );
 
   CPPUNIT_ASSERT( C == D );
 }
 
 
 
-void MatrixTest::testMultiplication()
+void MatrixTest::multiplication()
 {
-  matrix_t A( this->matrixSize, this->matrixSize );
-  this->matrixRandomFiller.fill( A );
+  matrix_t A( this->matrix_size, this->matrix_size );
+  this->matrix_random_filler.fill( A );
 
-  matrix_t B( this->matrixSize, this->matrixSize );
-  this->matrixRandomFiller.fill( B );
+  matrix_t B( this->matrix_size, this->matrix_size );
+  this->matrix_random_filler.fill( B );
 
-  matrix_t C( this->matrixSize, this->matrixSize );
-  C = this->matrixMultiplier.multiply( A, B );
+  matrix_t C( this->matrix_size, this->matrix_size );
+  MatrixMultiplier matrix_multiplier;
+  matrix_multiplier.multiply( C, A, B );
 
   matrix_t D = ( A * B );
 
   CPPUNIT_ASSERT( C == D );
   
   matrix_t E = A;
-  element_t value = 2;
-  this->matrixMultiplier.multiply( value, E );
+  value_t value = 2;
+  matrix_multiplier.multiply( value, E );
 
   matrix_t F( A * value );
 
@@ -90,10 +94,10 @@ void MatrixTest::testMultiplication()
 
 
 
-void MatrixTest::testTransposition()
+void MatrixTest::transposition()
 { 
   matrix_t matrix( 2, 3 );
-  this->matrixRandomFiller.fill( matrix );
+  this->matrix_random_filler.fill( matrix );
   
   matrix_t matrix_transposed = matrix.transpose();
 
@@ -106,15 +110,15 @@ void MatrixTest::testTransposition()
 
 
 
-void MatrixTest::testAcceleration()
+void MatrixTest::acceleration()
 {
-  std::size_t size = this->initialSize;
-  for( std::size_t iteration = 0; iteration < nIterations; ++iteration ) {    
+  std::size_t size = this->initial_size;
+  for( std::size_t iteration = 0; iteration < iterations_num; ++iteration ) {    
     matrix_t lhs( size, size );
-    this->matrixRandomFiller.fill( lhs );
+    this->matrix_random_filler.fill( lhs );
     
     matrix_t rhs( size, size );
-    this->matrixRandomFiller.fill( rhs );
+    this->matrix_random_filler.fill( rhs );
 
     matrix_t result( size, size );
     
@@ -141,22 +145,22 @@ void MatrixTest::testAcceleration()
     };
     
     this->statistics( size, Statistics::Addition ).setSingleThreadTime(
-      this->calculateAverageTime( single_thread_summarizing )
+      this->calculate_average_time( single_thread_summarizing )
     );
 
     this->statistics( size, Statistics::Addition ).setMultyThreadTime(
-      this->calculateAverageTime( multiple_thread_summarizing )
+      this->calculate_average_time( multiple_thread_summarizing )
     );
 
     this->statistics( size, Statistics::Multiplication ).setSingleThreadTime(
-      this->calculateAverageTime( single_thread_multiplication )
+      this->calculate_average_time( single_thread_multiplication )
     );
 
     this->statistics( size, Statistics::Multiplication ).setMultyThreadTime(
-      this->calculateAverageTime( multiple_thread_multiplication )
+      this->calculate_average_time( multiple_thread_multiplication )
     );
 
-    size = this->initialSize * (this->sizeStep + 10 * iteration);
+    size = this->initial_size * (this->size_step + 10 * iteration);
   }
   
   const std::string file = "Acceleration statistics";
@@ -165,20 +169,20 @@ void MatrixTest::testAcceleration()
 
 
 
-void MatrixTest::testMultithreadingTime()
+void MatrixTest::multiple_threads_time()
 {
-  this->nInnerLoopIterations = 1;
-  this->initialSize = 500;
-  this->sizeStep = 500;
-  this->nIterations = 0;
+  this->inner_loop_iterations_num = 1;
+  this->initial_size = 500;
+  this->size_step = 500;
+  this->iterations_num = 0;
   
-  std::size_t size = this->initialSize;
-  for( std::size_t iteration = 0; iteration < this->nIterations; ++iteration ) {    
+  std::size_t size = this->initial_size;
+  for( std::size_t iteration = 0; iteration < this->iterations_num; ++iteration ) {    
     matrix_t lhs( size, size );
-    this->matrixRandomFiller.fill( lhs );
+    this->matrix_random_filler.fill( lhs );
     
     matrix_t rhs( size, size );
-    this->matrixRandomFiller.fill( rhs );
+    this->matrix_random_filler.fill( rhs );
 
     matrix_t multiple_thread_result( size, size );
         
@@ -191,14 +195,14 @@ void MatrixTest::testMultithreadingTime()
     };
     
     this->statistics( size, Statistics::Addition ).setMultyThreadTime(
-      this->calculateAverageTime( multiple_thread_summarizing )
+      this->calculate_average_time( multiple_thread_summarizing )
     );
 
     this->statistics( size, Statistics::Multiplication ).setMultyThreadTime(
-      this->calculateAverageTime( multiple_thread_multiplication )
+      this->calculate_average_time( multiple_thread_multiplication )
     );
 
-    size += this->sizeStep;
+    size += this->size_step;
   }
   
   const std::string file = "Multithreading statistics";
@@ -207,24 +211,24 @@ void MatrixTest::testMultithreadingTime()
 
 
 
-void MatrixTest::testThreadsNumberTime()
+void MatrixTest::threads_number_time()
 {
-  const std::size_t matrixSize = 500;
-  this->nInnerLoopIterations = 0;
+  const std::size_t matrix_size = 500;
+  this->inner_loop_iterations_num = 0;
 
-  matrix_t lhs( matrixSize, matrixSize );
-  this->matrixRandomFiller.fill( lhs );
+  matrix_t lhs( matrix_size, matrix_size );
+  this->matrix_random_filler.fill( lhs );
 
-  matrix_t rhs( matrixSize, matrixSize );
-  this->matrixRandomFiller.fill( rhs );
+  matrix_t rhs( matrix_size, matrix_size );
+  this->matrix_random_filler.fill( rhs );
 
-  matrix_t result( matrixSize, matrixSize );
+  matrix_t result( matrix_size, matrix_size );
 
   auto multiple_thread_multiplication = [ & ]() {
     result = ( lhs * rhs );
   };
 
-  double time = this->calculateAverageTime( multiple_thread_multiplication );
+  double time = this->calculate_average_time( multiple_thread_multiplication );
   
   const std::string file = "Time (using 2 threads)";
   std::ofstream fstream( file );
@@ -234,7 +238,7 @@ void MatrixTest::testThreadsNumberTime()
 
 
 
-void MatrixTest::testMatrixTypes()
+void MatrixTest::matrix_types()
 {
   Matrix< int > E( 3, 3 );
   E( 0, 0 ) = 1;

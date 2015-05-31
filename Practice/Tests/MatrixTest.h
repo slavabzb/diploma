@@ -66,7 +66,7 @@ private:
   std::size_t matrixSize = 50;
   std::size_t initialSize = 10;
   std::size_t sizeStep = 10;
-  std::size_t nIterations = 3;
+  std::size_t nIterations = 0;
   std::size_t nInnerLoopIterations = 1;
 
   Statistics statistics;

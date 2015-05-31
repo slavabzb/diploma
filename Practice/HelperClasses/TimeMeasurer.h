@@ -12,16 +12,16 @@ public:
   void start();
   void end();
   
-  double getDurationInSeconds() const;
+  double get_duration_in_seconds() const;
 
 private:
 
-  typedef std::chrono::high_resolution_clock::time_point TimePoint;
-  typedef std::chrono::duration< double > IntervalDuration;
+  typedef std::chrono::high_resolution_clock::time_point time_point_t;
+  typedef std::chrono::duration< double > interval_t;
   
-  TimePoint startTimePoint;
-  TimePoint endTimePoint;
-  IntervalDuration interval;
+  time_point_t start_time_point;
+  time_point_t end_time_point;
+  interval_t interval;
 };
 
 

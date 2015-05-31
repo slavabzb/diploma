@@ -39,17 +39,17 @@ void Statistics::save( const std::string& fileName )
     
     *ostream << "\nOut-of-class time: ";
     for( auto it = this->statisticsArray[ statisticsType ].cbegin(); it != this->statisticsArray[ statisticsType ].cend(); ++it ) {
-      *ostream << it->second.getSingleThreadTime() << ' ';
+      *ostream << it->second.get_single_thread_time() << ' ';
     }
     
     *ostream << "\nIn-class time: ";
     for( auto it = this->statisticsArray[ statisticsType ].cbegin(); it != this->statisticsArray[ statisticsType ].cend(); ++it ) {
-      *ostream << it->second.getMultyThreadTime() << ' ';
+      *ostream << it->second.get_multiple_threads_time() << ' ';
     }
   
     *ostream << "\nAcceleration: ";
     for( auto it = this->statisticsArray[ statisticsType ].cbegin(); it != this->statisticsArray[ statisticsType ].cend(); ++it ) {
-      *ostream << it->second.getSingleThreadTime() / it->second.getMultyThreadTime() << ' ';
+      *ostream << it->second.get_single_thread_time() / it->second.get_multiple_threads_time() << ' ';
     }
     
     *ostream << "\n\n";

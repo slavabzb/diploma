@@ -143,19 +143,19 @@ void MatrixTest::acceleration()
       result = ( lhs * rhs );
     };
     
-    this->statistics( size, Statistics::Addition ).setSingleThreadTime(
+    this->statistics( size, Statistics::Addition ).set_single_thread_time(
       this->calculate_average_time( single_thread_summarizing )
     );
 
-    this->statistics( size, Statistics::Addition ).setMultyThreadTime(
+    this->statistics( size, Statistics::Addition ).set_multiple_threads_time(
       this->calculate_average_time( multiple_thread_summarizing )
     );
 
-    this->statistics( size, Statistics::Multiplication ).setSingleThreadTime(
+    this->statistics( size, Statistics::Multiplication ).set_single_thread_time(
       this->calculate_average_time( single_thread_multiplication )
     );
 
-    this->statistics( size, Statistics::Multiplication ).setMultyThreadTime(
+    this->statistics( size, Statistics::Multiplication ).set_multiple_threads_time(
       this->calculate_average_time( multiple_thread_multiplication )
     );
 
@@ -193,11 +193,11 @@ void MatrixTest::multiple_threads_time()
       multiple_thread_result = ( lhs * rhs );
     };
     
-    this->statistics( size, Statistics::Addition ).setMultyThreadTime(
+    this->statistics( size, Statistics::Addition ).set_multiple_threads_time(
       this->calculate_average_time( multiple_thread_summarizing )
     );
 
-    this->statistics( size, Statistics::Multiplication ).setMultyThreadTime(
+    this->statistics( size, Statistics::Multiplication ).set_multiple_threads_time(
       this->calculate_average_time( multiple_thread_multiplication )
     );
 

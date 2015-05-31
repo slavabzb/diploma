@@ -7,38 +7,38 @@ class Time
 {
 public:
 
-  void setSingleThreadTime( double time )
+  void set_single_thread_time( double time )
   {
-    this->singleThreadTime = time;
+    this->single_thread_time = time;
   }
 
 
 
-  void setMultyThreadTime( double time )
+  void set_multiple_threads_time( double time )
   {
-    this->multyThreadTime = time;
+    this->multiple_threads_time = time;
   }
 
 
 
-  double getSingleThreadTime() const 
+  double get_single_thread_time() const 
   {
-    return this->singleThreadTime;
+    return this->single_thread_time;
   }
 
 
 
-  double getMultyThreadTime() const
+  double get_multiple_threads_time() const
   {
-    return this->multyThreadTime;
+    return this->multiple_threads_time;
   }
 
 
 
 private:
 
-  double singleThreadTime;
-  double multyThreadTime;
+  double single_thread_time;
+  double multiple_threads_time;
 };
 
 

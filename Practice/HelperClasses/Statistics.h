@@ -19,6 +19,7 @@ public:
     StatisticsTypeSize
   };
 
+  //StatisticsType& operator++ ( StatisticsType& statistics_type );
 
   
   Time& operator() ( std::size_t matrixSize, StatisticsType statisticsType );
@@ -28,8 +29,7 @@ public:
 
 private:
 
-  typedef std::map< StatisticsType, std::string > StatisticsTypeNameMap;
-  const StatisticsTypeNameMap statisticsTypeNames = {
+  const std::map< StatisticsType, std::string > statisticsTypeNames = {
     { Addition, "Addition" },
     { Multiplication, "Multiplication" }
   };

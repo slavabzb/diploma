@@ -47,7 +47,7 @@ private:
       time_measurer.start();
       function();
       time_measurer.end();
-      durations[ duration ] = time_measurer.getDurationInSeconds();
+      durations[ duration ] = time_measurer.get_duration_in_seconds();
     }
     
     return durations.sum() / durations.size();

@@ -7,6 +7,9 @@
 
 
 
+/**
+ * Represents a constraint - a pair of function and its subgradient.
+ */
 template< typename T, std::size_t Dimension >
 class Constraint
 {
@@ -20,6 +23,12 @@ class Constraint
 
 public:
 
+  /**
+   * A constructor.
+   * Constructs a constraint with given function and subgradient.
+   * @param function a function.
+   * @param subgradient a subgradient of the function.
+   */
   Constraint( const function_t& function, const subgradient_t& subgradient )
     : container( std::make_pair( function, subgradient ) )
   {
@@ -28,6 +37,9 @@ public:
 
 
 
+  /**
+   * Retrieve a value of the function at given point, i.e. call function( point ).
+   */
   value_t function( const point_t& point ) const
   {
     return ( this->container.first )( point );
@@ -35,6 +47,9 @@ public:
 
 
 
+  /**
+   * Retrieve a value of the subgradient at given point, i.e. call subgradient( point ).
+   */
   point_t subgradient( const point_t& point ) const
   {
     return ( this->container.second )( point );

@@ -6,10 +6,8 @@
 #include "ConstraintList.h"
 #include "Matrix.h"
 
-
-
 /**
- *  An implementation of Shor's ellipsoids method.
+ * An implementation of Shor's ellipsoids method.
  */
 template< typename T, std::size_t Dimension >
 class EllipsoidMethod
@@ -27,15 +25,14 @@ class EllipsoidMethod
 public:
 
   /**
-   *  An implementation of ellipsoids method algorithm.
-   *  @param objective a function to be optimized
-   *  @param constraints a list of constraints of convex programming problem
-   *  @param initial_point a point from where the optimization process starts
-   *  @param ball_radius a radius of a ball which locates the optimal point
-   *  @warning The precondition must be fulfilled || optimal_point - initial_point || <= ball_radius
-   *  @param epsilon a stopping criterion for accuracy
-   *  @param iteration_limit a stopping criterion for number of iterations
-   *  @return The optimal point if success or initial point if failure
+   * An implementation of ellipsoids method algorithm.
+   * @param objective a function to be optimized
+   * @param constraints a list of constraints of convex programming problem
+   * @param initial_point a point from where the optimization process starts
+   * @param ball_radius a radius of a ball which locates the optimal point
+   * @param epsilon a stopping criterion for accuracy
+   * @param iteration_limit a stopping criterion for number of iterations
+   * @return The optimal point if success or initial point if failure
    */
   point_t optimize( const constraint_t& objective,
     const constraint_list_t& constraints,
@@ -88,7 +85,7 @@ public:
     }
     
     bool precondition = (
-      static_cast<point_t>( optimal_point - initial_point ).norm() <= ball_radius
+      static_cast< point_t >( optimal_point - initial_point ).norm() <= ball_radius
     );
     
     return precondition ? optimal_point : initial_point;
@@ -98,10 +95,17 @@ public:
 
 private:
 
+  /**
+   * Calculates the subgradient.
+   * Choose subgradient depending on maximum of constraint functions.
+   * @param objective an objective function.
+   * @param constraints a list of constraint functions.
+   * @param point a point to calculate subgradient.
+   */
   point_t calculate_subgradient( const constraint_t& objective,
     const constraint_list_t& constraints,
     const point_t& point ) const
-  {   
+  {
     auto max = std::max_element( constraints.begin(), constraints.end(),
       [ & ]( const constraint_t& lhs, const constraint_t& rhs ) -> bool {
         return ( lhs.function( point ) < rhs.function( point ) );

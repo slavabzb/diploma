@@ -15,9 +15,9 @@ class Matrix
 {
 private:
 
-  typedef T value_t;              /**< Type of matrix elements. */
-  typedef Matrix< value_t > my_t; /**< Type of matrix.          */
-  typedef std::size_t index_t;    /**< Type of matrix index.    */
+  typedef T value_t;
+  typedef Matrix< value_t > my_t;
+  typedef std::size_t index_t;
 
 
 

@@ -7,6 +7,9 @@
 
 
 
+/**
+ * Represents a list of constraint functions.
+ */
 template< typename T, std::size_t Dimension >
 class ConstraintList
 {
@@ -24,7 +27,12 @@ class ConstraintList
 
 public:
 
-  void add( const function_t function, const subgradient_t subgradient )
+  /**
+   * Add a constraint to the list.
+   * @param function a constraint function.
+   * @param subgradient a subgradient of constraint function.
+   */
+  void add( const function_t& function, const subgradient_t& subgradient )
   {
     constraint_t constraint( function, subgradient );
     
@@ -33,6 +41,10 @@ public:
 
 
 
+  /**
+   * An accessor.
+   * Retrieve a reference of the constraint by index.
+   */
   constraint_t& operator[] ( index_t index )
   {
     return this->container[ index ];
@@ -40,6 +52,10 @@ public:
 
 
 
+  /**
+   * An accessor.
+   * Retrieve a const reference of the constraint by index.
+   */
   const constraint_t& operator[] ( index_t index ) const
   {
     return this->container[ index ];
@@ -47,6 +63,9 @@ public:
 
 
 
+  /**
+   * Retrieve a number of constraints in list.
+   */
   index_t size() const
   {
     return this->container.size();
@@ -54,6 +73,9 @@ public:
 
 
 
+  /**
+   * Retrieve an iterator pointed to the first constraint of the list.
+   */
   iterator_t begin()
   {
     return this->container.begin();
@@ -61,13 +83,9 @@ public:
 
 
 
-  iterator_t end()
-  {
-    return this->container.end();
-  }
-
-
-
+  /**
+   * Retrieve a const iterator pointed to the first constraint of the list.
+   */
   const_iterator_t begin() const
   {
     return this->container.begin();
@@ -75,6 +93,19 @@ public:
 
 
 
+  /**
+   * Retrieve an iterator pointed to the next to the last constraint of the list.
+   */
+  iterator_t end()
+  {
+    return this->container.end();
+  }
+
+
+
+  /**
+   * Retrieve a const iterator pointed to the next to the last constraint of the list.
+   */
   const_iterator_t end() const
   {
     return this->container.end();

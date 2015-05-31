@@ -1,8 +1,3 @@
-#include "Matrix.h"
-
-#include "Tests/MatrixTest.h"
-#include "Tests/EllipsoidsMethodTest.h"
-
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/TestResultCollector.h>

@@ -75,42 +75,33 @@ void MatrixTest::testMultiplication()
   matrix_t C( this->matrixSize, this->matrixSize );
   C = this->matrixMultiplier.multiply( A, B );
 
-  matrix_t D( A * B );
+  matrix_t D = ( A * B );
 
   CPPUNIT_ASSERT( C == D );
   
-  matrix_t E( A );
+  matrix_t E = A;
   element_t value = 2;
   this->matrixMultiplier.multiply( value, E );
 
   matrix_t F( A * value );
 
-  CPPUNIT_ASSERT( A == E );
+  CPPUNIT_ASSERT( F == E );
 }
 
 
 
 void MatrixTest::testTransposition()
 { 
-  matrix_t matrix( this->matrixSize, 2 * this->matrixSize );
+  matrix_t matrix( 2, 3 );
   this->matrixRandomFiller.fill( matrix );
   
-  matrix_t matrix_copy = matrix;
+  matrix_t matrix_transposed = matrix.transpose();
 
-  matrix_t matrix_transp( matrix.get_columns(), matrix.get_rows() );
-  this->matrixTransposer.transpose( matrix_transp, matrix );
-  
-  CPPUNIT_ASSERT( matrix.transpose() == matrix_transp );
-  
-  const std::size_t row = 4;
-  const std::size_t column = 5;
-  
-  CPPUNIT_ASSERT( matrix_copy( row, column ) == matrix( column, row ) );
-  
-  matrix.transpose();
-  
-  CPPUNIT_ASSERT( matrix == matrix_copy );
-  CPPUNIT_ASSERT( matrix( row, column ) == matrix_copy( row, column ) );
+  for( std::size_t iRow = 0; iRow < matrix.get_rows(); ++iRow ) {
+    for( std::size_t jColumn = 0; jColumn < matrix.get_columns(); ++jColumn ) {
+      CPPUNIT_ASSERT( matrix( iRow, jColumn ) == matrix_transposed( jColumn, iRow ) );
+    }
+  }
 }
 
 
@@ -125,39 +116,39 @@ void MatrixTest::testAcceleration()
     matrix_t rhs( size, size );
     this->matrixRandomFiller.fill( rhs );
 
-    matrix_t resultExternal( size, size );
-    matrix_t resultInternal( size, size );
+    matrix_t single_thread_result( size, size );
+    matrix_t multiple_thread_result( size, size );
     
-    auto externalSummarizing = [ & ]() {
-      resultExternal = this->matrixSummarizer.summarize( lhs, rhs );
+    auto single_thread_summarizing = [ & ]() {
+      single_thread_result = this->matrixSummarizer.summarize( lhs, rhs );
     };
     
-    auto internalSummarizing = [ & ]() {
-      resultInternal = ( lhs + rhs );
+    auto multiple_thread_summarizing = [ & ]() {
+      multiple_thread_result = ( lhs + rhs );
     };
     
-    auto externalMultiplication = [ & ]() {
-      resultExternal = this->matrixMultiplier.multiply( lhs, rhs );
+    auto single_thread_multiplication = [ & ]() {
+      single_thread_result = this->matrixMultiplier.multiply( lhs, rhs );
     };
     
-    auto internalMultiplication = [ & ]() {
-      resultInternal = ( lhs * rhs );
+    auto multiple_thread_multiplication = [ & ]() {
+      multiple_thread_result = ( lhs * rhs );
     };
     
     this->statistics( size, Statistics::Addition ).setSingleThreadTime(
-      this->calculateAverageTime( externalSummarizing )
+      this->calculateAverageTime( single_thread_summarizing )
     );
 
     this->statistics( size, Statistics::Addition ).setMultyThreadTime(
-      this->calculateAverageTime( internalSummarizing )
+      this->calculateAverageTime( multiple_thread_summarizing )
     );
 
     this->statistics( size, Statistics::Multiplication ).setSingleThreadTime(
-      this->calculateAverageTime( externalMultiplication )
+      this->calculateAverageTime( single_thread_multiplication )
     );
 
     this->statistics( size, Statistics::Multiplication ).setMultyThreadTime(
-      this->calculateAverageTime( internalMultiplication )
+      this->calculateAverageTime( multiple_thread_multiplication )
     );
 
     size = this->initialSize * (this->sizeStep + 10 * iteration);
@@ -184,22 +175,22 @@ void MatrixTest::testMultithreadingTime()
     matrix_t rhs( size, size );
     this->matrixRandomFiller.fill( rhs );
 
-    matrix_t resultInternal( size, size );
+    matrix_t multiple_thread_result( size, size );
         
-    auto internalSummarizing = [ & ]() {
-      resultInternal = ( lhs + rhs );
+    auto multiple_thread_summarizing = [ & ]() {
+      multiple_thread_result = ( lhs + rhs );
     };
 
-    auto internalMultiplication = [ & ]() {
-      resultInternal = ( lhs * rhs );
+    auto multiple_thread_multiplication = [ & ]() {
+      multiple_thread_result = ( lhs * rhs );
     };
     
     this->statistics( size, Statistics::Addition ).setMultyThreadTime(
-      this->calculateAverageTime( internalSummarizing )
+      this->calculateAverageTime( multiple_thread_summarizing )
     );
 
     this->statistics( size, Statistics::Multiplication ).setMultyThreadTime(
-      this->calculateAverageTime( internalMultiplication )
+      this->calculateAverageTime( multiple_thread_multiplication )
     );
 
     size += this->sizeStep;
@@ -224,11 +215,11 @@ void MatrixTest::testThreadsNumberTime()
 
   matrix_t result( matrixSize, matrixSize );
 
-  auto internalMultiplication = [ & ]() {
+  auto multiple_thread_multiplication = [ & ]() {
     result = ( lhs * rhs );
   };
 
-  double time = this->calculateAverageTime( internalMultiplication );
+  double time = this->calculateAverageTime( multiple_thread_multiplication );
   
   const std::string fileName = "Time (using 2 threads)";
   std::ofstream fstream( fileName );

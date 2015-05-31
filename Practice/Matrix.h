@@ -1,5 +1,5 @@
-#ifndef MATRIX_H
-#define MATRIX_H
+#ifndef MATRIX
+#define MATRIX
 
 #include <assert.h>
 #include <valarray>
@@ -321,7 +321,7 @@ public:
     std::cout << string << '\n';
     std::cout.unsetf ( std::ios::floatfield );
     std::cout.setf( std::ios::fixed, std:: ios::floatfield );
-    std::cout.precision(10);
+    std::cout.precision(20);
     
     for( index_t iRow = 0; iRow < this->get_rows(); ++iRow ) {
       for( index_t iColumn = 0; iColumn < this->get_columns(); ++iColumn ) {
@@ -373,4 +373,4 @@ private:
 
 
 
-#endif // MATRIX_H
+#endif // MATRIX

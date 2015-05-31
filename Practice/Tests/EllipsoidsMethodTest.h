@@ -1,5 +1,5 @@
-#ifndef ELLIPSOID_METHOD_TEST
-#define ELLIPSOID_METHOD_TEST
+#ifndef ELLIPSOIDS_METHOD_TEST
+#define ELLIPSOIDS_METHOD_TEST
 
 #include <cppunit/extensions/HelperMacros.h>
 #include <cppunit/TestFixture.h>
@@ -24,4 +24,4 @@ public:
 
 
 
-#endif // ELLIPSOID_METHOD_TEST
+#endif // ELLIPSOIDS_METHOD_TEST

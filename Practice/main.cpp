@@ -1,7 +1,7 @@
 #include "Matrix.h"
 
 #include "Tests/MatrixTest.h"
-#include "Tests/EllipsoidMethodTest.h"
+#include "Tests/EllipsoidsMethodTest.h"
 
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>

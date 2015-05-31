@@ -1,9 +1,9 @@
-#include "EllipsoidMethodTest.h"
+#include "EllipsoidsMethodTest.h"
 
 #include <gmpxx.h>
 
 #include "ConstraintList.h"
-#include "EllipsoidMethod.h"
+#include "EllipsoidsMethod.h"
 
 
 
@@ -94,10 +94,12 @@ void EllipsoidMethodTest::testEllipsoidMethod()
   const value_t ball_radius = 10.0;
   const point_t initial_point{ 1.0, 2.0 };
   const std::size_t iteration_limit = 1000;
+  const value_t epsilon = 1e-9;
   point_t point = ellipsoid_method.optimize( objective,
     constraints,
-    ball_radius,
     initial_point,
+    ball_radius,
+    epsilon,
     iteration_limit
   );
   

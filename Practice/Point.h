@@ -1,5 +1,5 @@
-#ifndef POINT_H
-#define POINT_H
+#ifndef POINT
+#define POINT
 
 #include <initializer_list>
 
@@ -179,4 +179,4 @@ private:
 
 
 
-#endif // POINT_H
+#endif // POINT

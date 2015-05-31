@@ -5,54 +5,62 @@
 
 
 
-Time& Statistics::operator() ( std::size_t matrixSize, StatisticsType statisticsType )
+Statistics::Type& operator++ ( Statistics::Type& statistics_type )
 {
-  return this->statisticsArray[ statisticsType ][ matrixSize ];
+  statistics_type = static_cast< Statistics::Type >(
+    static_cast< int >( statistics_type ) + 1
+  );
+  
+  return statistics_type;
 }
 
 
 
-void Statistics::save( const std::string& fileName )
+Time& Statistics::operator() ( std::size_t matrix_size, Statistics::Type statistics_type )
 {
-  std::fstream fstream( fileName, std::fstream::out );
-  std::ostream* ostream;
+  return this->statistics_array[ statistics_type ][ matrix_size ];
+}
+
+
+
+void Statistics::save( const std::string& file )
+{
+  std::fstream fstream( file, std::fstream::out );
   
-  if( fstream.is_open() ) {
-    ostream = &fstream;
-  }
-  else {
-    ostream = &std::clog;
-    *ostream << "\nWarning! Can't open file " << fileName << "; redirect stream to std::clog.\n";
-  }
-  
-  *ostream << "Statistics report.\n\n";
-  
-  *ostream << "The sizes of the matrices: ";
-  for( auto it = this->statisticsArray[ Multiplication ].cbegin(); it != this->statisticsArray[ Multiplication ].cend(); ++it ) {
-    *ostream << it->first << ' ';
+  if( !fstream.is_open() ) {
+    std::cerr << "Can't open file " << file << ".\n";
   }
   
-  for( StatisticsType statisticsType = Addition; statisticsType != StatisticsTypeSize;
-    statisticsType = static_cast< StatisticsType >( static_cast< std::size_t >(statisticsType) + 1 ) ) {
+  fstream << "Statistics report.\n\n";
+  
+  fstream << "The sizes of the matrices: ";
+  for( auto pair : this->statistics_array[ Statistics::Type::Multiplication ] ) {
+    fstream << pair.first << ' ';
+  }
+  
+  for( Statistics::Type statistics_type = Statistics::Type::Addition;
+    statistics_type != Statistics::Type::Size; ++statistics_type )
+  {
+    fstream << "\n\nTime statistics for "
+      << this->statistics_type_names_map.at( statistics_type ) << ".";
     
-    *ostream << "\nTime statistics for " << this->statisticsTypeNames.at( statisticsType ) << ".";
-    
-    *ostream << "\nOut-of-class time: ";
-    for( auto it = this->statisticsArray[ statisticsType ].cbegin(); it != this->statisticsArray[ statisticsType ].cend(); ++it ) {
-      *ostream << it->second.get_single_thread_time() << ' ';
+    fstream << "\nSingle thread time: ";
+    for( auto pair : this->statistics_array[ statistics_type ] ) {
+      fstream << pair.second.get_single_thread_time() << ' ';
     }
     
-    *ostream << "\nIn-class time: ";
-    for( auto it = this->statisticsArray[ statisticsType ].cbegin(); it != this->statisticsArray[ statisticsType ].cend(); ++it ) {
-      *ostream << it->second.get_multiple_threads_time() << ' ';
+    fstream << "\nMultiple threads time: ";
+    for( auto pair : this->statistics_array[ statistics_type ] ) {
+      fstream << pair.second.get_multiple_threads_time() << ' ';
     }
   
-    *ostream << "\nAcceleration: ";
-    for( auto it = this->statisticsArray[ statisticsType ].cbegin(); it != this->statisticsArray[ statisticsType ].cend(); ++it ) {
-      *ostream << it->second.get_single_thread_time() / it->second.get_multiple_threads_time() << ' ';
+    fstream << "\nAcceleration: ";
+    for( auto pair : this->statistics_array[ statistics_type ] ) {
+      fstream << pair.second.get_single_thread_time() /
+        pair.second.get_multiple_threads_time() << ' ';
     }
     
-    *ostream << "\n\n";
+    fstream << "\n";
   }
 }
 

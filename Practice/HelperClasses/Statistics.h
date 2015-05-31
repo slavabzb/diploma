@@ -12,30 +12,27 @@ class Statistics
 {
 public:
 
-  enum StatisticsType
+  enum Type : std::int8_t
   {
     Addition,
     Multiplication,
-    StatisticsTypeSize
+    Size
   };
-
-  //StatisticsType& operator++ ( StatisticsType& statistics_type );
-
   
-  Time& operator() ( std::size_t matrixSize, StatisticsType statisticsType );
-  void save( const std::string& fileName );
+  Time& operator() ( std::size_t matrix_size, Statistics::Type statistics_type );
+  void save( const std::string& file );
 
 
 
 private:
 
-  const std::map< StatisticsType, std::string > statisticsTypeNames = {
-    { Addition, "Addition" },
-    { Multiplication, "Multiplication" }
+  const std::map< Statistics::Type, std::string > statistics_type_names_map = {
+    { Statistics::Type::Addition, "Addition" },
+    { Statistics::Type::Multiplication, "Multiplication" }
   };
   
-  typedef std::map< std::size_t, Time > TimeStatistics;
-  std::array< TimeStatistics, StatisticsTypeSize > statisticsArray;
+  typedef std::map< std::size_t, Time > time_statistics_t;
+  std::array< time_statistics_t, Statistics::Type::Size > statistics_array;
 };
   
   

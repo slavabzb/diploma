@@ -116,23 +116,28 @@ void MatrixTest::testAcceleration()
     matrix_t rhs( size, size );
     this->matrixRandomFiller.fill( rhs );
 
-    matrix_t single_thread_result( size, size );
-    matrix_t multiple_thread_result( size, size );
+    matrix_t result( size, size );
     
     auto single_thread_summarizing = [ & ]() {
-      single_thread_result = this->matrixSummarizer.summarize( lhs, rhs );
+      std::size_t nthreads = 1;
+      matrix_t::get_parallel_handler()->setDirectParallelPolicy( nthreads );
+      result = ( lhs + rhs );
     };
     
     auto multiple_thread_summarizing = [ & ]() {
-      multiple_thread_result = ( lhs + rhs );
+      matrix_t::get_parallel_handler()->setAutoParallelPolicy();
+      result = ( lhs + rhs );
     };
     
     auto single_thread_multiplication = [ & ]() {
-      single_thread_result = this->matrixMultiplier.multiply( lhs, rhs );
+      std::size_t nthreads = 1;
+      matrix_t::get_parallel_handler()->setDirectParallelPolicy( nthreads );
+      result = ( lhs * rhs );
     };
     
     auto multiple_thread_multiplication = [ & ]() {
-      multiple_thread_result = ( lhs * rhs );
+      matrix_t::get_parallel_handler()->setAutoParallelPolicy();
+      result = ( lhs * rhs );
     };
     
     this->statistics( size, Statistics::Addition ).setSingleThreadTime(
@@ -154,8 +159,8 @@ void MatrixTest::testAcceleration()
     size = this->initialSize * (this->sizeStep + 10 * iteration);
   }
   
-  const std::string fileName = "Acceleration statistics";
-  this->statistics.save( fileName );
+  const std::string file = "Acceleration statistics";
+  this->statistics.save( file );
 }
 
 
@@ -196,8 +201,8 @@ void MatrixTest::testMultithreadingTime()
     size += this->sizeStep;
   }
   
-  const std::string fileName = "Multithreading statistics";
-  this->statistics.save( fileName );
+  const std::string file = "Multithreading statistics";
+  this->statistics.save( file );
 }
 
 
@@ -221,8 +226,8 @@ void MatrixTest::testThreadsNumberTime()
 
   double time = this->calculateAverageTime( multiple_thread_multiplication );
   
-  const std::string fileName = "Time (using 2 threads)";
-  std::ofstream fstream( fileName );
+  const std::string file = "Time (using 2 threads)";
+  std::ofstream fstream( file );
   
   fstream << time;
 }
@@ -235,7 +240,7 @@ void MatrixTest::testMatrixTypes()
   E( 0, 0 ) = 1;
   E( 1, 1 ) = 1;
   E( 2, 2 ) = 1;
-  CPPUNIT_ASSERT( E == Matrix< int >::Type::Identity( 3 ) );
+  CPPUNIT_ASSERT( E == Matrix< int >::Type::identity( 3 ) );
 }
 
 

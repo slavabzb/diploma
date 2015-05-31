@@ -102,6 +102,4 @@ void EllipsoidMethodTest::testEllipsoidMethod()
     epsilon,
     iteration_limit
   );
-  
-  point.print( "Point" );
 }

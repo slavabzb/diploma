@@ -47,7 +47,7 @@ public:
     value_t reduction = ball_radius / ( Dimension + 1.0 );
     point_t optimal_point = initial_point;
     
-    const matrix_t identity = matrix_t::Type::Identity( Dimension );
+    const matrix_t identity = matrix_t::Type::identity( Dimension );
     matrix_t inverse_transform_space( identity );
     
     point_t subgradient = this->calculate_subgradient( objective,
@@ -86,10 +86,6 @@ public:
       );
 
     }
-    
-    std::cout << "\n" << iteration << "\n";
-    
-    subgradient.print( "g(xk)" );
     
     bool precondition = (
       static_cast<point_t>( optimal_point - initial_point ).norm() <= ball_radius

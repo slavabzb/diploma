@@ -34,7 +34,7 @@ public:
     const std::size_t last = matrix.get_rows();
 
     ParallelHandler parallelHandler;
-    parallelHandler.loop_for( first, last, fill );
+    parallelHandler.parallel_for( first, last, fill );
   }
   
 };

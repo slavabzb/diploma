@@ -120,23 +120,23 @@ void MatrixTest::testAcceleration()
     
     auto single_thread_summarizing = [ & ]() {
       std::size_t nthreads = 1;
-      matrix_t::get_parallel_handler()->setDirectParallelPolicy( nthreads );
+      matrix_t::get_parallel_handler()->set_direct_parallel_policy( nthreads );
       result = ( lhs + rhs );
     };
     
     auto multiple_thread_summarizing = [ & ]() {
-      matrix_t::get_parallel_handler()->setAutoParallelPolicy();
+      matrix_t::get_parallel_handler()->set_auto_parallel_policy();
       result = ( lhs + rhs );
     };
     
     auto single_thread_multiplication = [ & ]() {
       std::size_t nthreads = 1;
-      matrix_t::get_parallel_handler()->setDirectParallelPolicy( nthreads );
+      matrix_t::get_parallel_handler()->set_direct_parallel_policy( nthreads );
       result = ( lhs * rhs );
     };
     
     auto multiple_thread_multiplication = [ & ]() {
-      matrix_t::get_parallel_handler()->setAutoParallelPolicy();
+      matrix_t::get_parallel_handler()->set_auto_parallel_policy();
       result = ( lhs * rhs );
     };
     

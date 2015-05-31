@@ -2,96 +2,93 @@
 
 
 
-ParallelHandler::ParallelHandler( std::size_t minNumThreads, std::size_t minPerThread )
-  : hardwareThreads( std::thread::hardware_concurrency() )
+ParallelHandler::ParallelHandler( std::size_t min_num_threads, std::size_t min_per_thread )
+  : hardware_threads( std::thread::hardware_concurrency() )
 {
-  this->setMinNumThreads( minNumThreads );
-  this->setMinPerThread( minPerThread );
-  this->setAutoParallelPolicy();
+  this->set_min_num_threads( min_num_threads );
+  this->set_min_per_thread( min_per_thread );
+  this->set_auto_parallel_policy();
 }
 
 
 
-ParallelHandler::ParallelPolicy ParallelHandler::getParallelPolicy() const
+ParallelHandler::ParallelPolicy ParallelHandler::get_parallel_policy() const
 {
-  return this->parallelPolicy;
+  return this->parallel_policy;
 }
 
 
 
-std::size_t ParallelHandler::getHardwareThreads() const
+std::size_t ParallelHandler::get_hardware_threads() const
 {
-  return this->hardwareThreads;
+  return this->hardware_threads;
 }
 
 
 
-std::size_t ParallelHandler::getMinPerThread() const
+std::size_t ParallelHandler::get_min_per_thread() const
 {
-  return this->minPerThread;
+  return this->min_per_thread;
 }
 
 
 
-std::size_t ParallelHandler::getMinNumThreads() const
+std::size_t ParallelHandler::get_min_num_threads() const
 {
-  return this->minNumThreads;
+  return this->min_num_threads;
 }
 
 
 
-void ParallelHandler::setAutoParallelPolicy()
+void ParallelHandler::set_auto_parallel_policy()
 {
-  this->parallelPolicy = policy_automatic;
+  this->parallel_policy = ParallelPolicy::Automatic;
 }
 
 
 
-void ParallelHandler::setDirectParallelPolicy( std::size_t numThreads )
+void ParallelHandler::set_direct_parallel_policy( std::size_t num_threads )
 {
-  this->setNumThreads( numThreads );
-  this->userDefinedNumThreads = numThreads;
-  this->parallelPolicy = policy_direct;
+  this->set_num_threads( num_threads );
+  this->user_defined_num_threads = num_threads;
+  this->parallel_policy = ParallelPolicy::Direct;
 }
 
 
 
-void ParallelHandler::setMinPerThread( std::size_t minPerThread )
+void ParallelHandler::set_min_per_thread( std::size_t min_per_thread )
 {
-  assert( minPerThread > 0 );
+  assert( min_per_thread > 0 );
   
-  this->minPerThread = minPerThread;
+  this->min_per_thread = min_per_thread;
 }
 
 
 
-void ParallelHandler::setMinNumThreads( std::size_t minNumThreads )
+void ParallelHandler::set_min_num_threads( std::size_t min_num_threads )
 {
-  assert( minNumThreads > 0);
+  assert( min_num_threads > 0);
   
-  this->minNumThreads = minNumThreads;
+  this->min_num_threads = min_num_threads;
 }
 
 
 
-void ParallelHandler::setUp( std::size_t size )
+void ParallelHandler::set_up( std::size_t size )
 {
-  switch( this->parallelPolicy ) {
-    case policy_automatic :
-      this->autoCalculateNumThreads( size );
-      break;
-      
-    case policy_direct :
-      this->setNumThreads( this->userDefinedNumThreads );
-      break;
+  if( this->parallel_policy == ParallelPolicy::Automatic ) {
+    this->calculate_num_threads( size );
   }
-
-  this->threads.resize( this->getNumThreads() - 1 );
+  else if( this->parallel_policy == ParallelPolicy::Direct ) {
+    this->set_num_threads( this->user_defined_num_threads );
+  }
+  
+  this->threads.resize( this->get_num_threads() - 1 );
 }
 
 
 
-void ParallelHandler::cleanUp()
+void ParallelHandler::clean_up()
 {
   std::for_each( this->threads.begin(), this->threads.end(), std::mem_fn( &std::thread::join ) );
   this->threads.clear();
@@ -99,29 +96,31 @@ void ParallelHandler::cleanUp()
 
 
 
-void ParallelHandler::setNumThreads( std::size_t numThreads )
+void ParallelHandler::set_num_threads( std::size_t num_threads )
 {
-  assert( numThreads > 0 );
+  assert( num_threads > 0 );
 
-  this->numThreads = numThreads;
+  this->num_threads = num_threads;
 }
 
 
 
-std::size_t ParallelHandler::getNumThreads() const
+std::size_t ParallelHandler::get_num_threads() const
 {
-  return this->numThreads;
+  return this->num_threads;
 }
 
 
 
-void ParallelHandler::autoCalculateNumThreads( std::size_t size )
+void ParallelHandler::calculate_num_threads( std::size_t size )
 {
-  const std::size_t maxThreads = ( size + this->getMinPerThread() - 1 ) / this->getMinPerThread();
-  const std::size_t hardwareBasedEstimate = ( this->getHardwareThreads() == 0 ?
-    this->getMinNumThreads() : this->getHardwareThreads() );
+  const std::size_t max_threads = (
+    ( size + this->get_min_per_thread() - 1 ) / this->get_min_per_thread()
+  );
+  const std::size_t hardware_based_estimate = ( this->get_hardware_threads() == 0 ?
+    this->get_min_num_threads() : this->get_hardware_threads() );
   
-  this->setNumThreads( std::min( hardwareBasedEstimate, maxThreads ) );
+  this->set_num_threads( std::min( hardware_based_estimate, max_threads ) );
 }
 
 

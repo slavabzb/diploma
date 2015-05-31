@@ -163,7 +163,7 @@ public:
 
     const index_t first = 0;
     const index_t last = this->get_rows();
-    my_t::get_parallel_handler()->loop_for( first, last, summarize );
+    my_t::get_parallel_handler()->parallel_for( first, last, summarize );
 
     return result;
   }
@@ -196,7 +196,7 @@ public:
 
     const index_t first = 0;
     const index_t last = this->get_rows();
-    my_t::get_parallel_handler()->loop_for( first, last, subtract );
+    my_t::get_parallel_handler()->parallel_for( first, last, subtract );
 
     return result;
   }
@@ -230,7 +230,7 @@ public:
 
     const index_t first = 0;
     const index_t last = this->get_rows();
-    my_t::get_parallel_handler()->loop_for( first, last, multiply );
+    my_t::get_parallel_handler()->parallel_for( first, last, multiply );
 
     return result;
   }
@@ -257,7 +257,7 @@ public:
 
     const index_t first = 0;
     const index_t last = result.get_rows();
-    my_t::get_parallel_handler()->loop_for( first, last, multiply );
+    my_t::get_parallel_handler()->parallel_for( first, last, multiply );
 
     return result;
   }

@@ -8,24 +8,45 @@
 
 
 
+/**
+ * A parallel execution controller.
+ */
 class ParallelHandler
 {
 public:
 
-  enum ParallelPolicy
+  /**
+   * Define how the number of threads will be calculated.
+   */
+  enum class ParallelPolicy
   {
-    policy_automatic,
-    policy_direct
+    Automatic,  /**< Calculating based on size of matrix passed to process.  */
+    Direct      /**< User defined number of threads.                         */
   };
 
 
 
-  ParallelHandler( std::size_t minNumThreads = 2, std::size_t minPerThread = 25 );
+  /**
+   * A default constructor.
+   * Configures the controller according to the given values.
+   * @param min_num_threads a minimal number of threads used to parallel execution.
+   * @param min_per_thread a minimal number of the rows of the matrix processed
+   * by single thread.
+   */
+  ParallelHandler( std::size_t min_num_threads = 2, std::size_t min_per_thread = 25 );
 
 
 
+  /**
+   * Applies the function parallel to the range [first, last].
+   * @param first an iterator points to the begin of the range.
+   * @param last an iterator points to the end of the range.
+   * @param function a function to apply.
+   * @warning The function must be equivalent to the following:
+   * [return type] function( std::size_t begin, std::size_t end ).
+   */
   template< typename Iterator, typename Function >
-  void loop_for( const Iterator& first,
+  void parallel_for( const Iterator& first,
     const Iterator& last,
     Function&& function )
   {
@@ -34,59 +55,59 @@ public:
       return;
     }
     
-    this->setUp( size );
+    this->set_up( size );
     
-    const std::size_t chunkSize = size / this->getNumThreads();
-    Iterator iFirst = first;
-    for( std::size_t iThread = 0;
-      iThread < ( this->getNumThreads() - 1 ); ++iThread ) {
-        Iterator iLast = iFirst;
-        iLast += chunkSize;
-        this->threads[ iThread ] = std::thread( function, iFirst, iLast );
-        iFirst = iLast;
+    const std::size_t chunk_size = size / this->get_num_threads();
+    Iterator begin = first;
+    for( std::size_t thread = 0;
+      thread < ( this->get_num_threads() - 1 ); ++thread ) {
+        Iterator end = begin;
+        end += chunk_size;
+        this->threads[ thread ] = std::thread( function, begin, end );
+        begin = end;
     }
 
-    function( iFirst, last );
+    function( begin, last );
 
-    this->cleanUp();
+    this->clean_up();
   }
 
 
 
-  ParallelPolicy getParallelPolicy() const;
-  std::size_t getHardwareThreads() const;
-  std::size_t getMinPerThread() const;
-  std::size_t getMinNumThreads() const;
+  ParallelPolicy get_parallel_policy() const;
+  std::size_t get_hardware_threads() const;
+  std::size_t get_min_per_thread() const;
+  std::size_t get_min_num_threads() const;
   
-  void setAutoParallelPolicy();
-  void setDirectParallelPolicy( std::size_t numThreads );
-  void setMinPerThread( std::size_t minPerThread );
-  void setMinNumThreads( std::size_t minNumThreads );
+  void set_auto_parallel_policy();
+  void set_direct_parallel_policy( std::size_t num_threads );
+  void set_min_per_thread( std::size_t min_per_thread );
+  void set_min_num_threads( std::size_t min_num_threads );
 
 
 
 private:
 
-  void setUp( std::size_t size );
-  void cleanUp();
+  void set_up( std::size_t size );
+  void clean_up();
   
-  void setNumThreads( std::size_t numThreads );
-  std::size_t getNumThreads() const;
+  void set_num_threads( std::size_t num_threads );
+  std::size_t get_num_threads() const;
   
-  void autoCalculateNumThreads( std::size_t size );
+  void calculate_num_threads( std::size_t size );
 
 
 
   std::vector< std::thread > threads;
 
-  ParallelPolicy parallelPolicy;
+  ParallelPolicy parallel_policy;
 
-  const std::size_t hardwareThreads;
+  const std::size_t hardware_threads;
   
-  std::size_t numThreads;
-  std::size_t userDefinedNumThreads;
-  std::size_t minPerThread;
-  std::size_t minNumThreads;
+  std::size_t num_threads;
+  std::size_t user_defined_num_threads;
+  std::size_t min_per_thread;
+  std::size_t min_num_threads;
 };
 
 

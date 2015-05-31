@@ -3,23 +3,22 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 #include <cppunit/TestFixture.h>
-#include <cppunit/Test.h>
 
 
 
-class EllipsoidMethodTest : public CppUnit::TestFixture
+class EllipsoidsMethodTest : public CppUnit::TestFixture
 {
-  CPPUNIT_TEST_SUITE( EllipsoidMethodTest );
-    CPPUNIT_TEST( testPoint );
-    CPPUNIT_TEST( testEllipsoidMethod );
+  CPPUNIT_TEST_SUITE( EllipsoidsMethodTest );
+    CPPUNIT_TEST( test_point );
+    CPPUNIT_TEST( test_ellipsoids_method );
   CPPUNIT_TEST_SUITE_END();
 
 
 
 public:
 
-  void testPoint();
-  void testEllipsoidMethod();
+  void test_point();
+  void test_ellipsoids_method();
 };
 
 

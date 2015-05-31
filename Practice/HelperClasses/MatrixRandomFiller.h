@@ -4,13 +4,11 @@
 #include <chrono>
 #include <random>
 
-#include "MatrixOperationPerformer.h"
-
 #include "ParallelHandler.h"
 
 
 
-class MatrixRandomFiller : public MatrixOperationPerformer
+class MatrixRandomFiller
 {
 public:
 
@@ -21,11 +19,11 @@ public:
     std::default_random_engine generator( seed );
     std::uniform_real_distribution<> distribution( 0, 1 );
 
-    auto fill = [ & ]( std::size_t iRowStart, std::size_t iRowEnd ) -> void
+    auto fill = [ & ]( std::size_t first, std::size_t last ) -> void
     {
-      for( std::size_t iRow = iRowStart; iRow < iRowEnd; ++iRow ) {
-        for( std::size_t jColumn = 0; jColumn < matrix.get_columns(); ++jColumn ) {
-          matrix( iRow, jColumn ) = distribution( generator );
+      for( std::size_t row = first; row < last; ++row ) {
+        for( std::size_t column = 0; column < matrix.get_columns(); ++column ) {
+          matrix( row, column ) = distribution( generator );
         }
       }
     };
@@ -33,8 +31,8 @@ public:
     const std::size_t first = 0;
     const std::size_t last = matrix.get_rows();
 
-    ParallelHandler parallelHandler;
-    parallelHandler.parallel_for( first, last, fill );
+    ParallelHandler parallel_handler;
+    parallel_handler.parallel_for( first, last, fill );
   }
   
 };

@@ -7,11 +7,11 @@
 
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION( EllipsoidMethodTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( EllipsoidsMethodTest );
 
 
 
-void EllipsoidMethodTest::testPoint()
+void EllipsoidsMethodTest::test_point()
 {
   Point< double, 5 > point5d{ 1.0, 2.0, 3.0 };
   Point< double, 5 > point5d_copy{ 1.0, 2.0, 3.0, 0.0, 0.0 };
@@ -46,7 +46,7 @@ void EllipsoidMethodTest::testPoint()
 
 
 
-void EllipsoidMethodTest::testEllipsoidMethod()
+void EllipsoidsMethodTest::test_ellipsoids_method()
 {
   typedef mpf_class value_t;
   const std::size_t Dimension = 2;
@@ -90,12 +90,12 @@ void EllipsoidMethodTest::testEllipsoidMethod()
   constraints.add( constraint_1, subgradient_1 );
   constraints.add( constraint_2, subgradient_2 );
     
-  EllipsoidMethod< value_t, Dimension > ellipsoid_method;
+  EllipsoidsMethod< value_t, Dimension > ellipsoids_method;
   const value_t ball_radius = 10.0;
   const point_t initial_point{ 1.0, 2.0 };
   const std::size_t iteration_limit = 1000;
   const value_t epsilon = 1e-9;
-  point_t point = ellipsoid_method.optimize( objective,
+  point_t point = ellipsoids_method.optimize( objective,
     constraints,
     initial_point,
     ball_radius,

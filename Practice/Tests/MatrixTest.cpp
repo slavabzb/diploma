@@ -5,7 +5,6 @@
 #include <cppunit/TestCaller.h>
 #include <cppunit/TestSuite.h>
 
-#include "HelperClasses/Logger.h"
 #include "HelperClasses/MatrixPrinter.h"
 #include "HelperClasses/Statistics.h"
 
@@ -31,7 +30,7 @@ void MatrixTest::crash_double_type()
   matrix_random_filler.fill( B );
   
   MatrixPrinter matrix_printer( &std::cout );
-  matrix_printer.setPrecision( 20 );
+  matrix_printer.set_precision( 20 );
   matrix_printer.print( A );
   matrix_printer.print( B );
   

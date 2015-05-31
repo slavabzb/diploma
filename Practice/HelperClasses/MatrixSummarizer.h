@@ -1,11 +1,9 @@
 #ifndef MATRIX_SUMMARIZER
 #define MATRIX_SUMMARIZER
 
-#include "MatrixOperationPerformer.h"
 
 
-
-class MatrixSummarizer : public MatrixOperationPerformer
+class MatrixSummarizer
 {
 public:
 
@@ -17,11 +15,9 @@ public:
     assert( result.get_rows() == lhs.get_rows() );
     assert( result.get_columns() == lhs.get_columns() );
     
-    for( std::size_t iRow = 0; iRow < lhs.get_rows(); ++iRow ) {
-      for( std::size_t jColumn = 0; jColumn < rhs.get_columns(); ++jColumn ) {
-        result( iRow, jColumn ) = (
-          lhs( iRow, jColumn ) + rhs( iRow, jColumn )
-        );
+    for( std::size_t row = 0; row < lhs.get_rows(); ++row ) {
+      for( std::size_t column = 0; column < rhs.get_columns(); ++column ) {
+        result( row, column ) = ( lhs( row, column ) + rhs( row, column ) );
       }
     }
   }

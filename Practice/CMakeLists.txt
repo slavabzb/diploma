@@ -13,7 +13,6 @@ set( SOURCE
   ParallelHandler.cpp
   Tests/MatrixTest.cpp
   Tests/EllipsoidsMethodTest.cpp
-  HelperClasses/Logger.cpp
   HelperClasses/MatrixPrinter.cpp
   HelperClasses/Statistics.cpp
   HelperClasses/TimeMeasurer.cpp

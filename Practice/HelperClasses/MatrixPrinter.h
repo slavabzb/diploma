@@ -4,11 +4,11 @@
 #include <ostream>
 #include <string>
 
-#include "MatrixOperationPerformer.h"
+#include "Matrix.h"
 
 
 
-class MatrixPrinter : public MatrixOperationPerformer
+class MatrixPrinter
 {
 public:
 
@@ -19,34 +19,34 @@ public:
   template< typename T >
   void print( const Matrix< T >& matrix )
   {
-    *this->ostream << this->matricesDelimiter;   
+    *this->ostream << this->matrices_delimiter;   
     
-    for ( std::size_t iRow = 0; iRow < matrix.get_rows(); ++iRow ) {
-      for ( std::size_t iColumn = 0; iColumn < matrix.get_columns(); ++iColumn ) {
-        *this->ostream << matrix( iRow, iColumn ) << this->columnDelimiter;
+    for ( std::size_t row = 0; row < matrix.get_rows(); ++row ) {
+      for ( std::size_t column = 0; column < matrix.get_columns(); ++column ) {
+        *this->ostream << matrix( row, column ) << this->column_delimiter;
       }
-      *this->ostream << this->rowDelimiter;
+      *this->ostream << this->row_delimiter;
     }
   }
   
   
   
-  void setPrecision( std::streamsize precision );
-  void setStream( std::ostream& ostream );
-  void setRowDelimiter( const std::string& rowDelimiter );
-  void setColumnDelimiter( const std::string& columnDelimiter );
+  void set_precision( std::streamsize precision );
+  void set_stream( std::ostream& ostream );
+  void set_row_delimiter( const std::string& row_delimiter );
+  void set_column_delimiter( const std::string& column_delimiter );
 
-  std::streamsize getPrecision() const;
-  std::string getRowDelimiter() const;
-  std::string getColumnDelimeter() const;
+  std::streamsize get_precision() const;
+  std::string get_row_delimiter() const;
+  std::string get_column_delimeter() const;
 
 private:
 
   std::ostream* ostream;
   std::streamsize precision;
-  std::string rowDelimiter;
-  std::string columnDelimiter;
-  std::string matricesDelimiter;
+  std::string row_delimiter;
+  std::string column_delimiter;
+  std::string matrices_delimiter;
 };
 
 

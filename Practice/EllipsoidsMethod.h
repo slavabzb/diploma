@@ -10,7 +10,7 @@
  * An implementation of Shor's ellipsoids method.
  */
 template< typename T, std::size_t Dimension >
-class EllipsoidMethod
+class EllipsoidsMethod
 {
   static_assert( Dimension >= 2u, "Dimension of space is too small" );
 

@@ -3,8 +3,6 @@
 #include <fstream>
 #include <iostream>
 
-#include "HelperClasses/Logger.h"
-
 
 
 Time& Statistics::operator() ( std::size_t matrixSize, StatisticsType statisticsType )

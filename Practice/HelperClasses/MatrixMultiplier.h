@@ -1,11 +1,9 @@
 #ifndef MATRIX_MULTIPLIER
 #define MATRIX_MULTIPLIER
 
-#include "MatrixOperationPerformer.h"
 
 
-
-class MatrixMultiplier : public MatrixOperationPerformer
+class MatrixMultiplier
 {
 public:
 
@@ -16,13 +14,13 @@ public:
     assert( result.get_rows() == lhs.get_rows() );
     assert( result.get_columns() == rhs.get_columns() );
     
-    for( std::size_t iRow = 0; iRow < lhs.get_rows(); ++iRow ) {
-      for( std::size_t jColumn = 0; jColumn < rhs.get_columns(); ++jColumn ) {
+    for( std::size_t row = 0; row < lhs.get_rows(); ++row ) {
+      for( std::size_t column = 0; column < rhs.get_columns(); ++column ) {
         T sum = 0.0;
-        for( std::size_t kIndex = 0; kIndex < lhs.get_columns(); ++kIndex ) {
-          sum += ( lhs( iRow, kIndex ) * rhs( kIndex, jColumn ) );
+        for( std::size_t index = 0; index < lhs.get_columns(); ++index ) {
+          sum += ( lhs( row, index ) * rhs( index, column ) );
         }
-        result( iRow, jColumn ) = sum;
+        result( row, column ) = sum;
       }
     }
   }
@@ -32,9 +30,9 @@ public:
   template< typename T >
   void multiply( const T& value , Matrix< T >& rhs )
   {
-    for( std::size_t iRow = 0; iRow < rhs.get_rows(); ++iRow ) {
-      for( std::size_t jColumn = 0; jColumn < rhs.get_columns(); ++jColumn ) {
-        rhs( iRow, jColumn ) *= value;
+    for( std::size_t row = 0; row < rhs.get_rows(); ++row ) {
+      for( std::size_t column = 0; column < rhs.get_columns(); ++column ) {
+        rhs( row, column ) *= value;
       }
     }
   }

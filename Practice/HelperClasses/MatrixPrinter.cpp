@@ -9,16 +9,16 @@ MatrixPrinter::MatrixPrinter( std::ostream* ostream )
   this->ostream = ostream;
   this->ostream->setf( std::ios::fixed, std:: ios::floatfield );
 
-  this->setPrecision( 6 );
+  this->set_precision( 6 );
   
-  this->rowDelimiter = "\n";
-  this->columnDelimiter = " ";
-  this->matricesDelimiter = "\n";
+  this->row_delimiter = "\n";
+  this->column_delimiter = " ";
+  this->matrices_delimiter = "\n";
 }
 
 
   
-void MatrixPrinter::setPrecision( std::streamsize precision )
+void MatrixPrinter::set_precision( std::streamsize precision )
 {
   this->precision = precision;
   this->ostream->precision( this->precision );
@@ -26,44 +26,44 @@ void MatrixPrinter::setPrecision( std::streamsize precision )
 
 
   
-void MatrixPrinter::setStream( std::ostream& ostream )
+void MatrixPrinter::set_stream( std::ostream& ostream )
 {
   this->ostream = &ostream;
 }
 
 
   
-void MatrixPrinter::setRowDelimiter( const std::string& rowDelimiter )
+void MatrixPrinter::set_row_delimiter( const std::string& row_delimiter )
 {
-  this->rowDelimiter = rowDelimiter;
+  this->row_delimiter = row_delimiter;
 }
 
 
   
-void MatrixPrinter::setColumnDelimiter( const std::string& columnDelimiter )
+void MatrixPrinter::set_column_delimiter( const std::string& column_delimiter )
 {
-  this->columnDelimiter = columnDelimiter;
+  this->column_delimiter = column_delimiter;
 }
 
 
 
-std::streamsize MatrixPrinter::getPrecision() const
+std::streamsize MatrixPrinter::get_precision() const
 {
   return this->precision;
 }
 
 
 
-std::string MatrixPrinter::getRowDelimiter() const
+std::string MatrixPrinter::get_row_delimiter() const
 {
-  return this->rowDelimiter;
+  return this->row_delimiter;
 }
 
 
 
-std::string MatrixPrinter::getColumnDelimeter() const
+std::string MatrixPrinter::get_column_delimeter() const
 {
-  return this->columnDelimiter;
+  return this->column_delimiter;
 }
 
 

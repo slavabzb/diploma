@@ -95,14 +95,16 @@ void MatrixTest::multiplication()
 
 void MatrixTest::transposition()
 { 
-  matrix_t matrix( 2, 3 );
+  matrix_t matrix( this->matrix_size, 2 * this->matrix_size );
   this->matrix_random_filler.fill( matrix );
   
   matrix_t matrix_transposed = matrix.transpose();
 
   for( std::size_t iRow = 0; iRow < matrix.get_rows(); ++iRow ) {
     for( std::size_t jColumn = 0; jColumn < matrix.get_columns(); ++jColumn ) {
-      CPPUNIT_ASSERT( matrix( iRow, jColumn ) == matrix_transposed( jColumn, iRow ) );
+      CPPUNIT_ASSERT(
+        matrix( iRow, jColumn ) == matrix_transposed( jColumn, iRow )
+      );
     }
   }
 }

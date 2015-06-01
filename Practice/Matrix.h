@@ -241,7 +241,7 @@ public:
    * A multiplication operator.
    * Multiply each element of the Matrix by value.
    */
-  my_t operator* ( const T& value )
+  my_t operator* ( const T& value ) const
   {
     my_t result( *this );
 

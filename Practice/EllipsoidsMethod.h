@@ -12,10 +12,10 @@
 template< typename T, std::size_t Dimension >
 class EllipsoidsMethod
 {
-  static_assert( Dimension >= 2u, "Dimension of space is too small" );
+  static_assert( Dimension >= 2u, "Dimension of euclidean space is too small" );
 
   typedef T value_t;
-  typedef Matrix< T > matrix_t;
+  typedef Matrix< value_t > matrix_t;
   typedef Point< value_t, Dimension > point_t;
   typedef Constraint< value_t, Dimension > constraint_t;
   typedef ConstraintList< value_t, Dimension > constraint_list_t;
@@ -30,7 +30,7 @@ public:
    * @param constraints a list of constraints of convex programming problem
    * @param initial_point a point from where the optimization process starts
    * @param ball_radius a radius of a ball which locates the optimal point
-   * @param epsilon a stopping criterion for accuracy
+   * @param accuracy a stopping criterion for accuracy
    * @param iteration_limit a stopping criterion for number of iterations
    * @return The optimal point if success or initial point if failure
    */
@@ -38,9 +38,9 @@ public:
     const constraint_list_t& constraints,
     const point_t& initial_point,
     const value_t& ball_radius,
-    const value_t& epsilon,
+    const value_t& accuracy,
     std::size_t iteration_limit )
-  {        
+  {
     value_t reduction = ball_radius / ( Dimension + 1.0 );
     point_t optimal_point = initial_point;
     
@@ -79,13 +79,15 @@ public:
       ++iteration;
       
       stopping_criterion = (
-        ( subgradient.norm() < epsilon ) || ( iteration >= iteration_limit )
+        ( subgradient.norm() < accuracy ) || ( iteration >= iteration_limit )
       );
 
     }
     
     bool precondition = (
-      static_cast< point_t >( optimal_point - initial_point ).norm() <= ball_radius
+      static_cast< point_t >(
+        optimal_point - initial_point
+      ).norm() <= ball_radius
     );
     
     return precondition ? optimal_point : initial_point;

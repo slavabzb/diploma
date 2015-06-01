@@ -1,0 +1,112 @@
+\subsection{Программная реализация метода эллипсоидов}
+
+Разработанная реализация метода эллипсоидов логически представляет собой шаблонный класс, параметризованный типом аргумента и размерностью евклидова пространства решаемой задачи (полный исходный код класса приведен в приложении~\ref{app:ellipsoidsMethodSource}).
+
+\lstinputlisting[firstline=12,lastline=13,firstnumber=12]{../../Practice/EllipsoidsMethod.h}
+
+Поскольку классический метод эллипсоидов Шора определен только для пространства $E_n, n\ge 2$ (см. описание метода эллипсоидов в главе один), в классе предусмотрена статическая проверка размерности пространства, указанного в качестве параметра шаблона.
+
+\lstinputlisting[firstline=15,lastline=15,firstnumber=15]{../../Practice/EllipsoidsMethod.h}
+
+В классе вводятся и используются сущности следующих типов.
+
+\lstinputlisting[firstline=17,lastline=21,firstnumber=17]{../../Practice/EllipsoidsMethod.h}
+
+Здесь тип строки 17 -- тип аргумента; 18 -- матрица элементов типа аргумента; 19 -- тип $n$-мерной точки пространства $E_n$; 20 -- тип, представляющий \textit{ограничение} задачи выпуклого программирования в виде пары функция--субградиент; 21 -- список всех ограничений.
+
+Единственная открытая функция \texttt{optimize} находит оптимальную точку по методу эллипсоидов и повторяет шаги алгоритма~\ref{alg:EllipsoidMethod} из первой главы. Поскольку функция нетривиальна, рассмотрим ее подробнее. Начнем с аргументов функции.
+
+\lstinputlisting[firstline=37,lastline=42,firstnumber=37]{../../Practice/EllipsoidsMethod.h}
+
+Описанные аргументы имеют следующие значения. Объект \texttt{objective} -- это \textit{целевая функция} задачи выпуклого программирования, значение которой \textit{минимизируется}; \texttt{constraints} -- \textit{ограничения} решаемой задачи; \texttt{initial\_point} -- начальное приближение, с которого начинает расчет алгоритм; \texttt{ball\_radius} -- радиус шара, содержащего оптимальную точку; \texttt{accuracy} -- требуемая точность решения задачи; \texttt{iteration\_limit} -- количество итераций, доступных методу для поиска (это способ выхода из алгоритма, если решение не сходится к оптимуму).
+
+Работа функции -- точное повторение шагов алгоритма. Поэтому для того, чтобы понять сущность выполняемых операций, написанных на языке программирования C++, уместными здесь будут обращения к математическим формулировкам алгоритма, и проведение соответствующей параллели с программным кодом.
+
+Алгоритм начинается с инициализации. Строка
+
+\lstset{
+numbers=none,
+frame=none
+}
+
+\lstinputlisting[firstline=44,lastline=44,firstnumber=44]{../../Practice/EllipsoidsMethod.h}
+
+\noindent обозначает то же, что и $h_k=\frac{R}{n+1}$. Далее в строке
+
+\lstinputlisting[firstline=45,lastline=45,firstnumber=45]{../../Practice/EllipsoidsMethod.h}
+
+\noindent выполняется $x_k=x_0$, а в строках
+
+\lstinputlisting[firstline=47,lastline=48,firstnumber=47]{../../Practice/EllipsoidsMethod.h}
+
+\noindent инициализируется матрица обратного преобразования пространства $B_k=E$.
+
+Далее, происходит вычисление оракула
+
+\lstinputlisting[firstline=50,lastline=53,firstnumber=50]{../../Practice/EllipsoidsMethod.h}
+
+\noindent по формуле 
+
+\begin{flalign}
+\label{eq:oracle}
+g(x_k)=\left\{
+\begin{tabular}{ll}
+$g_0(x_k)$, & если $\displaystyle\max_{1\le i\le m}f_i(x_k)\le 0$, \\
+$g_{i^*}(x_k)$, & если $\displaystyle\max_{1\le i\le m}f_i(x_k)=f_{i^*}(x_k)>0$. \\
+\end{tabular}
+\right.&
+\end{flalign}
+
+После выполнения инициализирующих действий осуществляется подготовка к циклическим расчетам. Для этого в строках
+
+\lstinputlisting[firstline=55,lastline=56,firstnumber=55]{../../Practice/EllipsoidsMethod.h}
+
+\noindent обнуляется счетчик итераций и значение критерия остановки выставляется в \texttt{false} для первого вхождения в цикл.
+
+Все последующие расчеты выполняются циклически.
+
+\lstinputlisting[firstline=57,lastline=57,firstnumber=57]{../../Practice/EllipsoidsMethod.h}
+
+\lstinputlisting[firstline=85,lastline=85,firstnumber=85]{../../Practice/EllipsoidsMethod.h}
+
+Цикл начинается с вычисления вектора направления
+
+\lstinputlisting[firstline=58,lastline=59,firstnumber=58]{../../Practice/EllipsoidsMethod.h}
+
+\noindent по формуле $\displaystyle\xi_k=\frac{B_k^Tg(x_k)}{||B_k^Tg(x_k)||}$. После этого обновляется значение текущей точки
+
+\lstinputlisting[firstline=61,lastline=61,firstnumber=61]{../../Practice/EllipsoidsMethod.h}
+
+\noindent согласно выражению $\displaystyle x_{k+1}=x_k-h_k\cdot B_k\cdot\xi_k$. Затем пространство субградиентов сжимается.
+
+\lstinputlisting[firstline=63,lastline=66,firstnumber=63]{../../Practice/EllipsoidsMethod.h}
+
+\noindent Для этого матрица обратного преобразования пространства умножается на оператор растяжения пространства с коэффициентом $\beta<1$, т.е. вычисляется $\displaystyle B_{k+1}=B_k\cdot R_\beta(\xi_k)$. После этого выполняется
+
+\lstinputlisting[firstline=72,lastline=72,firstnumber=72]{../../Practice/EllipsoidsMethod.h}
+
+\noindent для вычисления $\displaystyle h_{k+1}=h_k\cdot r$, где $r=\frac{n}{\sqrt{n^2-1}}$. Наконец, обновляется значение текущего субградиента
+
+\lstinputlisting[firstline=74,lastline=74,firstnumber=74]{../../Practice/EllipsoidsMethod.h}
+
+\noindent и счетчика итераций
+
+\lstinputlisting[firstline=79,lastline=79,firstnumber=79]{../../Practice/EllipsoidsMethod.h}
+
+\noindent для определения критерия останова. Критерий
+
+\lstinputlisting[firstline=81,lastline=83,firstnumber=81]{../../Practice/EllipsoidsMethod.h}
+
+\noindent проверяет достигнутую точность вычисления и следит за количеством выполненных итераций, не позволяя циклу выполняться больше, чем было затребовано. После этого тело цикла выполнятся снова до тех пор, пока не будет выполнено одно из условий критерия останова.
+
+После выхода из цикла проверяется предварительное условие алгоритма метода эллипсоидов $||x^*-x_0||<R$ -- нахождение оптимальной точки в шаре радиуса $R$ с центром в точке $x_0$. Для этого выполняется следующая инструкция.
+
+\lstinputlisting[firstline=87,lastline=91,firstnumber=87]{../../Practice/EllipsoidsMethod.h}
+
+От результата этой проверки будет зависеть возвращаемый результат. Если найденная оптимальная точка находится внутри шара, то возвращается ее значение. В противном случае функция возвращает значение начальной точки. Это поведение реализовано с помощью тернарного оператора.
+
+\lstinputlisting[firstline=93,lastline=93,firstnumber=93]{../../Practice/EllipsoidsMethod.h}
+
+Функция вычисления субградиента, код которой представлен ниже, логически работает строго по формуле вычисления оракула~(\ref{eq:oracle}).
+
+\lstinputlisting[firstline=107,lastline=125,firstnumber=107]{../../Practice/EllipsoidsMethod.h}

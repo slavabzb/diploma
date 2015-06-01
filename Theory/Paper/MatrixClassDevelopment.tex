@@ -14,63 +14,61 @@ numbers=none,
 frame=none
 }
 
-\lstinputlisting[firstline=11,lastline=12,firstnumber=11]{../../Practice/Matrix.h}
-
-В классе используется следующие обозначения типов.
-
-\lstinputlisting[firstline=16,lastline=18,firstnumber=16]{../../Practice/Matrix.h}
+\lstinputlisting[firstline=13,lastline=14,firstnumber=13]{../../Practice/Matrix.h}
 
 Класс предоставляет три конструктора. Первый создает матрицу указанной размерности, все элементы которой заполнены начальным значением.
 
-\lstinputlisting[firstline=25,lastline=25,firstnumber=25]{../../Practice/Matrix.h}
+\lstinputlisting[firstline=30,lastline=30,firstnumber=30]{../../Practice/Matrix.h}
 
 Второй -- конструктор копирования -- создает матрицу, все элементы которой равны элементам указанной матрицы.
 
-\lstinputlisting[firstline=38,lastline=38,firstnumber=38]{../../Practice/Matrix.h}
+\lstinputlisting[firstline=46,lastline=46,firstnumber=46]{../../Practice/Matrix.h}
 
 Третий -- конструктор перемещения -- берет во владение ресурсы временно созданной матрицы.
 
-\lstinputlisting[firstline=50,lastline=50,firstnumber=50]{../../Practice/Matrix.h}
+\lstinputlisting[firstline=61,lastline=61,firstnumber=61]{../../Practice/Matrix.h}
 
 Для индексного доступа к элементам применяются две версии оператора вызова функции (для константных и неконстантных объектов).
 
-\lstinputlisting[firstline=62,lastline=62,firstnumber=62]{../../Practice/Matrix.h}
+\lstinputlisting[firstline=76,lastline=76,firstnumber=76]{../../Practice/Matrix.h}
 
-\lstinputlisting[firstline=73,lastline=73,firstnumber=73]{../../Practice/Matrix.h}
+\lstinputlisting[firstline=90,lastline=90,firstnumber=90]{../../Practice/Matrix.h}
 
 Имеются две версии оператора присваивания (по копии и по временному объекту).
 
-\lstinputlisting[firstline=84,lastline=84,firstnumber=84]{../../Practice/Matrix.h}
+\lstinputlisting[firstline=104,lastline=104,firstnumber=104]{../../Practice/Matrix.h}
 
-\lstinputlisting[firstline=101,lastline=101,firstnumber=101]{../../Practice/Matrix.h}
+\lstinputlisting[firstline=124,lastline=124,firstnumber=124]{../../Practice/Matrix.h}
 
 Для класса перегружены основные бинарные операторы.
 
-\lstinputlisting[firstline=119,lastline=119,firstnumber=119]{../../Practice/Matrix.h}
+\lstinputlisting[firstline=145,lastline=145,firstnumber=145]{../../Practice/Matrix.h}
 
-\lstinputlisting[firstline=149,lastline=149,firstnumber=149]{../../Practice/Matrix.h}
+\lstinputlisting[firstline=178,lastline=178,firstnumber=178]{../../Practice/Matrix.h}
 
-\lstinputlisting[firstline=179,lastline=179,firstnumber=179]{../../Practice/Matrix.h}
+\lstinputlisting[firstline=211,lastline=211,firstnumber=211]{../../Practice/Matrix.h}
+
+\lstinputlisting[firstline=244,lastline=244,firstnumber=244]{../../Practice/Matrix.h}
 
 Операторы сравнения выполняют проверку на равенство элементов двух матриц.
 
-\lstinputlisting[firstline=234,lastline=234,firstnumber=234]{../../Practice/Matrix.h}
+\lstinputlisting[firstline=272,lastline=272,firstnumber=272]{../../Practice/Matrix.h}
 
-\lstinputlisting[firstline=256,lastline=256,firstnumber=256]{../../Practice/Matrix.h}
+\lstinputlisting[firstline=297,lastline=297,firstnumber=297]{../../Practice/Matrix.h}
 
 Для операции транспонирования класс предоставляет функцию.
 
-\lstinputlisting[firstline=264,lastline=264,firstnumber=264]{../../Practice/Matrix.h}
+\lstinputlisting[firstline=308,lastline=308,firstnumber=308]{../../Practice/Matrix.h}
 
 Две функции для получения информации о размерности матрицы.
 
-\lstinputlisting[firstline=274,lastline=274,firstnumber=274]{../../Practice/Matrix.h}
+\lstinputlisting[firstline=322,lastline=322,firstnumber=322]{../../Practice/Matrix.h}
 
-\lstinputlisting[firstline=282,lastline=282,firstnumber=282]{../../Practice/Matrix.h}
+\lstinputlisting[firstline=333,lastline=333,firstnumber=333]{../../Practice/Matrix.h}
 
 Это открытый интерфейс класса \texttt{Matrix}, доступный пользователю. Помимо перечисленного функционала, класс содержит статическую функцию для доступа к объекту, управляющему механизмом параллельного выполнения операций.
 
-\lstinputlisting[firstline=290,lastline=290,firstnumber=290]{../../Practice/Matrix.h}
+\lstinputlisting[firstline=343,lastline=343,firstnumber=343]{../../Practice/Matrix.h}
 
 Для многих методов матричных вычислений характерным является повторение одних и тех же вычислительных действий для разных элементов матриц. Данный момент свидетельствует о наличии \emph{параллелизма по данным} при выполнении матричных расчетов и, как результат, распараллеливание матричных операций сводится в большинстве случаев к разделению обрабатываемых матриц между потоками. Выбор способа разделения матриц приводит к определению конкретного метода параллельных вычислений; существование разных схем распределения данных порождает целый ряд \emph{параллельных алгоритмов матричных вычислений}.
 
@@ -86,15 +84,15 @@ frame=none
 
 \texttt{ParallelHandler} инкапсулирует параллельное выполнение матричных операций, применяя ленточное разбиение данных на непрерывной основе. Для этого класс предоставляет шаблонную функцию, параметризованную типом итератора и функции.
 
-\lstinputlisting[firstline=27,lastline=30,firstnumber=27]{../../Practice/ParallelHandler.h}
+\lstinputlisting[firstline=48,lastline=51,firstnumber=48]{../../Practice/ParallelHandler.h}
 
 Функция создает и управляет потоками, количество которых зависит от текущих настроек. Класс оперирует понятием \emph{политики распараллеливания}, которое может обозначать один из двух типов: \emph{автоматически} и \emph{вручную}.
 
-\lstinputlisting[firstline=15,lastline=19,firstnumber=15]{../../Practice/ParallelHandler.h}
+\lstinputlisting[firstline=21,lastline=25,firstnumber=21]{../../Practice/ParallelHandler.h}
 
 Для установки этих и других значений применяется следующий набор функций.
 
-\lstinputlisting[firstline=61,lastline=64,firstnumber=61]{../../Practice/ParallelHandler.h}
+\lstinputlisting[firstline=82,lastline=85,firstnumber=82]{../../Practice/ParallelHandler.h}
 
 Функции имеют следующие значения (в порядке объявления): использовать автоматический расчет количества потоков, задать количество потоков вручную, задать минимальную ширину ленты при разбиении данных, установить нижнюю границу для числа используемых потоков.
 

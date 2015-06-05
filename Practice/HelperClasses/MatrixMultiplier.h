@@ -8,7 +8,8 @@ class MatrixMultiplier
 public:
 
   template< typename T >
-  void multiply( Matrix< T >& result, const Matrix< T >& lhs, const Matrix< T >& rhs )
+  void multiply( Matrix< T >& result, const Matrix< T >& lhs,
+    const Matrix< T >& rhs )
   {
     assert( lhs.get_columns() == rhs.get_rows() );
     assert( result.get_rows() == lhs.get_rows() );

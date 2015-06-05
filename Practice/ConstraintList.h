@@ -104,7 +104,8 @@ public:
 
 
   /**
-   * Retrieve a const iterator pointed to the next to the last constraint of the list.
+   * Retrieve a const iterator pointed to the next to the last constraint of
+   * the list.
    */
   const_iterator_t end() const
   {

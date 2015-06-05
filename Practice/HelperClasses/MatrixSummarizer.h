@@ -8,7 +8,8 @@ class MatrixSummarizer
 public:
 
   template< typename T >
-  void summarize( Matrix< T >& result, const Matrix< T >& lhs, const Matrix< T >& rhs )
+  void summarize( Matrix< T >& result, const Matrix< T >& lhs,
+    const Matrix< T >& rhs )
   {
     assert( lhs.get_rows() == rhs.get_rows() );
     assert( lhs.get_columns() == rhs.get_columns() );

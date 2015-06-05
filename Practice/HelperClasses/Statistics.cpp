@@ -16,7 +16,8 @@ Statistics::Type& operator++ ( Statistics::Type& statistics_type )
 
 
 
-Time& Statistics::operator() ( std::size_t matrix_size, Statistics::Type statistics_type )
+Time& Statistics::operator() ( std::size_t matrix_size,
+  Statistics::Type statistics_type )
 {
   return this->statistics_array[ statistics_type ][ matrix_size ];
 }

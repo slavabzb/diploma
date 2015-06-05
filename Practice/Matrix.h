@@ -172,8 +172,8 @@ public:
 
   /**
    * A subtraction operator.
-   * Retrieve the Matrix each element of which is the difference of the corresponding
-   * values of this and rhs Matrix objects.
+   * Retrieve the Matrix each element of which is the difference of the
+   * corresponding values of this and rhs Matrix objects.
    */
   my_t operator- ( const my_t& rhs ) const
   {

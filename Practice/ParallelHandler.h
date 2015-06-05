@@ -29,11 +29,13 @@ public:
   /**
    * A default constructor.
    * Configures the controller according to the given values.
-   * @param min_num_threads a minimal number of threads used to parallel execution.
+   * @param min_num_threads a minimal number of threads used to parallel
+   * execution.
    * @param min_per_thread a minimal number of the rows of the matrix processed
    * by single thread.
    */
-  ParallelHandler( std::size_t min_num_threads = 2, std::size_t min_per_thread = 25 );
+  ParallelHandler( std::size_t min_num_threads = 2,
+    std::size_t min_per_thread = 25 );
 
 
 

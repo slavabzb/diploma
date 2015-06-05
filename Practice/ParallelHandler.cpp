@@ -2,7 +2,8 @@
 
 
 
-ParallelHandler::ParallelHandler( std::size_t min_num_threads, std::size_t min_per_thread )
+ParallelHandler::ParallelHandler( std::size_t min_num_threads,
+  std::size_t min_per_thread )
   : hardware_threads( std::thread::hardware_concurrency() )
 {
   this->set_min_num_threads( min_num_threads );
@@ -90,7 +91,9 @@ void ParallelHandler::set_up( std::size_t size )
 
 void ParallelHandler::clean_up()
 {
-  std::for_each( this->threads.begin(), this->threads.end(), std::mem_fn( &std::thread::join ) );
+  std::for_each( this->threads.begin(), this->threads.end(),
+    std::mem_fn( &std::thread::join ) );
+
   this->threads.clear();
 }
 
@@ -117,9 +120,12 @@ void ParallelHandler::calculate_num_threads( std::size_t size )
   const std::size_t max_threads = (
     ( size + this->get_min_per_thread() - 1 ) / this->get_min_per_thread()
   );
-  const std::size_t hardware_based_estimate = ( this->get_hardware_threads() == 0 ?
-    this->get_min_num_threads() : this->get_hardware_threads() );
-  
+
+  const std::size_t hardware_based_estimate = (
+    this->get_hardware_threads() == 0 ?
+    this->get_min_num_threads() : this->get_hardware_threads()
+  );
+
   this->set_num_threads( std::min( hardware_based_estimate, max_threads ) );
 }
 

@@ -145,20 +145,24 @@ void MatrixTest::acceleration()
       result = ( lhs * rhs );
     };
     
-    this->statistics( size, Statistics::Type::Addition ).set_single_thread_time(
-      this->calculate_average_time( single_thread_summarizing )
+    this->statistics( size,
+      Statistics::Type::Addition ).set_single_thread_time(
+        this->calculate_average_time( single_thread_summarizing )
     );
 
-    this->statistics( size, Statistics::Type::Addition ).set_multiple_threads_time(
-      this->calculate_average_time( multiple_thread_summarizing )
+    this->statistics( size,
+      Statistics::Type::Addition ).set_multiple_threads_time(
+        this->calculate_average_time( multiple_thread_summarizing )
     );
 
-    this->statistics( size, Statistics::Type::Multiplication ).set_single_thread_time(
-      this->calculate_average_time( single_thread_multiplication )
+    this->statistics( size,
+      Statistics::Type::Multiplication ).set_single_thread_time(
+        this->calculate_average_time( single_thread_multiplication )
     );
 
-    this->statistics( size, Statistics::Type::Multiplication ).set_multiple_threads_time(
-      this->calculate_average_time( multiple_thread_multiplication )
+    this->statistics( size,
+      Statistics::Type::Multiplication ).set_multiple_threads_time(
+        this->calculate_average_time( multiple_thread_multiplication )
     );
 
     size = this->initial_size * (this->size_step + 10 * iteration);
@@ -178,7 +182,9 @@ void MatrixTest::multiple_threads_time()
   this->iterations_num = 0;
   
   std::size_t size = this->initial_size;
-  for( std::size_t iteration = 0; iteration < this->iterations_num; ++iteration ) {    
+  for( std::size_t iteration = 0;
+    iteration < this->iterations_num; ++iteration )
+  {    
     matrix_t lhs( size, size );
     this->matrix_random_filler.fill( lhs );
     
@@ -195,12 +201,14 @@ void MatrixTest::multiple_threads_time()
       multiple_thread_result = ( lhs * rhs );
     };
     
-    this->statistics( size, Statistics::Type::Addition ).set_multiple_threads_time(
-      this->calculate_average_time( multiple_thread_summarizing )
+    this->statistics( size,
+      Statistics::Type::Addition ).set_multiple_threads_time(
+        this->calculate_average_time( multiple_thread_summarizing )
     );
 
-    this->statistics( size, Statistics::Type::Multiplication ).set_multiple_threads_time(
-      this->calculate_average_time( multiple_thread_multiplication )
+    this->statistics( size,
+      Statistics::Type::Multiplication ).set_multiple_threads_time(
+        this->calculate_average_time( multiple_thread_multiplication )
     );
 
     size += this->size_step;

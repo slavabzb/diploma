@@ -1,22 +1,19 @@
-M <- mesh( seq( -100, 100, length.out = 80 ),
-           seq( -100, 100, length.out = 80 ) )
-x <- M$x
-y <- M$y
+require( rgl )
 
-f0 <- x^2 + ( y - 2 )^2
-f1 <- x^2 + y^2 - 9
-f2 <- x^2 + ( y - 4 )^2 - 9
+x <- seq( from = -10, to = 10, by = 0.5 )
+y <- seq( from =  -8, to = 10, by = 0.5 )
 
-df <- data.frame(
-  x = c( 0 ),
-  y = c( 0 ),
-  z = c( 0 )
-)
+f0 <- x[1]^2 + ( y[1] - 2 )^2
+plot3d( x[1], y[1], f0, xlab = "X", ylab = "Y", zlab = "Z", col = "red" )
 
-library(rgl)
-spheres3d(x = 1, y = 1, z = 1, radius = 1)
+for( i in 2 : length( x ) ) {
+  for( j in 2 : length( y ) ) {
+    f0 <- x[i]^2 + ( y[j] - 2 )^2
+    plot3d( x[i], y[j], f0, col = "red", add = TRUE )
+  }
+}
 
-#library(plot3D)
-#surf3D( x, y, f1, colkey = FALSE )
-#surf3D( x, y, f1, colkey = FALSE, add = TRUE )
-#surf3D( x, y, f2, colkey = FALSE, add = TRUE )
+#f1 <- x^2 + y^2 - 9
+#f2 <- x^2 + ( y - 4 )^2 - 9
+spheres3d( x = 0, y = 0, z = 0, radius = 35, alpha = 0.3, col = "blue", add = TRUE )
+spheres3d( x = 0, y = 4, z = 0, radius = 35, alpha = 0.3, col = "blue", add = TRUE )

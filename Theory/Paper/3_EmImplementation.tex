@@ -5,11 +5,92 @@
 
 \subsection{Численный эксперимент}
 
+Для доказательства правильности работы разработанной реализации метода эллипсоидов, выполним оптимизацию какой-либо функции в некоторой заданной области, значение минимума которой заранее известно.
+
+Рассмотрим задачу минимизации
+\begin{equation}
+\label{eq:Problem}
+f_0(x_1,x_2)=x_1^2+(x_2-2)^2\rightarrow \min
+\end{equation}
+
+при ограничениях
+
+\begin{equation}
+\label{eq:ProblemConstraints}
+\left\{
+\begin{array}{rcl}
+f_1(x_1,x_2)&=&x_1^2+x_2^2-9; \\
+f_2(x_1,x_2)&=&x_1^2+(x_2-4)^2-9.
+\end{array}
+\right.
+\end{equation}
+
+Графическое изображение рассматриваемой задачи выпуклого программирования приведено на рисунке~\ref{fig:ObjectivePlot}. Целевая функция представляет собой параболоид с вершиной в точке $(0,2,0)$ (показан красным; вершина параболоида и есть минимальное значение целевой функции в заданной области), а область поиска представляет собой пересечение двух ограничений -- шаров радиуса $3$ с центрами в точках $(0,0,0)$ и $(0,4,0)$ соответственно (показаны синим).
+
 \begin{figure}[h!]
 \centering
-\includegraphics[scale=0.6]{Figures/ObjectivePlot}
-\caption{\label{fig:ObjectivePlot} График целевой функции}
+\includegraphics[scale=0.5]{Figures/ObjectivePlot}
+\caption{\label{fig:ObjectivePlot} Графическое представление задачи оптимизации}
 \end{figure}
 
+Создадим тест \texttt{UnitCPP}, в котором сделаем следующие объявления.
+
+\lstinputlisting[firstline=49,lastline=53,firstnumber=49]{../../Practice/Tests/EllipsoidsMethodTest.cpp}
+
+Для проведения расчетов был выбран тип \texttt{mpf\_class} библиотеки GMP, представляющий в программе числа с плавающей запятой неограниченной точности. Константа \texttt{Dimension} представляет размерность евклидова пространства рассматриваемой задачи. Соответственно, тип \texttt{point\_t} введен для представления двумерной точки $x\in E^2$.
+
+Объявим в тесте функции $f_\nu(x_1,x_2),\;\nu=\overline{0,2}$, указанные в постановке задачи (\ref{eq:Problem})--(\ref{eq:ProblemConstraints}).
+
+\lstinputlisting[firstline=55,lastline=74,firstnumber=55]{../../Practice/Tests/EllipsoidsMethodTest.cpp}
+
+\newpage
+Вычислим субградиенты функций $f_\nu(x_1,x_2),\;\nu=\overline{0,2}$. Для рассматриваемой задачи они будут совпадать с градиентами.
+
+\begin{equation}
+\label{eq:ProblemSubgradients}
+\left\{
+\begin{array}{rcl}
+g_0(x_1,x_2)&=&\left(2x_1,2(x_2-2)\right); \\
+g_1(x_1,x_2)&=&(2x_1,2x_2); \\
+g_2(x_1,x_2)&=&\left(2x_1,2(x_2-4)\right)
+\end{array}
+\right.
+\end{equation}
+
+Представим субградиенты функций в тестовом методе.
+
+\lstinputlisting[firstline=76,lastline=95,firstnumber=76]{../../Practice/Tests/EllipsoidsMethodTest.cpp}
+
+В соответствии с описанием функции \texttt{optimize} (см. подраздел~\ref{lst:Optimize}), все участвующие в расчетах функции и субградиенты необходимо <<упаковать>> в сущности типа \texttt{Constraint}. Для целевой функции представим объект \texttt{objective}.
+
+\lstinputlisting[firstline=97,lastline=99,firstnumber=97]{../../Practice/Tests/EllipsoidsMethodTest.cpp}
+
+Для ограничений создадим отдельный список и добавим оставшиеся функции.
+
+\lstinputlisting[firstline=101,lastline=103,firstnumber=101]{../../Practice/Tests/EllipsoidsMethodTest.cpp}
+
+В качестве начальной выберем точку $x_0=(1,2)$, радиус шара (начальной области поиска) положим равным $R=10$, зададим критерий остановки по точности $\varepsilon=10^{-10}$ и максимально допустимое число итераций $Q=1000$. Создадим описанные параметры в тестовом методе.
+
+\lstinputlisting[firstline=105,lastline=108,firstnumber=105]{../../Practice/Tests/EllipsoidsMethodTest.cpp}
+
+Запустим алгоритм метода эллипсоидов для задачи (\ref{eq:Problem})--(\ref{eq:ProblemConstraints}) с указанными параметрами, сохранив оптимальное значение в объекте \texttt{point}.
+
+\lstinputlisting[firstline=110,lastline=117,firstnumber=110]{../../Practice/Tests/EllipsoidsMethodTest.cpp}
+
+Наконец, распечатаем найденное значение с большой точностью, используя вспомогательный класс.
+
+\lstinputlisting[firstline=119,lastline=121,firstnumber=119]{../../Practice/Tests/EllipsoidsMethodTest.cpp}
+
+Для рассматриваемой задачи алгоритм метода эллипсоидов выдал результат, согласующийся с ожидаемым:
+$$
+point=\left(
+\begin{array}{c}
+0.00000000011922745523 \\
+2.00000000033459867651
+\end{array}
+\right).
+$$
+
+Вычислительный процесс сошелся к решению за $160$ итераций, т.е. остановка счета произошла по достижении заданной точности в $9$ знаков после запятой.
 
 \par\bigskip\bigskip\textbf{Выводы по главе три}

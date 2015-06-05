@@ -4,7 +4,7 @@
 
 #include "ConstraintList.h"
 #include "EllipsoidsMethod.h"
-
+#include "HelperClasses/MatrixPrinter.h"
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION( EllipsoidsMethodTest );
@@ -51,35 +51,47 @@ void EllipsoidsMethodTest::test_ellipsoids_method()
   typedef mpf_class value_t;
   const std::size_t Dimension = 2;
   typedef Point< value_t, Dimension > point_t;
-  
-  // f1 = x1^2 + x2^2 - 9
-  auto constraint_1 = []( const point_t& x ) -> value_t {
-    return ( std::pow( x[0], 2 ) + std::pow( x[1], 2 ) - 9 );
-  };
 
-  // g1 = ( 2 * x1, 2 * x2 )
-  auto subgradient_1 = []( const point_t& x ) -> point_t {
-    return point_t{ 2 * x[0], 2 * x[1] };
-  };
-
-  // f2 = x1^2 + ( x2 - 4 )^2 - 9
-  auto constraint_2 = []( const point_t& x ) -> value_t {
-    return ( std::pow( x[0], 2 ) + std::pow( x[1] - 4, 2 ) - 9 );
-  };
-
-  // g2 = ( 2 * x1, 2 * ( x2 - 4 ) )
-  auto subgradient_2 = []( const point_t& x ) -> point_t {
-    return point_t{ 2 * x[0], 2 * ( x[1] - 4 ) };
-  };
-
-  // f0 = x1^2 + ( x2 - 2 )^2
+  /**
+   * f0 = x1^2 + ( x2 - 2 )^2
+   */
   auto objective_function = []( const point_t& x ) -> value_t {
     return ( std::pow( x[0], 2 ) + std::pow( x[1] - 2, 2 ) );
   };
 
-  // g0 = ( 2 * x1, 2 * ( x2 - 2 ) )
+  /**
+   * f1 = x1^2 + x2^2 - 9
+   */
+  auto constraint_1 = []( const point_t& x ) -> value_t {
+    return ( std::pow( x[0], 2 ) + std::pow( x[1], 2 ) - 9 );
+  };
+  
+  /**
+   * f2 = x1^2 + ( x2 - 4 )^2 - 9
+   */
+  auto constraint_2 = []( const point_t& x ) -> value_t {
+    return ( std::pow( x[0], 2 ) + std::pow( x[1] - 4, 2 ) - 9 );
+  };
+  
+  /**
+   * g0 = ( 2 * x1, 2 * ( x2 - 2 ) )
+   */
   auto objective_subgradient = []( const point_t& x ) -> point_t {
     return point_t{ 2 * x[0], 2 * ( x[1] - 2 ) };
+  };
+  
+  /**
+   * g1 = ( 2 * x1, 2 * x2 )
+   */
+  auto subgradient_1 = []( const point_t& x ) -> point_t {
+    return point_t{ 2 * x[0], 2 * x[1] };
+  };
+
+  /**
+   * g2 = ( 2 * x1, 2 * ( x2 - 4 ) )
+   */
+  auto subgradient_2 = []( const point_t& x ) -> point_t {
+    return point_t{ 2 * x[0], 2 * ( x[1] - 4 ) };
   };
   
   Constraint< value_t, Dimension > objective( objective_function,
@@ -89,12 +101,13 @@ void EllipsoidsMethodTest::test_ellipsoids_method()
   ConstraintList< value_t, Dimension > constraints;
   constraints.add( constraint_1, subgradient_1 );
   constraints.add( constraint_2, subgradient_2 );
-    
-  EllipsoidsMethod< value_t, Dimension > ellipsoids_method;
+  
+  const point_t initial_point{ 1.0, 2.0 };  
   const value_t ball_radius = 10.0;
-  const point_t initial_point{ 1.0, 2.0 };
+  const value_t epsilon = 10e-10;
   const std::size_t iteration_limit = 1000;
-  const value_t epsilon = 1e-9;
+  
+  EllipsoidsMethod< value_t, Dimension > ellipsoids_method;
   point_t point = ellipsoids_method.optimize( objective,
     constraints,
     initial_point,
@@ -102,4 +115,8 @@ void EllipsoidsMethodTest::test_ellipsoids_method()
     epsilon,
     iteration_limit
   );
+  
+  MatrixPrinter matrix_printer( &std::cout );
+  matrix_printer.set_precision( 20 );
+  matrix_printer.print( point );
 }

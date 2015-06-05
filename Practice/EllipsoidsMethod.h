@@ -89,7 +89,7 @@ public:
         optimal_point - initial_point
       ).norm() <= ball_radius
     );
-    
+    std::cout << "\nIterations: " << iteration << "\n";
     return precondition ? optimal_point : initial_point;
   }
 

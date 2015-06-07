@@ -60,7 +60,9 @@ public:
       
       optimal_point -= ( inverse_transform_space * reduction ) * direction;
       
-      const value_t beta = std::sqrt( ( Dimension - 1.0 ) / ( Dimension + 1.0 ) );
+      const value_t beta = std::sqrt(
+        ( Dimension - 1.0 ) / ( Dimension + 1.0 )
+      );
       inverse_transform_space = inverse_transform_space * (
         identity + ( direction * direction.transpose() ) * ( beta - 1.0 )
       );    

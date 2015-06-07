@@ -1,5 +1,7 @@
 #include "EllipsoidsMethodTest.h"
 
+#include <fstream>
+
 #include <gmpxx.h>
 
 #include "ConstraintList.h"
@@ -130,7 +132,7 @@ void EllipsoidsMethodTest::test_ellipsoids_method()
 void EllipsoidsMethodTest::test_em_large_problem()
 {
   typedef mpf_class value_t;
-  const std::size_t Dimension = 50;
+  const std::size_t Dimension = 100;
   typedef Point< value_t, Dimension > point_t;
   
   /**
@@ -164,7 +166,7 @@ void EllipsoidsMethodTest::test_em_large_problem()
   const value_t alpha = 1;
   
   /**
-   * fi = x1^2 + x2^2 + ... + ( xi - alpha / 2 )^2 + ... + xn^2 - 4
+   * fi = x1^2 + x2^2 + ... + ( xi - alpha / 2 )^2 + ... + xn^2 - alpha^2
    */
   auto function = [ &alpha ]( const point_t& x, std::size_t index ) -> value_t {    
     value_t result = 0;
@@ -177,7 +179,7 @@ void EllipsoidsMethodTest::test_em_large_problem()
       }
     }
     
-    result -= 4;
+    result -= std::pow( alpha, 2 );
     
     return ( result );
   };
@@ -214,27 +216,50 @@ void EllipsoidsMethodTest::test_em_large_problem()
     constraints.add( function_adaptor , subgradient_adaptor );
   }
 
-  point_t initial_point;
-  for( std::size_t i = 0; i < initial_point.size(); ++i ) {
-    initial_point[ i ] = 0.4;
-  }
+  point_t initial_point{ 0.5 };
     
   const value_t ball_radius = 10.0;
   const value_t epsilon = 10e-10;
   const std::size_t iteration_limit = 1000;
-  
+    
   EllipsoidsMethod< value_t, Dimension > ellipsoids_method;
-  point_t point = ellipsoids_method.optimize( objective,
+  TimeMeasurer time_measurer;
+  point_t point;
+  
+  const std::size_t num_threads = 1;
+  Matrix< value_t >::get_parallel_handler()->set_direct_parallel_policy(
+    num_threads );
+  time_measurer.start();
+  point = ellipsoids_method.optimize( objective,
     constraints,
     initial_point,
     ball_radius,
     epsilon,
     iteration_limit
   );
+  time_measurer.end();
+  const double single_thread_time = time_measurer.get_duration_in_seconds();
   
-  std::cout << "Iterations: " << ellipsoids_method.get_iterations();
+  Matrix< value_t >::get_parallel_handler()->set_auto_parallel_policy();
+  time_measurer.start();
+  point = ellipsoids_method.optimize( objective,
+    constraints,
+    initial_point,
+    ball_radius,
+    epsilon,
+    iteration_limit
+  );
+  time_measurer.end();
+  const double multiple_threads_time = time_measurer.get_duration_in_seconds();
   
-  MatrixPrinter matrix_printer( &std::cout );
+  const char file[] = "EM_test";
+  std::ofstream stream( file );
+    
+  stream << "Single thread time: " << single_thread_time << "\n";
+  stream << "Multiple threads time: " << multiple_threads_time << "\n";
+  stream << "Iterations: " << ellipsoids_method.get_iterations();
+  
+  MatrixPrinter matrix_printer( &stream );
   matrix_printer.set_precision( 20 );
   matrix_printer.print( point );
 }

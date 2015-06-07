@@ -89,8 +89,16 @@ public:
         optimal_point - initial_point
       ).norm() <= ball_radius
     );
-    std::cout << "\nIterations: " << iteration << "\n";
+    
+    this->iterations = iteration;
+    
     return precondition ? optimal_point : initial_point;
+  }
+
+
+
+  std::size_t get_iterations() const {
+    return ( this->iterations );
   }
 
 
@@ -124,6 +132,9 @@ private:
     return subgradient;
   }
 
+
+
+  std::size_t iterations;
 };
 
 

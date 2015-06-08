@@ -1,0 +1,39 @@
+\begin{frame}{Пример 2}
+
+\begin{columns}[T]
+
+\begin{column}[T]{0.5\textwidth}
+\begin{block}{Задача большой размерности}
+$$
+f_0=\sum_{i=1}^nx_i^2\rightarrow\min.
+$$
+\noindent Ограничения:
+$$
+f_m=\sum_{i=1,i\neq m}^nx_i^2+(x_m-\alpha/2)^2-\alpha^2.
+$$
+\end{block}
+
+\begin{block}{Для $n=100,\; m=\overline{1,n},\;\alpha=1$}
+Решение найдено за 403 итерации, точность -- 9 знаков.
+\end{block}
+
+\end{column}
+
+\begin{column}[T]{0.45\textwidth}
+
+\begin{center}
+\includegraphics[scale=0.178]{\figpath{EmTime}}
+\end{center}
+
+\begin{block}{Ускорение при переходе}
+\begin{tabular}{lc}
+от 1 потока к 2: & $k_1=1.73$ \\
+от 1 потока к 8: & $k_2=2.74$ \\
+\end{tabular}
+\end{block}
+
+\end{column}
+
+\end{columns}
+
+\end{frame}

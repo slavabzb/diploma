@@ -1,11 +1,11 @@
-time_2_threads <- c( 123.642, 71.9629 )
+time_2_threads <- c( 76.8894, 44.5085 )
 time_8_threads <- c( 77.22, 28.1456 )
 
 M <- matrix(
   c( time_2_threads, time_8_threads ),
   nrow = 2,
   ncol = length( time_8_threads ),
-  byrow = TRUE
+  byrow = FALSE
 )
 
 png( filename = "~/Documents/Diploma/Theory/Paper/Figures/EmTime.png",

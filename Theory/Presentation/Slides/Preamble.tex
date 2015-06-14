@@ -8,6 +8,7 @@
 \definecolor{bodyColor}{HTML}{D6D6F0}
 \setbeamercolor{block body}{bg=bodyColor}
 \setbeamercolor{block body example}{bg=bodyColor}
+\setbeamercolor{block body alert}{bg=bodyColor}
 \setbeamercolor{block title}{fg=white, bg=headerColor}
 
 % Templates
@@ -22,6 +23,11 @@
 \setbeamerfont{institute}{size=\footnotesize}
 \setbeamerfont{date}{size=\scriptsize}
 
+\newenvironment{titleblock}{
+  \setbeamertemplate{blocks}[rounded][shadow=false]
+  \begin{exampleblock}{}\centering\Large}{\end{exampleblock}}
+  
+
 % Packages
 \usepackage{pscyr}
 \usepackage[cp1251]{inputenc}
@@ -30,6 +36,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{tabularx}
 
 \usepackage{hyperref}
 \hypersetup{unicode=true}
@@ -51,10 +58,8 @@
 % Fits the presentation to the window when first displayed
 \hypersetup{pdfstartview={Fit}}
 
-\author[Безбородов~В.А.]{Безбородов~В.А.\\\vspace{0.5cm}{\footnotesize Научный руководитель, к.ф.-м.н., доцент Голодов~В.А.}}
+\author[Безбородов~В.А., ВМИ, кафедра ЭММиС]{Безбородов~В.А. \and {\footnotesize Научный руководитель, к.ф.-м.н., доцент Голодов~В.А.}}
 
-\title[Параллельная реализация МЭ]{Параллельная реализация метода эллипсоидов для задач оптимизации большой размерности}
+\title[Параллельная реализация МЭ (С++)]{Параллельная реализация метода эллипсоидов для задач оптимизации большой размерности}
 
-\institute[ЭММиС, ВМИ-413]{ФГБОУ ВПО ЮУрГУ\\г.~Челябинск}
-
-\date[Челябинск, 10 июня 2015 г.]{10 июня 2015 г.}
+\date[ЮУрГУ, Челябинск, 2015 г.]{}

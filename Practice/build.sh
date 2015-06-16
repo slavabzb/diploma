@@ -1,12 +1,12 @@
 #!/bin/bash
 echo "CONFIGURING"
 
-if [ ! -d "Build_Debug" ]; then
-  mkdir Build_Debug
+if [ ! -d ../../EmTester-build-debug ]; then
+  mkdir ../../EmTester-build-debug
 fi
-cd Build_Debug
+cd ../../EmTester-build-debug
 
-cmake -DCMAKE_BUILD_TYPE=Debug ../
+cmake -DCMAKE_BUILD_TYPE=Debug ../Diploma/Practice
 
 echo "BUILDING"
 make

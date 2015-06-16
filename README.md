@@ -2,7 +2,7 @@
 
 Параллельная реализация метода эллипсоидов для задач оптимизации большой размерности
 
-Безбородов В.А. vjacheslav.bezborodov@gmail.com
+Безбородов В.А. vyacheslav.bezborodov@gmail.com
 Голодов В.А. avaksa@gmail.com
 
 ЮУрГУ, 2015 г.

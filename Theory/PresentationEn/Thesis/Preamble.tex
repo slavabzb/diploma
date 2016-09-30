@@ -1,0 +1,15 @@
+\usepackage[T2A]{fontenc}
+\usepackage{pscyr}
+\usepackage[cp1251]{inputenc}
+
+\pagestyle{empty}
+
+\newcounter{slide}
+
+%\twocolumn
+
+\newcommand{\slide}{
+\stepcounter{slide}
+\section{слайд}
+\fbox{\includegraphics[page=\theslide,scale=0.55]{../Slides/Bezborodov_Presentation_Parallel_implementation_of_the_ellipsoids_method_for_optimization_problems_of_large_dimension.pdf}}
+}

@@ -1,0 +1,39 @@
+\begin{frame}{Example 2}
+
+\begin{columns}[T]
+
+\begin{column}[T]{0.5\textwidth}
+\begin{block}{The problem of large dimension}
+$$
+f_0=\sum_{i=1}^nx_i^2\rightarrow\min.
+$$
+\noindent Restrictions:
+$$
+f_m=\sum_{i=1,i\neq m}^nx_i^2+(x_m-\alpha/2)^2-\alpha^2.
+$$
+\end{block}
+
+\begin{block}{For $n=100,\; m=\overline{1,n},\;\alpha=1$}
+The solution was found in 403 iterations, accuracy -- up to 9 decimal places.
+\end{block}
+
+\end{column}
+
+\begin{column}[T]{0.465\textwidth}
+
+\begin{center}
+\includegraphics[scale=0.178]{\figpath{EmTime}}
+\end{center}
+
+\begin{block}{1 thread: 78 s. Time rate:}
+\begin{tabular}{ll}
+2 threads:  & $T_2=44.89$ s. \\
+8 threads: & $T_8=28.14$ s. \\
+\end{tabular}
+\end{block}
+
+\end{column}
+
+\end{columns}
+
+\end{frame}

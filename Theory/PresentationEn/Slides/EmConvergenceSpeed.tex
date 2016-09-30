@@ -1,0 +1,14 @@
+\begin{frame}{The convergence}
+
+\begin{rustheorem}[The rate of convergence]
+For all iterations of the EM factor reducing the volume of the ellipsoid, confining $x^*$, is constant and equal to
+$$
+q(n)=\frac{vol(\varepsilon_{k+1})}{vol(\varepsilon_k)}=\frac{1}{\alpha}\left(\frac{1}{2}\left(\alpha+\frac{1}{\alpha}\right)\right)^n<1,\quad k=0,1,2,\ldots
+$$
+\end{rustheorem}
+
+\begin{block}{Optimal space dilation factor}
+$$\alpha=\sqrt{\frac{n+1}{n-1}}\Rightarrow q(n)=\sqrt{\frac{n-1}{n+1}}\left(\frac{n}{\sqrt{n^2-1}}\right)^{n}<1.$$
+\end{block}
+
+\end{frame}

@@ -1,0 +1,16 @@
+\begin{frame}{EM algorithm}
+
+\begin{exampleblock}{}
+\small
+Choose $x_k:=x_0\in E^n$ and radius $R$, such that $||x_0-x^*||\le R$. Set $h_k=\frac{R}{n+1}$, $B_k:=E$, where $E$ -- identity matrix. To move to $(k+1)$-st iteration do:
+\end{exampleblock}
+
+\begin{description}
+\small
+\item[Step 1.] Calculate $g(x_k)$. If $g(x_k)=0$, then \textbf{STOP$(x^*=x_k)$}.
+\item[Step 2.] Calculate current point $\displaystyle x_{k+1}=x_k-h_kB_k\xi_k$, where $\displaystyle\xi_k=\frac{B_k^Tg(x_k)}{||B_k^Tg(x_k)||}$.
+\item[Step 3.] Calculate step $h_{k+1}=h_kr$ and matrix $B_{k+1}$\\ $B_{k+1}=B_k+(\beta-1)(B_k\xi_k)\xi_k^T$, $\quad\displaystyle\beta=\sqrt{\frac{n-1}{n+1}}$.
+\item[Step 4.] Move to $(k+1)$-st iteration with $x_{k+1}$, $h_{k+1}$ and $B_{k+1}$.
+\end{description}
+
+\end{frame}

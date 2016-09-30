@@ -1,0 +1,64 @@
+% Theme
+\usecolortheme{seahorse}
+\useoutertheme{infolines}
+\useinnertheme{rectangles}
+
+% Colors
+\definecolor{headerColor}{HTML}{3333B2}
+\definecolor{bodyColor}{HTML}{D6D6F0}
+\setbeamercolor{block body}{bg=bodyColor}
+\setbeamercolor{block body example}{bg=bodyColor}
+\setbeamercolor{block body alert}{bg=bodyColor}
+\setbeamercolor{block title}{fg=white, bg=headerColor}
+
+% Templates
+\setbeamertemplate{blocks}[rounded][shadow=true]
+\setbeamertemplate{enumerate item}[default]
+\setbeamertemplate{itemize item}{\color{headerColor}$\blacksquare$}
+
+% Fonts
+\usefonttheme{serif}
+\setbeamerfont{block title}{size=\small}
+\setbeamerfont{author}{size=\small}
+\setbeamerfont{institute}{size=\footnotesize}
+\setbeamerfont{date}{size=\scriptsize}
+
+\newenvironment{titleblock}{
+  \setbeamertemplate{blocks}[rounded][shadow=false]
+  \begin{exampleblock}{}\centering\Large}{\end{exampleblock}}
+  
+
+% Packages
+\usepackage{pscyr}
+\usepackage[cp1251]{inputenc}
+\usepackage[russian]{babel}
+\usepackage[T2A]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage{hyperref}
+\hypersetup{unicode=true}
+
+% Environments
+\newtheorem{rustheorem}{Theorem}
+\newtheorem{ruscorollary}{Corollary}
+
+% Display current position
+\AtBeginSubsection[]{
+\begin{frame}{Table of contents}
+\tableofcontents[currentsection,currentsubsection]
+\end{frame}
+}
+
+% Path to Paper figures
+\newcommand{\figpath}[1]{../../Paper/Figures/#1}
+
+% Fits the presentation to the window when first displayed
+\hypersetup{pdfstartview={Fit}}
+
+\author[Bezborodov~V.A., CMI, EMMaS]{Bezborodov~V.A. \and {\footnotesize Scientific Director, candidate of physical and mathematical Sciences, associate Professor Golodov~V.A.}}
+
+\title[Parallel implementation of the EM]{Parallel implementation of the ellipsoids method for optimization problems of large dimension}
+
+\date[SUSU, Chelyabinsk, 2016]{}
